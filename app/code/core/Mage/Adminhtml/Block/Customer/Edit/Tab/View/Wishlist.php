@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml customer view wishlist block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Wishlist extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -41,7 +33,7 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Wishlist extends Mage_Adminhtm
     {
         $collection = Mage::getModel('wishlist/item')->getCollection()
             ->addCustomerIdFilter(Mage::registry('current_customer')->getId())
-            ->addDaysInWishlist(true)
+            ->addDaysInWishlist()
             ->addStoreData()
             ->setInStockFilter(true);
 
@@ -61,21 +53,19 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Wishlist extends Mage_Adminhtm
             'header'    => Mage::helper('customer')->__('Product ID'),
             'index'     => 'product_id',
             'type'      => 'number',
-            'width'     => '100px'
+            'width'     => '100px',
         ]);
 
         $this->addColumn('product_name', [
             'header'    => Mage::helper('customer')->__('Product Name'),
             'index'     => 'product_name',
-            'renderer'  => 'adminhtml/customer_edit_tab_view_grid_renderer_item'
+            'renderer'  => 'adminhtml/customer_edit_tab_view_grid_renderer_item',
         ]);
 
         if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn('store', [
                 'header'    => Mage::helper('customer')->__('Added From'),
-                'index'     => 'store_id',
                 'type'      => 'store',
-                'width'     => '160px',
             ]);
         }
 
@@ -106,10 +96,8 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Wishlist extends Mage_Adminhtm
     }
 
     /**
-     * Get row url
-     *
+     * @inheritDoc
      * @param Mage_Wishlist_Model_Item $row
-     * @return string
      */
     public function getRowUrl($row)
     {

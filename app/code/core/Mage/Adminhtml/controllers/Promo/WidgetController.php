@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Promo_WidgetController extends Mage_Adminhtml_Controller_Action
 {
@@ -41,7 +33,7 @@ class Mage_Adminhtml_Promo_WidgetController extends Mage_Adminhtml_Controller_Ac
                     'adminhtml/promo_widget_chooser_sku',
                     'promo_widget_chooser_sku',
                     ['js_form_object' => $request->getParam('form'),
-                    ]
+                    ],
                 );
                 break;
 
@@ -63,7 +55,7 @@ class Mage_Adminhtml_Promo_WidgetController extends Mage_Adminhtml_Controller_Ac
                 $block = $this->getLayout()->createBlock(
                     'adminhtml/catalog_category_checkboxes_tree',
                     'promo_widget_chooser_category_ids',
-                    ['js_form_object' => $request->getParam('form')]
+                    ['js_form_object' => $request->getParam('form')],
                 )
                     ->setCategoryIds($ids)
                 ;
@@ -90,9 +82,10 @@ class Mage_Adminhtml_Promo_WidgetController extends Mage_Adminhtml_Controller_Ac
             if (!$category = $this->_initCategory()) {
                 return;
             }
+
             $this->getResponse()->setBody(
                 $this->getLayout()->createBlock('adminhtml/catalog_category_tree')
-                    ->getTreeJson($category)
+                    ->getTreeJson($category),
             );
         }
     }
@@ -100,7 +93,7 @@ class Mage_Adminhtml_Promo_WidgetController extends Mage_Adminhtml_Controller_Ac
     /**
      * Initialize category object in registry
      *
-     * @return Mage_Catalog_Model_Category|false
+     * @return false|Mage_Catalog_Model_Category
      */
     protected function _initCategory()
     {

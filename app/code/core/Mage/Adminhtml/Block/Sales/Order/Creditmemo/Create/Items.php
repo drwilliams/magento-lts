@@ -1,28 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml creditmemo items grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Adminhtml_Block_Sales_Items_Abstract
 {
     protected $_canReturnToStock;
+
     /**
      * Prepare child blocks
      *
@@ -34,10 +27,10 @@ class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Admi
         $this->setChild(
             'update_button',
             $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
-                'label'     => Mage::helper('sales')->__('Update Qty\'s'),
+                'label'     => Mage::helper('sales')->__("Update Qty's"),
                 'class'     => 'update-button',
                 'onclick'   => $onclick,
-            ])
+            ]),
         );
 
         if ($this->getCreditmemo()->canRefund()) {
@@ -47,17 +40,18 @@ class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Admi
                     $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
                         'label'     => Mage::helper('sales')->__('Refund'),
                         'class'     => 'save submit-button',
-                        'onclick'   => 'disableElements(\'submit-button\');submitCreditMemo()',
-                    ])
+                        'onclick'   => "disableElements('submit-button');submitCreditMemo()",
+                    ]),
                 );
             }
+
             $this->setChild(
                 'submit_offline',
                 $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
                     'label'     => Mage::helper('sales')->__('Refund Offline'),
                     'class'     => 'save submit-button',
-                    'onclick'   => 'disableElements(\'submit-button\');submitCreditMemoOffline()',
-                ])
+                    'onclick'   => "disableElements('submit-button');submitCreditMemoOffline()",
+                ]),
             );
         } else {
             $this->setChild(
@@ -65,8 +59,8 @@ class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Admi
                 $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
                     'label'     => Mage::helper('sales')->__('Refund Offline'),
                     'class'     => 'save submit-button',
-                    'onclick'   => 'disableElements(\'submit-button\');submitCreditMemoOffline()',
-                ])
+                    'onclick'   => "disableElements('submit-button');submitCreditMemoOffline()",
+                ]),
             );
         }
 
@@ -136,6 +130,7 @@ class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Admi
         if ($this->getCreditmemo()->getOrder()->getPayment()->canRefund()) {
             return $this->getCreditmemo()->getOrder()->getPayment()->canRefundPartialPerInvoice();
         }
+
         return true;
     }
 
@@ -147,8 +142,8 @@ class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Admi
     public function getUpdateUrl()
     {
         return $this->getUrl('*/*/updateQty', [
-                'order_id' => $this->getCreditmemo()->getOrderId(),
-                'invoice_id' => $this->getRequest()->getParam('invoice_id', null),
+            'order_id' => $this->getCreditmemo()->getOrderId(),
+            'invoice_id' => $this->getRequest()->getParam('invoice_id', null),
         ]);
     }
 
@@ -157,9 +152,9 @@ class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Admi
         $canReturnToStock = Mage::getStoreConfig(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_CAN_SUBTRACT);
         if (Mage::getStoreConfig(Mage_CatalogInventory_Model_Stock_Item::XML_PATH_CAN_SUBTRACT)) {
             return true;
-        } else {
-            return false;
         }
+
+        return false;
     }
 
     /**
@@ -179,9 +174,11 @@ class Mage_Adminhtml_Block_Sales_Order_Creditmemo_Create_Items extends Mage_Admi
                         $item->setCanReturnToStock(false);
                     }
                 }
+
                 $this->getCreditmemo()->getOrder()->setCanReturnToStock($this->_canReturnToStock = $canReturnToStock);
             }
         }
+
         return $this->_canReturnToStock;
     }
 

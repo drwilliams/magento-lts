@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Centinel
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2021-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -21,16 +15,14 @@ include_once '3Dsecure/CentinelClient.php';
 /**
  * 3D Secure Validation Api
  *
- * @category   Mage
  * @package    Mage_Centinel
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Centinel_Model_Api_Client extends CentinelClient
 {
     public function sendHttp($url, $connectTimeout, $timeout)
     {
         // verify that the URL uses a supported protocol.
-        if ((strpos($url, "http://") === 0) || (strpos($url, "https://") === 0)) {
+        if ((str_starts_with($url, 'http://')) || (str_starts_with($url, 'https://'))) {
             //Construct the payload to POST to the url.
             $data = $this->getRequestXml();
 
@@ -38,11 +30,11 @@ class Mage_Centinel_Model_Api_Client extends CentinelClient
             $ch = curl_init($url);
 
             // set URL and other appropriate options
-            curl_setopt($ch, CURLOPT_POST, 1);
+            curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
             curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 1);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, true);
             curl_setopt($ch, CURLOPT_TIMEOUT, $timeout);
 
             // Execute the request.
@@ -57,15 +49,17 @@ class Mage_Centinel_Model_Api_Client extends CentinelClient
                 $result = $this->setErrorResponse(CENTINEL_ERROR_CODE_8030, CENTINEL_ERROR_CODE_8030_DESC);
             }
 
-            // Assert that we received an expected Centinel Message in reponse.
-            if (strpos($result, "<CardinalMPI>") === false) {
+            // Assert that we received an expected Centinel Message in response.
+            if (!str_contains($result, '<CardinalMPI>')) {
                 $result = $this->setErrorResponse(CENTINEL_ERROR_CODE_8010, CENTINEL_ERROR_CODE_8010_DESC);
             }
         } else {
             $result = $this->setErrorResponse(CENTINEL_ERROR_CODE_8000, CENTINEL_ERROR_CODE_8000_DESC);
         }
+
         $parser = new XMLParser();
         $parser->deserializeXml($result);
+
         $this->response = $parser->deserializedResponse;
     }
 }

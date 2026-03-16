@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml sales order create block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Sales_Order_Create_Customer extends Mage_Adminhtml_Block_Sales_Order_Create_Abstract
 {
@@ -41,11 +33,21 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Customer extends Mage_Adminhtml_Bl
      */
     public function getButtonsHtml()
     {
+        $html = '';
+
         $addButtonData = [
             'label'     => Mage::helper('sales')->__('Create New Customer'),
             'onclick'   => 'order.setCustomerId(false)',
             'class'     => 'add',
         ];
-        return $this->getLayout()->createBlock('adminhtml/widget_button')->setData($addButtonData)->toHtml();
+        $html .= $this->getLayout()->createBlock('adminhtml/widget_button')->setData($addButtonData)->toHtml();
+
+        $addButtonData = [
+            'label'     => Mage::helper('sales')->__('Create Guest Order'),
+            'onclick'   => 'order.setCustomerIsGuest()',
+            'class'     => 'add',
+        ];
+
+        return $html . $this->getLayout()->createBlock('adminhtml/widget_button')->setData($addButtonData)->toHtml();
     }
 }

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml customer tax class controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Tax_Class_CustomerController extends Mage_Adminhtml_Controller_Action
 {
@@ -41,7 +33,7 @@ class Mage_Adminhtml_Tax_Class_CustomerController extends Mage_Adminhtml_Control
             ->_addContent(
                 $this->getLayout()
                     ->createBlock('adminhtml/tax_class')
-                    ->setClassType(Mage_Tax_Model_Class::TAX_CLASS_TYPE_CUSTOMER)
+                    ->setClassType(Mage_Tax_Model_Class::TAX_CLASS_TYPE_CUSTOMER),
             )
             ->renderLayout();
     }
@@ -86,20 +78,19 @@ class Mage_Adminhtml_Tax_Class_CustomerController extends Mage_Adminhtml_Control
         $this->_initAction()
             ->_addBreadcrumb(
                 $classId ? Mage::helper('tax')->__('Edit Class') : Mage::helper('tax')->__('New Class'),
-                $classId ? Mage::helper('tax')->__('Edit Class') : Mage::helper('tax')->__('New Class')
+                $classId ? Mage::helper('tax')->__('Edit Class') : Mage::helper('tax')->__('New Class'),
             )
             ->_addContent(
                 $this->getLayout()
                     ->createBlock('adminhtml/tax_class_edit')
                     ->setData('action', $this->getUrl('*/tax_class/save'))
-                    ->setClassType(Mage_Tax_Model_Class::TAX_CLASS_TYPE_CUSTOMER)
+                    ->setClassType(Mage_Tax_Model_Class::TAX_CLASS_TYPE_CUSTOMER),
             )
             ->renderLayout();
     }
 
     /**
      * delete class action
-     *
      */
     public function deleteAction()
     {
@@ -139,7 +130,7 @@ class Mage_Adminhtml_Tax_Class_CustomerController extends Mage_Adminhtml_Control
             $classModel->delete();
 
             $session->addSuccess(Mage::helper('tax')->__('The tax class has been deleted.'));
-            $this->getResponse()->setRedirect($this->getUrl("*/*/"));
+            $this->getResponse()->setRedirect($this->getUrl('*/*/'));
             return ;
         } catch (Mage_Core_Exception $e) {
             $session->addError($e->getMessage());
@@ -158,7 +149,7 @@ class Mage_Adminhtml_Tax_Class_CustomerController extends Mage_Adminhtml_Control
     protected function _initAction()
     {
         $this->loadLayout()
-            ->_setActiveMenu('sales/tax/tax_class_customer')
+            ->_setActiveMenu('sales/tax/classes_customer')
             ->_addBreadcrumb(Mage::helper('tax')->__('Sales'), Mage::helper('tax')->__('Sales'))
             ->_addBreadcrumb(Mage::helper('tax')->__('Tax'), Mage::helper('tax')->__('Tax'))
             ->_addBreadcrumb(Mage::helper('tax')->__('Manage Customer Tax Classes'), Mage::helper('tax')->__('Manage Customer Tax Classes'))

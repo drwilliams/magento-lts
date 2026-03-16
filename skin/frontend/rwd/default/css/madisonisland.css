@@ -1,14 +1,9 @@
 /**
- * OpenMage
- *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE_AFL.txt.
- * It is also available at https://opensource.org/license/afl-3-0-php
- *
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Academic Free License (AFL 3.0)
  * @category    design
  * @package     rwd_default
- * @copyright   Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @license     https://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 /* ============================================ *
  * Homepage
@@ -109,7 +104,6 @@ body .promos > li {
 }
 
 .promos a:hover {
-  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=80);
   opacity: 0.8;
   display: block;
 }
@@ -177,7 +171,7 @@ body .promos > li {
 .cms-index-index h2.subtitle {
   padding: 6px 0;
   text-align: center;
-  color: #3399cc;
+  color: #0472ad;
   font-weight: 600;
   border-bottom: 1px solid #cccccc;
   border-top: 1px solid #cccccc;
@@ -216,7 +210,7 @@ body .promos > li {
 }
 
 .catblocks li:hover {
-  border-color: #3399cc;
+  border-color: #0472ad;
 }
 
 @media only screen and (max-width: 770px) {
@@ -285,7 +279,7 @@ body .promos > li {
 }
 
 .catalog-category-view div.categoryland-caption span.blue-big-text {
-  color: #3399CC;
+  color: #0472ad;
   font-size: 50px;
   font-weight: 800;
   padding: 0 0 0 8px;
@@ -314,7 +308,7 @@ body .promos > li {
 
 .cms-home #homepage-main-slides div.slides_control div div.slideshow-caption span.blue-big-text,
 .catalog-category-view div.categoryland-caption span.blue-big-text {
-  color: #3399CC;
+  color: #0472ad;
   font-size: 50px;
   font-weight: 800;
   padding: 0 0 0 8px;

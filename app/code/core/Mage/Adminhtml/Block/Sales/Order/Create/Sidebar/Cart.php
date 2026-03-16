@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml sales order create sidebar cart block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Cart extends Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract
 {
@@ -29,6 +21,9 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Cart extends Mage_Adminhtm
      */
     protected $_sidebarStorageAction = 'add_cart_item';
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         parent::_construct();
@@ -56,6 +51,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Cart extends Mage_Adminhtm
             $collection = $this->getCreateOrderModel()->getCustomerCart()->getAllVisibleItems();
             $this->setData('item_collection', $collection);
         }
+
         return $collection;
     }
 
@@ -70,7 +66,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Cart extends Mage_Adminhtm
     /**
      * Retrieve identifier of block item
      *
-     * @param Varien_Object $item
+     * @param  Varien_Object $item
      * @return int
      */
     public function getIdentifierId($item)
@@ -81,8 +77,8 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Cart extends Mage_Adminhtm
     /**
      * Retrieve product identifier linked with item
      *
-     * @param   Mage_Sales_Model_Quote_Item $item
-     * @return  int
+     * @param  Mage_Sales_Model_Quote_Item $item
+     * @return int
      */
     public function getProductId($item)
     {
@@ -95,12 +91,12 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Cart extends Mage_Adminhtm
     protected function _prepareLayout()
     {
         $deleteAllConfirmString = Mage::helper('core')->jsQuoteEscape(
-            Mage::helper('sales')->__('Are you sure you want to delete all items from shopping cart?')
+            Mage::helper('sales')->__('Are you sure you want to delete all items from shopping cart?'),
         );
         $button = $this->getLayout()->createBlock('adminhtml/widget_button')->setData([
             'label' => Mage::helper('sales')->__('Clear Shopping Cart'),
-            'onclick' => 'order.clearShoppingCart(\'' . $deleteAllConfirmString . '\')',
-            'style' => 'float: right;'
+            'onclick' => "order.clearShoppingCart('" . $deleteAllConfirmString . "')",
+            'style' => 'float: right;',
         ]);
         $this->setChild('empty_customer_cart_button', $button);
 

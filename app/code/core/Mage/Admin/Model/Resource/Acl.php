@@ -1,32 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Admin
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Resource model for admin ACL
  *
- * @category   Mage
  * @package    Mage_Admin
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
 {
     public const ACL_ALL_RULES = 'all';
 
     /**
-     * Initialize resource
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -37,6 +28,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
      * Load ACL for the user
      *
      * @return Mage_Admin_Model_Acl
+     * @throws Zend_Acl_Exception
      */
     public function loadAcl()
     {
@@ -63,7 +55,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
             ->joinLeft(
                 ['a' => $assertTable],
                 'a.assert_id = r.assert_id',
-                ['assert_type', 'assert_data']
+                ['assert_type', 'assert_data'],
             );
 
         $rulesArr = $adapter->fetchAll($select);
@@ -76,9 +68,8 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
     /**
      * Load roles
      *
-     * @param Mage_Admin_Model_Acl $acl
-     * @param array $rolesArr
      * @return $this
+     * @throws Zend_Acl_Exception
      */
     public function loadRoles(Mage_Admin_Model_Acl $acl, array $rolesArr)
     {
@@ -97,6 +88,7 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
                     } else {
                         $acl->addRoleParent($roleId, $parent);
                     }
+
                     break;
             }
         }
@@ -107,35 +99,53 @@ class Mage_Admin_Model_Resource_Acl extends Mage_Core_Model_Resource_Db_Abstract
     /**
      * Load rules
      *
-     * @param Mage_Admin_Model_Acl $acl
-     * @param array $rulesArr
      * @return $this
      */
     public function loadRules(Mage_Admin_Model_Acl $acl, array $rulesArr)
     {
+        $orphanedResources = [];
         foreach ($rulesArr as $rule) {
             $role = $rule['role_type'] . $rule['role_id'];
             $resource = $rule['resource_id'];
-            $privileges = !empty($rule['privileges']) ? explode(',', $rule['privileges']) : null;
+            $privileges = empty($rule['privileges']) ? null : explode(',', $rule['privileges']);
 
             $assert = null;
             if ($rule['assert_id'] != 0) {
                 $assertClass = Mage::getSingleton('admin/config')->getAclAssert($rule['assert_type'])->getClassName();
                 $assert = new $assertClass(unserialize($rule['assert_data'], ['allowed_classes' => false]));
             }
+
             try {
                 if ($rule['permission'] == 'allow') {
                     if ($resource === self::ACL_ALL_RULES) {
                         $acl->allow($role, null, $privileges, $assert);
                     }
+
                     $acl->allow($role, $resource, $privileges, $assert);
                 } elseif ($rule['permission'] == 'deny') {
                     $acl->deny($role, $resource, $privileges, $assert);
                 }
-            } catch (Exception $e) {
-                Mage::logException($e);
+            } catch (Zend_Acl_Exception $zendAclException) {
+                if (!in_array($resource, $orphanedResources) && str_contains($zendAclException->getMessage(), "Resource '$resource' not found")) {
+                    $orphanedResources[] = $resource;
+                }
+            } catch (Exception $exception) {
+                if (Mage::getIsDeveloperMode()) {
+                    Mage::logException($exception);
+                }
             }
         }
+
+        if ($orphanedResources !== [] && $acl->isAllowed(Mage::getSingleton('admin/session')->getUser()->getAclRole(), 'admin/system/acl/orphaned_resources')) {
+            Mage::getSingleton('adminhtml/session')->addNotice(
+                Mage::helper('adminhtml')->__(
+                    'The following role resources are no longer available in the system: %s. You can delete them by <a href="%s">clicking here</a>.',
+                    implode(', ', $orphanedResources),
+                    Mage::helper('adminhtml')->getUrl('adminhtml/permissions_orphanedResource'),
+                ),
+            );
+        }
+
         return $this;
     }
 }

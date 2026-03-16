@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog product tier price backend attribute model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice extends Mage_Catalog_Model_Resource_Product_Attribute_Backend_Groupprice_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('catalog/product_attribute_tier_price', 'value_id');
@@ -30,7 +25,7 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice extends Ma
     /**
      * Add qty column
      *
-     * @param array $columns
+     * @param  array $columns
      * @return array
      */
     protected function _loadPriceDataColumns($columns)
@@ -43,7 +38,7 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice extends Ma
     /**
      * Order by qty
      *
-     * @param Varien_Db_Select $select
+     * @param  Varien_Db_Select $select
      * @return Varien_Db_Select
      */
     protected function _loadPriceDataSelect($select)
@@ -55,11 +50,10 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice extends Ma
     /**
      * Load product tier prices
      *
-     * @deprecated since 1.3.2.3
-     *
-     * @param Mage_Catalog_Model_Product $product
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     * @param  Mage_Catalog_Model_Product                $product
+     * @param  Mage_Catalog_Model_Resource_Eav_Attribute $attribute
      * @return array
+     * @deprecated since 1.3.2.3
      */
     public function loadProductPrices($product, $attribute)
     {
@@ -76,11 +70,10 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice extends Ma
     /**
      * Delete product tier price data from storage
      *
-     * @deprecated since 1.3.2.3
-     *
-     * @param Mage_Catalog_Model_Product $product
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     * @param  Mage_Catalog_Model_Product                $product
+     * @param  Mage_Catalog_Model_Resource_Eav_Attribute $attribute
      * @return $this
+     * @deprecated since 1.3.2.3
      */
     public function deleteProductPrices($product, $attribute)
     {
@@ -100,11 +93,10 @@ class Mage_Catalog_Model_Resource_Product_Attribute_Backend_Tierprice extends Ma
     /**
      * Insert product Tier Price to storage
      *
-     * @deprecated since 1.3.2.3
-     *
-     * @param Mage_Catalog_Model_Product $product
-     * @param array $data
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  array                      $data
      * @return $this
+     * @deprecated since 1.3.2.3
      */
     public function insertProductPrice($product, $data)
     {

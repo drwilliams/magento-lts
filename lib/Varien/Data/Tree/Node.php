@@ -1,33 +1,25 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Data
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Data tree node
  *
- * @method int getLevel()
  * @method string getClass()
- * @method string getPositionClass()
+ * @method bool   getIsFirst()
+ * @method bool   getIsLast()
+ * @method int    getLevel()
  * @method string getOutermostClass()
- * @method $this setOutermostClass(string $class)
- * @method $this setChildrenWrapClass(string $class)
- * @method bool getIsFirst()
- * @method bool getIsLast()
+ * @method string getPositionClass()
+ * @method $this  setChildrenWrapClass(string $class)
+ * @method $this  setOutermostClass(string $class)
  *
- * @category   Varien
  * @package    Varien_Data
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Varien_Data_Tree_Node extends Varien_Object
 {
@@ -62,9 +54,9 @@ class Varien_Data_Tree_Node extends Varien_Object
     /**
      * Data tree node constructor
      *
-     * @param array $data
-     * @param string $idFeild
-     * @param Varien_Data_Tree $tree
+     * @param array                 $data
+     * @param string                $idFeild
+     * @param Varien_Data_Tree      $tree
      * @param Varien_Data_Tree_Node $parent
      */
     public function __construct($data, $idFeild, $tree, $parent = null)
@@ -89,8 +81,8 @@ class Varien_Data_Tree_Node extends Varien_Object
     /**
      * Set node id field name
      *
-     * @param   string $idField
-     * @return  $this
+     * @param  string $idField
+     * @return $this
      */
     public function setIdField($idField)
     {
@@ -111,8 +103,7 @@ class Varien_Data_Tree_Node extends Varien_Object
     /**
      * Set node tree object
      *
-     * @param   Varien_Data_Tree $tree
-     * @return  $this
+     * @return $this
      */
     public function setTree(Varien_Data_Tree $tree)
     {
@@ -133,8 +124,8 @@ class Varien_Data_Tree_Node extends Varien_Object
     /**
      * Set node parent
      *
-     * @param   Varien_Data_Tree_Node $parent
-     * @return  Varien_Data_Tree_Node
+     * @param  Varien_Data_Tree_Node $parent
+     * @return Varien_Data_Tree_Node
      */
     public function setParent($parent)
     {
@@ -163,7 +154,7 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param int $level
+     * @param  int   $level
      * @return $this
      */
     public function setLevel($level)
@@ -173,7 +164,7 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param int $path
+     * @param  int   $path
      * @return $this
      */
     public function setPathId($path)
@@ -186,15 +177,13 @@ class Varien_Data_Tree_Node extends Varien_Object
      * @param Varien_Data_Tree_Node $node
      * @todo LTS implement
      */
-    public function isChildOf($node)
-    {
-    }
+    public function isChildOf($node) {}
 
     /**
      * Load node children
      *
-     * @param   int  $recursionLevel
-     * @return  Varien_Data_Tree_Node
+     * @param  int                   $recursionLevel
+     * @return Varien_Data_Tree_Node
      */
     public function loadChildren($recursionLevel = 0)
     {
@@ -213,7 +202,7 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param array $nodes
+     * @param  array                   $nodes
      * @return Varien_Data_Tree_Node[]
      */
     public function getAllChildNodes(&$nodes = [])
@@ -222,6 +211,7 @@ class Varien_Data_Tree_Node extends Varien_Object
             $nodes[$node->getId()] = $node;
             $node->getAllChildNodes($nodes);
         }
+
         return $nodes;
     }
 
@@ -236,8 +226,8 @@ class Varien_Data_Tree_Node extends Varien_Object
     /**
      * Add child node
      *
-     * @param   Varien_Data_Tree_Node $node
-     * @return  Varien_Data_Tree_Node
+     * @param  Varien_Data_Tree_Node $node
+     * @return Varien_Data_Tree_Node
      */
     public function addChild($node)
     {
@@ -246,7 +236,7 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param Varien_Data_Tree_Node|null $prevNode
+     * @param  null|Varien_Data_Tree_Node $prevNode
      * @return $this
      */
     public function appendChild($prevNode = null)
@@ -256,8 +246,8 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param Varien_Data_Tree_Node $parentNode
-     * @param Varien_Data_Tree_Node|null $prevNode
+     * @param  Varien_Data_Tree_Node      $parentNode
+     * @param  null|Varien_Data_Tree_Node $prevNode
      * @return $this
      */
     public function moveTo($parentNode, $prevNode = null)
@@ -267,8 +257,8 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param Varien_Data_Tree_Node $parentNode
-     * @param Varien_Data_Tree_Node|null $prevNode
+     * @param  Varien_Data_Tree_Node      $parentNode
+     * @param  null|Varien_Data_Tree_Node $prevNode
      * @return $this
      */
     public function copyTo($parentNode, $prevNode = null)
@@ -278,7 +268,7 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param Varien_Data_Tree_Node $childNode
+     * @param  Varien_Data_Tree_Node $childNode
      * @return $this
      */
     public function removeChild($childNode)
@@ -288,7 +278,7 @@ class Varien_Data_Tree_Node extends Varien_Object
     }
 
     /**
-     * @param array $prevNodes
+     * @param  array $prevNodes
      * @return array
      */
     public function getPath(&$prevNodes = [])
@@ -297,6 +287,7 @@ class Varien_Data_Tree_Node extends Varien_Object
             $prevNodes[] = $this;
             $this->_parent->getPath($prevNodes);
         }
+
         return $prevNodes;
     }
 

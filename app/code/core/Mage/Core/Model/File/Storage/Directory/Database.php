@@ -1,32 +1,25 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Directory database storage model class
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Core_Model_Resource_File_Storage_Directory_Database _getResource()
- * @method string getConnectionName()
- * @method $this setName(string $value)
- * @method string getPath()
- * @method $this setPath(string $value)
- * @method $this setParentId(string $value)
- * @method $this setUploadTime(string $value)
+ * @method string                                                   getConnectionName()
+ * @method string                                                   getPath()
+ * @method Mage_Core_Model_Resource_File_Storage_Directory_Database getResource()
+ * @method $this                                                    setName(string $value)
+ * @method $this                                                    setParentId(string $value)
+ * @method $this                                                    setPath(string $value)
+ * @method $this                                                    setUploadTime(string $value)
  */
 class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_File_Storage_Database_Abstract
 {
@@ -74,8 +67,8 @@ class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_Fi
                 'name'          => null,
                 'path'          => null,
                 'upload_time'   => null,
-                'parent_id'     => null
-            ]
+                'parent_id'     => null,
+            ],
         );
 
         $this->_getResource()->loadByPath($this, $path);
@@ -95,10 +88,11 @@ class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_Fi
     /**
      * Retrieve directory parent id
      *
-     * @return int
+     * @return null|string
      */
     public function getParentId()
     {
+        $parentId = null;
         if (!$this->getData('parent_id')) {
             $parentId = $this->_getResource()->getParentId($this->getPath());
             if (empty($parentId)) {
@@ -114,7 +108,7 @@ class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_Fi
     /**
      * Create directories recursively
      *
-     * @param  string $path
+     * @param  string                                          $path
      * @return Mage_Core_Model_File_Storage_Directory_Database
      */
     public function createRecursive($path)
@@ -145,14 +139,14 @@ class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_Fi
     /**
      * Export directories from storage
      *
-     * @param  int $offset
-     * @param  int $count
+     * @param  int  $offset
+     * @param  int  $count
      * @return bool
      */
     public function exportDirectories($offset = 0, $count = 100)
     {
-        $offset = ((int) $offset >= 0) ? (int) $offset : 0;
-        $count  = ((int) $count >= 1) ? (int) $count : 1;
+        $offset = max((int) $offset, 0);
+        $count  = max((int) $count, 1);
 
         $result = $this->_getResource()->exportDirectories($offset, $count);
 
@@ -184,7 +178,7 @@ class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_Fi
             try {
                 $directory = Mage::getModel(
                     'core/file_storage_directory_database',
-                    ['connection' => $this->getConnectionName()]
+                    ['connection' => $this->getConnectionName()],
                 );
                 $directory->setPath($dir['path']);
 
@@ -218,7 +212,7 @@ class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_Fi
     /**
      * Return subdirectories
      *
-     * @param string $directory
+     * @param  string $directory
      * @return mixed
      */
     public function getSubdirectories($directory)
@@ -231,7 +225,7 @@ class Mage_Core_Model_File_Storage_Directory_Database extends Mage_Core_Model_Fi
     /**
      * Delete directory from database
      *
-     * @param string $dirPath
+     * @param  string $dirPath
      * @return $this
      */
     public function deleteDirectory($dirPath)

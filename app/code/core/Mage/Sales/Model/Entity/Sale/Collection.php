@@ -1,29 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements IteratorAggregate
 {
     /**
      * Read connection
      *
-     * @var Zend_Db_Adapter_Abstract
+     * @var false|Varien_Db_Adapter_Interface
      */
     protected $_read;
 
@@ -57,7 +49,6 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
     }
 
     /**
-     * @param Mage_Customer_Model_Customer $customer
      * @return $this
      */
     public function setCustomerFilter(Mage_Customer_Model_Customer $customer)
@@ -67,8 +58,8 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
     }
 
     /**
-     * @param bool $printQuery
-     * @param bool $logQuery
+     * @param  bool                $printQuery
+     * @param  bool                $logQuery
      * @return $this
      * @throws Mage_Core_Exception
      */
@@ -85,8 +76,8 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
                     'store_id',
                     'lifetime'  => 'sum(sales.base_grand_total)',
                     'avgsale'   => 'avg(sales.base_grand_total)',
-                    'num_orders' => 'count(sales.base_grand_total)'
-                ]
+                    'num_orders' => 'count(sales.base_grand_total)',
+                ],
             )
             ->where('sales.entity_type_id=?', $this->getEntity()->getTypeId())
             ->group('sales.store_id')
@@ -99,10 +90,11 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
         $this->printLogQuery($printQuery, $logQuery);
         try {
             $values = $this->_read->fetchAll($this->getSelect()->__toString());
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $this->printLogQuery(true, true, $this->getSelect()->__toString());
-            throw $e;
+            throw $exception;
         }
+
         $stores = Mage::getResourceModel('core/store_collection')->setWithoutDefaultFilter()->load()->toOptionHash();
         if (!empty($values)) {
             foreach ($values as $v) {
@@ -116,6 +108,7 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
                     $this->_totals[$key] += $obj->getData($key);
                 }
             }
+
             if ($this->_totals['num_orders']) {
                 $this->_totals['avgsale'] = $this->_totals['lifetime'] / $this->_totals['num_orders'];
             }
@@ -127,9 +120,9 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
     /**
      * Print and/or log query
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
-     * @param null|string $sql
+     * @param  bool                                    $printQuery
+     * @param  bool                                    $logQuery
+     * @param  null|string                             $sql
      * @return Mage_Sales_Model_Entity_Sale_Collection
      */
     public function printLogQuery($printQuery = false, $logQuery = false, $sql = null)
@@ -141,6 +134,7 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
         if ($logQuery) {
             Mage::log(is_null($sql) ? $this->getSelect()->__toString() : $sql);
         }
+
         return $this;
     }
 
@@ -155,7 +149,7 @@ class Mage_Sales_Model_Entity_Sale_Collection extends Varien_Object implements I
     }
 
     /**
-     * @param string $attr
+     * @param  string                                   $attr
      * @return Mage_Eav_Model_Entity_Attribute_Abstract
      */
     public function getAttribute($attr)

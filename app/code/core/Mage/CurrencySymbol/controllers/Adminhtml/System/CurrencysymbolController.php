@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CurrencySymbol
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml Currency Symbols Controller
  *
- * @category   Mage
  * @package    Mage_CurrencySymbol
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_CurrencySymbol_Adminhtml_System_CurrencysymbolController extends Mage_Adminhtml_Controller_Action
 {
@@ -35,14 +27,14 @@ class Mage_CurrencySymbol_Adminhtml_System_CurrencysymbolController extends Mage
     {
         // set active menu and breadcrumbs
         $this->loadLayout()
-            ->_setActiveMenu('system/currency')
+            ->_setActiveMenu('system/currency/symbols')
             ->_addBreadcrumb(
                 Mage::helper('currencysymbol')->__('System'),
-                Mage::helper('currencysymbol')->__('System')
+                Mage::helper('currencysymbol')->__('System'),
             )
             ->_addBreadcrumb(
                 Mage::helper('currencysymbol')->__('Manage Currency Rates'),
-                Mage::helper('currencysymbol')->__('Manage Currency Rates')
+                Mage::helper('currencysymbol')->__('Manage Currency Rates'),
             );
 
         $this->_title($this->__('System'))
@@ -65,10 +57,10 @@ class Mage_CurrencySymbol_Adminhtml_System_CurrencysymbolController extends Mage
         try {
             Mage::getModel('currencysymbol/system_currencysymbol')->setCurrencySymbolsData($symbolsDataArray);
             Mage::getSingleton('adminhtml/session')->addSuccess(
-                Mage::helper('currencysymbol')->__('Custom currency symbols were applied successfully.')
+                Mage::helper('currencysymbol')->__('Custom currency symbols were applied successfully.'),
             );
-        } catch (Exception $e) {
-            Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+        } catch (Exception $exception) {
+            Mage::getSingleton('adminhtml/session')->addError($exception->getMessage());
         }
 
         $this->_redirectReferer();

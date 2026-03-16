@@ -1,23 +1,16 @@
 <?xml version="1.0"?>
 <!--
 /**
- * OpenMage
- *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE_AFL.txt.
- * It is also available at https://opensource.org/license/afl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Academic Free License (AFL 3.0)
  * @package    Mage_Tax
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2016-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/afl-3.0.php Academic Free License (AFL 3.0)
  */
 -->
 <config>
     <modules>
         <Mage_Tax>
-            <version>1.6.0.4</version>
+            <version>1.6.0.5</version>
         </Mage_Tax>
     </modules>
     <global>
@@ -291,12 +284,17 @@
                 <url>https://web.archive.org/web/20150315064836/https://www.magentocommerce.com/knowledge-base/entry/magento-ce-18-ee-113-tax-calc</url>
             </notification>
         </tax>
+        <reports>
+            <crontab>
+                <tax_expr>0 0 * * *</tax_expr>
+            </crontab>
+        </reports>
     </default>
     <crontab>
         <jobs>
             <aggregate_sales_report_tax_data>
                 <schedule>
-                    <cron_expr>0 0 * * *</cron_expr>
+                    <config_path>reports/crontab/tax_expr</config_path>
                 </schedule>
                 <run>
                     <model>tax/observer::aggregateSalesReportTaxData</model>

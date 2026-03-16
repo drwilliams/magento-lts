@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product reports admin controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Report_ProductController extends Mage_Adminhtml_Controller_Report_Abstract
 {
@@ -74,7 +66,7 @@ class Mage_Adminhtml_Report_ProductController extends Mage_Adminhtml_Controller_
              ->_title($this->__('Products Ordered'));
 
         $this->_initAction()
-            ->_setActiveMenu('report/product/sold')
+            ->_setActiveMenu('report/products/sold')
             ->_addBreadcrumb(Mage::helper('reports')->__('Products Ordered'), Mage::helper('reports')->__('Products Ordered'))
             ->_addContent($this->getLayout()->createBlock('adminhtml/report_product_sold'))
             ->renderLayout();
@@ -124,7 +116,7 @@ class Mage_Adminhtml_Report_ProductController extends Mage_Adminhtml_Controller_
 
         $this->_initReportAction([
             $gridBlock,
-            $filterFormBlock
+            $filterFormBlock,
         ]);
 
         $this->renderLayout();
@@ -162,7 +154,7 @@ class Mage_Adminhtml_Report_ProductController extends Mage_Adminhtml_Controller_
              ->_title($this->__('Low Stock'));
 
         $this->_initAction()
-            ->_setActiveMenu('report/product/lowstock')
+            ->_setActiveMenu('report/products/lowstock')
             ->_addBreadcrumb(Mage::helper('reports')->__('Low Stock'), Mage::helper('reports')->__('Low Stock'))
             ->_addContent($this->getLayout()->createBlock('adminhtml/report_product_lowstock'))
             ->renderLayout();
@@ -204,7 +196,7 @@ class Mage_Adminhtml_Report_ProductController extends Mage_Adminhtml_Controller_
              ->_title($this->__('Downloads'));
 
         $this->_initAction()
-            ->_setActiveMenu('report/product/downloads')
+            ->_setActiveMenu('report/products/downloads')
             ->_addBreadcrumb(Mage::helper('reports')->__('Downloads'), Mage::helper('reports')->__('Downloads'))
             ->_addContent($this->getLayout()->createBlock('adminhtml/report_product_downloads'))
             ->renderLayout();
@@ -242,15 +234,13 @@ class Mage_Adminhtml_Report_ProductController extends Mage_Adminhtml_Controller_
     protected function _isAllowed()
     {
         $action = strtolower($this->getRequest()->getActionName());
-        switch ($action) {
-            case 'viewed':
-                return Mage::getSingleton('admin/session')->isAllowed('report/products/viewed');
-            case 'sold':
-                return Mage::getSingleton('admin/session')->isAllowed('report/products/sold');
-            case 'lowstock':
-                return Mage::getSingleton('admin/session')->isAllowed('report/products/lowstock');
-            default:
-                return Mage::getSingleton('admin/session')->isAllowed('report/products');
-        }
+        $aclPath = match ($action) {
+            'viewed' => 'report/products/viewed',
+            'sold' => 'report/products/sold',
+            'lowstock' => 'report/products/lowstock',
+            default => 'report/products',
+        };
+
+        return Mage::getSingleton('admin/session')->isAllowed($aclPath);
     }
 }

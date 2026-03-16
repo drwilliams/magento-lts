@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Categories tree block for urlrewrites
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Urlrewrite_Category_Tree extends Mage_Adminhtml_Block_Catalog_Category_Abstract
 {
     /**
      * List of allowed category ids
      *
-     * @var array|null
+     * @var null|array
      */
     protected $_allowedCategoryIds = null;
 
@@ -41,9 +33,9 @@ class Mage_Adminhtml_Block_Urlrewrite_Category_Tree extends Mage_Adminhtml_Block
     /**
      * Get categories tree as recursive array
      *
-     * @param int $parentId
-     * @param bool $asJson
-     * @param int $recursionLevel
+     * @param  int          $parentId
+     * @param  bool         $asJson
+     * @param  int          $recursionLevel
      * @return array|string
      */
     public function getTreeArray($parentId = null, $asJson = false, $recursionLevel = 3)
@@ -104,13 +96,13 @@ class Mage_Adminhtml_Block_Urlrewrite_Category_Tree extends Mage_Adminhtml_Block
     protected function _getNodesArray($node)
     {
         $result = [
-            'id'             => (int)$node->getId(),
-            'parent_id'      => (int)$node->getParentId(),
-            'children_count' => (int)$node->getChildrenCount(),
-            'is_active'      => (bool)$node->getIsActive(),
+            'id'             => (int) $node->getId(),
+            'parent_id'      => (int) $node->getParentId(),
+            'children_count' => (int) $node->getChildrenCount(),
+            'is_active'      => (bool) $node->getIsActive(),
             'name'           => $this->escapeHtml($node->getName()),
-            'level'          => (int)$node->getLevel(),
-            'product_count'  => (int)$node->getProductCount()
+            'level'          => (int) $node->getLevel(),
+            'product_count'  => (int) $node->getProductCount(),
         ];
 
         if (is_array($this->_allowedCategoryIds) && !in_array($result['id'], $this->_allowedCategoryIds)) {
@@ -123,6 +115,7 @@ class Mage_Adminhtml_Block_Urlrewrite_Category_Tree extends Mage_Adminhtml_Block
                 $result['children'][] = $this->_getNodesArray($childNode);
             }
         }
+
         $result['cls']      = ($result['is_active'] ? '' : 'no-') . 'active-category';
         $result['expanded'] = (!empty($result['children']));
 

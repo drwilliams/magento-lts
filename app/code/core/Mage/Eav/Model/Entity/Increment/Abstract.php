@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Eav
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Eav
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method string getLastId()
  * @method string getPrefix()
@@ -30,8 +22,9 @@ abstract class Mage_Eav_Model_Entity_Increment_Abstract extends Varien_Object im
     {
         $padLength = $this->getData('pad_length');
         if (empty($padLength)) {
-            $padLength = 8;
+            return 8;
         }
+
         return $padLength;
     }
 
@@ -42,24 +35,24 @@ abstract class Mage_Eav_Model_Entity_Increment_Abstract extends Varien_Object im
     {
         $padChar = $this->getData('pad_char');
         if (empty($padChar)) {
-            $padChar = '0';
+            return '0';
         }
+
         return $padChar;
     }
 
     /**
-     * @param string|int $id
+     * @param  int|string $id
      * @return string
      */
     public function format($id)
     {
         $result = $this->getPrefix();
-        $result .= str_pad((string)$id, $this->getPadLength(), $this->getPadChar(), STR_PAD_LEFT);
-        return $result;
+        return $result . str_pad((string) $id, $this->getPadLength(), $this->getPadChar(), STR_PAD_LEFT);
     }
 
     /**
-     * @param string $id
+     * @param  string $id
      * @return string
      */
     public function frontendFormat($id)

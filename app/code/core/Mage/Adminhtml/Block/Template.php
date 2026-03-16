@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml abstract block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Template extends Mage_Core_Block_Template
 {
@@ -41,20 +33,14 @@ class Mage_Adminhtml_Block_Template extends Mage_Core_Block_Template
     }
 
     /**
-     * Check whether or not the module output is enabled
-     *
-     * Because many module blocks belong to Adminhtml module,
-     * the feature "Disable module output" doesn't cover Admin area
-     *
-     * @param string $moduleName Full module name
+     * @param  string $moduleName Full module name
      * @return bool
+     * @deprecated
+     * @see Mage_Core_Block_Template::isModuleOutputEnabled()
      */
     public function isOutputEnabled($moduleName = null)
     {
-        if ($moduleName === null) {
-            $moduleName = $this->getModuleName();
-        }
-        return !Mage::getStoreConfigFlag('advanced/modules_disable_output/' . $moduleName);
+        return $this->isModuleOutputEnabled($moduleName);
     }
 
     /**
@@ -71,7 +57,7 @@ class Mage_Adminhtml_Block_Template extends Mage_Core_Block_Template
     /**
      * Deleting script tags from string
      *
-     * @param string $html
+     * @param  string $html
      * @return string
      */
     public function maliciousCodeFilter($html)

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog Product Compare Items Resource Collection
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
@@ -39,12 +31,12 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
     /**
      * Comparable attributes cache
      *
-     * @var array|null
+     * @var null|Mage_Eav_Model_Entity_Attribute_Abstract[]
      */
     protected $_comparableAttributes;
 
     /**
-     * Initialize resources
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -55,12 +47,12 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
     /**
      * Set customer filter to collection
      *
-     * @param int $customerId
+     * @param  int   $customerId
      * @return $this
      */
     public function setCustomerId($customerId)
     {
-        $this->_customerId = (int)$customerId;
+        $this->_customerId = (int) $customerId;
         $this->_addJoinToSelect();
         return $this;
     }
@@ -68,12 +60,12 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
     /**
      * Set visitor filter to collection
      *
-     * @param int $visitorId
+     * @param  int   $visitorId
      * @return $this
      */
     public function setVisitorId($visitorId)
     {
-        $this->_visitorId = (int)$visitorId;
+        $this->_visitorId = (int) $visitorId;
         $this->_addJoinToSelect();
         return $this;
     }
@@ -131,9 +123,9 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
                 'customer_id'   => 'customer_id',
                 'visitor_id'    => 'visitor_id',
                 'item_store_id' => 'store_id',
-                'catalog_compare_item_id' => 'catalog_compare_item_id'
+                'catalog_compare_item_id' => 'catalog_compare_item_id',
             ],
-            $this->getConditionForJoin()
+            $this->getConditionForJoin(),
         );
 
         $this->_productLimitationFilters['store_table']  = 't_compare';
@@ -142,7 +134,7 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
     }
 
     /**
-     * Retrieve comapre products attribute set ids
+     * Retrieve compare products attribute set ids
      *
      * @return array
      */
@@ -161,10 +153,10 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
         }
 
         // prepare website filter
-        $websiteId    = (int)Mage::app()->getStore($this->getStoreId())->getWebsiteId();
+        $websiteId    = (int) Mage::app()->getStore($this->getStoreId())->getWebsiteId();
         $websiteConds = [
             'website.product_id = entity.entity_id',
-            $this->getConnection()->quoteInto('website.website_id = ?', $websiteId)
+            $this->getConnection()->quoteInto('website.website_id = ?', $websiteId),
         ];
 
         // retrieve attribute sets
@@ -172,17 +164,17 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
             ->distinct(true)
             ->from(
                 ['entity' => $this->getEntity()->getEntityTable()],
-                'attribute_set_id'
+                'attribute_set_id',
             )
             ->join(
                 ['website' => $this->getTable('catalog/product_website')],
                 implode(' AND ', $websiteConds),
-                []
+                [],
             )
             ->join(
                 ['compare' => $this->getTable('catalog/compare_item')],
                 implode(' AND ', $compareConds),
-                []
+                [],
             );
         return $this->getConnection()->fetchCol($select);
     }
@@ -190,7 +182,6 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
     /**
      * Retrieve attribute ids by set ids
      *
-     * @param array $setIds
      * @return array
      */
     protected function _getAttributeIdsBySetIds(array $setIds)
@@ -205,7 +196,7 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
     /**
      * Retrieve Merged comparable attributes for compared product items
      *
-     * @return array
+     * @return Mage_Eav_Model_Entity_Attribute_Abstract[]
      */
     public function getComparableAttributes()
     {
@@ -213,38 +204,30 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
             $this->_comparableAttributes = [];
             $setIds = $this->_getAttributeSetIds();
             if ($setIds) {
-                $select = $this->getConnection()->select()
-                    ->from(['main_table' => $this->getTable('eav/attribute')])
-                    ->join(
-                        ['additional_table' => $this->getTable('catalog/eav_attribute')],
-                        'additional_table.attribute_id=main_table.attribute_id'
-                    )
-                    ->joinLeft(
-                        ['al' => $this->getTable('eav/attribute_label')],
-                        'al.attribute_id = main_table.attribute_id AND al.store_id = ' . (int) $this->getStoreId(),
-                        ['store_label' => new Zend_Db_Expr('IFNULL(al.value, main_table.frontend_label)')]
-                    )
-                    ->joinLeft(
-                        ['ai' => $this->getTable('eav/entity_attribute')],
-                        'ai.attribute_id = main_table.attribute_id'
-                    )
-                    ->where('additional_table.is_comparable=?', 1)
-                    ->where('ai.attribute_set_id IN(?)', $setIds)
-                    ->order(['ai.attribute_group_id ASC', 'ai.sort_order ASC']);
-                $attributesData = $this->getConnection()->fetchAll($select);
-                if ($attributesData) {
-                    $entityType = Mage_Catalog_Model_Product::ENTITY;
-                    Mage::getSingleton('eav/config')
-                        ->importAttributesData($entityType, $attributesData);
-                    foreach ($attributesData as $data) {
-                        $attribute = Mage::getSingleton('eav/config')
-                            ->getAttribute($entityType, $data['attribute_code']);
+                $eavConfig = Mage::getSingleton('eav/config');
+                $attributeIds = $eavConfig->getAttributeSetAttributeIds($setIds);
+                $this->_comparableAttributes = [];
+                $attributeSortInfo = [];
+                foreach ($attributeIds as $attributeId) {
+                    $attribute = $eavConfig->getAttribute(Mage_Catalog_Model_Product::ENTITY, $attributeId);
+                    if ($attribute->getData('is_comparable')) {
                         $this->_comparableAttributes[$attribute->getAttributeCode()] = $attribute;
+                        $attributeSortInfo[$attribute->getAttributeCode()] = $eavConfig->getAttributeSetGroupInfo($attributeId, $setIds);
                     }
-                    unset($attributesData);
                 }
+
+                uasort($this->_comparableAttributes, function ($a, $b) use ($attributeSortInfo) {
+                    /** @var Mage_Eav_Model_Entity_Attribute_Abstract $a */
+                    /** @var Mage_Eav_Model_Entity_Attribute_Abstract $b */
+
+                    $aSort = $attributeSortInfo[$a->getAttributeCode()]; // contains group_id, group_sort, sort
+                    $bSort = $attributeSortInfo[$b->getAttributeCode()]; // contains group_id, group_sort, sort
+
+                    return $aSort['group_sort'] <=> $bSort['group_sort'] ?: $aSort['sort'] <=> $bSort['sort'];
+                });
             }
         }
+
         return $this->_comparableAttributes;
     }
 
@@ -260,6 +243,7 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
         foreach ($comparableAttributes as $attribute) {
             $attributes[] = $attribute->getAttributeCode();
         }
+
         $this->addAttributeToSelect($attributes);
 
         return $this;
@@ -320,6 +304,7 @@ class Mage_Catalog_Model_Resource_Product_Compare_Item_Collection extends Mage_C
         if (!Mage::helper('catalog/product_compare')->getAllowUsedFlat()) {
             return false;
         }
+
         return parent::isEnabledFlat();
     }
 }

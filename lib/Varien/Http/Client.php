@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Http
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Varien HTTP Client
  *
- * @category   Varien
  * @package    Varien_Http
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Varien_Http_Client extends Zend_Http_Client
 {
@@ -41,6 +33,7 @@ class Varien_Http_Client extends Zend_Http_Client
         if (extension_loaded('curl')) {
             $this->setAdapter(new Varien_Http_Adapter_Curl());
         }
+
         return $this;
     }
 
@@ -53,7 +46,7 @@ class Varien_Http_Client extends Zend_Http_Client
     /**
      * Change value of internal flag to disable/enable custom prepare functionality
      *
-     * @param bool $flag
+     * @param  bool               $flag
      * @return Varien_Http_Client
      */
     public function setUrlEncodeBody($flag)

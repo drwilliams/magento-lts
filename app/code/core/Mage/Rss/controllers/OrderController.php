@@ -1,27 +1,24 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Rss
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Customer reviews controller
  *
- * @category   Mage
  * @package    Mage_Rss
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Rss_OrderController extends Mage_Rss_Controller_Abstract
 {
+    /**
+     * @return void
+     * @throws Mage_Core_Exception
+     * @throws Mage_Core_Model_Store_Exception
+     */
     public function newAction()
     {
         if ($this->checkFeedEnable('order/new')) {
@@ -32,6 +29,7 @@ class Mage_Rss_OrderController extends Mage_Rss_Controller_Abstract
 
     /**
      * @return $this|void
+     * @throws Mage_Core_Exception
      * @throws Mage_Core_Model_Store_Exception
      */
     public function customerAction()
@@ -48,11 +46,14 @@ class Mage_Rss_OrderController extends Mage_Rss_Controller_Abstract
 
     /**
      * Order status action
+     *
+     * @return void
+     * @throws Mage_Core_Exception
      */
     public function statusAction()
     {
         if ($this->isFeedEnable('order/status_notified')) {
-            $order = Mage::helper('rss/order')->getOrderByStatusUrlKey((string)$this->getRequest()->getParam('data'));
+            $order = Mage::helper('rss/order')->getOrderByStatusUrlKey((string) $this->getRequest()->getParam('data'));
             if (!is_null($order)) {
                 Mage::register('current_order', $order);
                 $this->getResponse()->setHeader('Content-type', 'text/xml; charset=UTF-8');
@@ -61,6 +62,7 @@ class Mage_Rss_OrderController extends Mage_Rss_Controller_Abstract
                 return;
             }
         }
+
         $this->_forward('nofeed', 'index', 'rss');
     }
 
@@ -76,6 +78,7 @@ class Mage_Rss_OrderController extends Mage_Rss_Controller_Abstract
             $this->_currentArea = 'adminhtml';
             Mage::helper('rss')->authAdmin('sales/order');
         }
+
         return parent::preDispatch();
     }
 }

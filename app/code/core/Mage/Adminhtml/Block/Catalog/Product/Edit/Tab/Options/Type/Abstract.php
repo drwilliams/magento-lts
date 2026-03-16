@@ -1,24 +1,20 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * customers defined options
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
+ *
+ * @method bool  getCanEditPrice()
+ * @method $this setCanEditPrice(bool $value)
+ * @method $this setCanReadPrice(bool $value)
  */
 class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Options_Type_Abstract extends Mage_Adminhtml_Block_Widget
 {
@@ -31,8 +27,8 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Options_Type_Abstract extend
             $this->getLayout()->createBlock('adminhtml/html_select')
                 ->setData([
                     'id' => 'product_option_{{option_id}}_price_type',
-                    'class' => 'select product-option-price-type'
-                ])
+                    'class' => 'select product-option-price-type',
+                ]),
         );
 
         $this->getChild('option_price_type')->setName('product[options][{{option_id}}][price_type]')
@@ -52,6 +48,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Options_Type_Abstract extend
         if ($this->getCanEditPrice() === false) {
             $this->getChild('option_price_type')->setExtraParams('disabled="disabled"');
         }
+
         return $this->getChildHtml('option_price_type');
     }
 }

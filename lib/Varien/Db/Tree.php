@@ -1,25 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Db
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2017-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Varien Library
  *
- *
- * @category   Varien
  * @package    Varien_Db
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 
 require_once 'Varien/Db/Tree/Exception.php';
@@ -27,13 +18,21 @@ Zend_Loader::loadClass('Zend_Db_Select');
 Zend_Loader::loadClass('Varien_Db_Tree_Node');
 Zend_Loader::loadClass('Varien_Db_Tree_NodeSet');
 
+/**
+ * @deprecated
+ */
 class Varien_Db_Tree
 {
     private $_id;
+
     private $_left;
+
     private $_right;
+
     private $_level;
+
     private $_pid;
+
     private $_nodesInfo = [];
 
     /**
@@ -65,11 +64,6 @@ class Varien_Db_Tree
         if (! empty($config['db'])) {
             // convenience variable
             $db = $config['db'];
-
-            // use an object from the registry?
-            if (is_string($db)) {
-                $db = Zend::registry($db);
-            }
 
             // make sure it's a Zend_Db_Adapter
             if (! $db instanceof Zend_Db_Adapter_Abstract) {
@@ -126,7 +120,7 @@ class Varien_Db_Tree
     /**
      * set name of id field
      *
-     * @param string $name
+     * @param  string         $name
      * @return Varien_Db_Tree
      */
     public function setIdField($name)
@@ -138,7 +132,7 @@ class Varien_Db_Tree
     /**
      * set name of left field
      *
-     * @param string $name
+     * @param  string         $name
      * @return Varien_Db_Tree
      */
     public function setLeftField($name)
@@ -150,7 +144,7 @@ class Varien_Db_Tree
     /**
      * set name of right field
      *
-     * @param string $name
+     * @param  string         $name
      * @return Varien_Db_Tree
      */
     public function setRightField($name)
@@ -162,7 +156,7 @@ class Varien_Db_Tree
     /**
      * set name of level field
      *
-     * @param string $name
+     * @param  string         $name
      * @return Varien_Db_Tree
      */
     public function setLevelField($name)
@@ -174,7 +168,7 @@ class Varien_Db_Tree
     /**
      * set name of pid Field
      *
-     * @param string $name
+     * @param  string         $name
      * @return Varien_Db_Tree
      */
     public function setPidField($name)
@@ -186,7 +180,7 @@ class Varien_Db_Tree
     /**
      * set table name
      *
-     * @param string $name
+     * @param  string         $name
      * @return Varien_Db_Tree
      */
     public function setTable($name)
@@ -197,18 +191,17 @@ class Varien_Db_Tree
 
     public function getKeys()
     {
-        $keys = [];
-        $keys['id'] = $this->_id;
-        $keys['left'] = $this->_left;
-        $keys['right'] = $this->_right;
-        $keys['pid'] = $this->_pid;
-        $keys['level'] = $this->_level;
-        return $keys;
+        return [
+            'id' => $this->_id,
+            'left' => $this->_left,
+            'right' => $this->_right,
+            'pid' => $this->_pid,
+            'level' => $this->_level,
+        ];
     }
 
     /**
-     * Cleare table and add root element
-     *
+     * Clear table and add root element
      */
     public function clear($data = [])
     {
@@ -224,9 +217,10 @@ class Varien_Db_Tree
 
         try {
             $this->_db->insert($this->_table, $data);
-        } catch (PDOException $e) {
-            echo $e->getMessage();
+        } catch (Zend_Db_Adapter_Exception $zendDbAdapterException) {
+            echo $zendDbAdapterException->getMessage();
         }
+
         return $this->_db->lastInsertId();
     }
 
@@ -240,6 +234,7 @@ class Varien_Db_Tree
         } else {
             $data = $this->_nodesInfo[$ID];
         }
+
         return $data;
     }
 
@@ -278,12 +273,14 @@ class Varien_Db_Tree
                 var_dump($data);
                 exit();
             }
+
             // TODO: change to ZEND LIBRARY
             $res =  $this->_db->fetchOne('select last_insert_id()');
             return $res;
             //return $this->_db->fetchOne('select last_insert_id()');
             //return $this->_db->lastInsertId();
         }
+
         return  false;
     }
 
@@ -305,9 +302,7 @@ class Varien_Db_Tree
         return $this->_db->fetchAll($sql);
     }
 
-    public function insertBefore($ID, $data)
-    {
-    }
+    public function insertBefore($ID, $data) {}
 
     public function removeNode($ID)
     {
@@ -390,10 +385,10 @@ class Varien_Db_Tree
             $this->_db->commit();
             echo "alert('node moved');";
             return true;
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $this->_db->rollBack();
             echo "alert('node not moved: fatal error');";
-            echo $e->getMessage();
+            echo $exception->getMessage();
             echo "<br>\r\n";
             echo $sql;
             echo "<br>\r\n";
@@ -404,39 +399,34 @@ class Varien_Db_Tree
     public function __moveNode($eId, $pId, $aId = 0)
     {
         $eInfo = $this->getNodeInfo($eId);
+        $level = $eInfo[$this->_level];
+        $left_key = $eInfo[$this->_left];
+        $right_key = $eInfo[$this->_right];
+        $right_key_near = 0;
+        $left_key_near = 0;
+        $skew_level = 0;
+
         if ($pId != 0) {
             $pInfo = $this->getNodeInfo($pId);
+            $skew_level = $pInfo[$this->_level] - $eInfo[$this->_level] + 1;
         }
+
         if ($aId != 0) {
             $aInfo = $this->getNodeInfo($aId);
         }
 
-        $level = $eInfo[$this->_level];
-        $left_key = $eInfo[$this->_left];
-        $right_key = $eInfo[$this->_right];
-        if ($pId == 0) {
-            $level_up = 0;
-        } else {
-            $level_up = $pInfo[$this->_level];
-        }
-
-        $right_key_near = 0;
-        $left_key_near = 0;
-
         if ($pId == 0) { //move to root
             $right_key_near = $this->_db->fetchOne('SELECT MAX(' . $this->_right . ') FROM ' . $this->_table);
-        } elseif ($aId != 0 && $pID == $eInfo[$this->_pid]) { // if we have after ID
+        } elseif (isset($aInfo) && $aId != 0 && $pId == $eInfo[$this->_pid]) { // if we have after ID
             $right_key_near = $aInfo[$this->_right];
             $left_key_near = $aInfo[$this->_left];
-        } elseif ($aId == 0 && $pId == $eInfo[$this->_pid]) { // if we do not have after ID
+        } elseif (isset($pInfo) && $aId == 0 && $pId == $eInfo[$this->_pid]) { // if we do not have after ID
             $right_key_near = $pInfo[$this->_left];
-        } elseif ($pId != $eInfo[$this->_pid]) {
+        } elseif (isset($pInfo) && $pId != $eInfo[$this->_pid]) {
             $right_key_near = $pInfo[$this->_right] - 1;
         }
 
-        $skew_level = $pInfo[$this->_level] - $eInfo[$this->_level] + 1;
         $skew_tree = $eInfo[$this->_right] - $eInfo[$this->_left] + 1;
-
         echo "alert('" . $right_key_near . "');";
 
         if ($right_key_near > $right_key) { // up
@@ -460,27 +450,30 @@ class Varien_Db_Tree
                     ' . $this->_right . ' > ' . $left_key . ' AND ' . $this->_left . ' <= ' . $right_key_near;
         }
 
-        $this->_db->beginTransaction();
-        try {
-            $this->_db->query($sql);
-            //$afrows = $this->_db->get
-            $this->_db->commit();
-        } catch (Exception $e) {
-            $this->_db->rollBack();
-            echo $e->getMessage();
-            echo "<br>\r\n";
-            echo $sql;
-            echo "<br>\r\n";
-            exit();
+        if (isset($sql)) {
+            $this->_db->beginTransaction();
+            try {
+                $this->_db->query($sql);
+                //$afrows = $this->_db->get
+                $this->_db->commit();
+            } catch (Exception $e) {
+                $this->_db->rollBack();
+                echo $e->getMessage();
+                echo "<br>\r\n";
+                echo $sql;
+                echo "<br>\r\n";
+                exit();
+            }
         }
+
         echo "alert('node added')";
     }
 
     public function addTable($tableName, $joinCondition, $fields = '*')
     {
         $this->_extTables[$tableName] = [
-           'joinCondition' => $joinCondition,
-           'fields'        => $fields
+            'joinCondition' => $joinCondition,
+            'fields'        => $fields,
         ];
     }
 
@@ -495,14 +488,14 @@ class Varien_Db_Tree
     {
         try {
             $info = $this->getNodeInfo($ID);
-        } catch (Exception $e) {
-            echo $e->getMessage();
+        } catch (Exception $exception) {
+            echo $exception->getMessage();
             exit;
         }
 
         $dbSelect = new Zend_Db_Select($this->_db);
         $dbSelect->from($this->_table)
-            ->where($this->_left  . ' >= :left')
+            ->where($this->_left . ' >= :left')
             ->where($this->_right . ' <= :right')
             ->order($this->_left);
 
@@ -523,6 +516,7 @@ class Varien_Db_Tree
         foreach ($data as $node) {
             $nodeSet->addNode(new Varien_Db_Tree_Node($node, $this->getKeys()));
         }
+
         return $nodeSet;
     }
 
@@ -530,7 +524,7 @@ class Varien_Db_Tree
     {
         $dbSelect = new Zend_Db_Select($this->_db);
         $dbSelect->from($this->_table)
-            ->where($this->_table . '.' . $this->_id  . ' >= :id');
+            ->where($this->_table . '.' . $this->_id . ' >= :id');
 
         $this->_addExtTablesToSelect($dbSelect);
 

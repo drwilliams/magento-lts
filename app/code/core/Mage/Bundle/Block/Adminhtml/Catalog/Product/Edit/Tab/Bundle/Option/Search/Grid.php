@@ -1,28 +1,20 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Bundle
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Bundle selection product grid
  *
- * @category   Mage
  * @package    Mage_Bundle
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method bool getFirstShow()
+ * @method bool   getFirstShow()
  * @method string getIndex()
- * @method $this setIndex(string $value)
+ * @method $this  setIndex(string $value)
  */
 class Mage_Bundle_Block_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Search_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -50,7 +42,7 @@ class Mage_Bundle_Block_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Search_
     }
 
     /**
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return $this
      * @throws Mage_Core_Model_Store_Exception
      */
     protected function _prepareCollection()
@@ -65,7 +57,7 @@ class Mage_Bundle_Block_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Search_
             ->addFilterByRequiredOptions()
             ->addStoreFilter()
             ->addAttributeToFilter('status', [
-                'in' => Mage::getSingleton('catalog/product_status')->getSaleableStatusIds()
+                'in' => Mage::getSingleton('catalog/product_status')->getSaleableStatusIds(),
             ]);
 
         if ($products = $this->_getProducts()) {
@@ -83,7 +75,7 @@ class Mage_Bundle_Block_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Search_
     }
 
     /**
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return $this
      * @throws Mage_Core_Exception
      * @throws Mage_Core_Model_Store_Exception
      */
@@ -91,14 +83,12 @@ class Mage_Bundle_Block_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Search_
     {
         $this->addColumn('id', [
             'header'    => Mage::helper('sales')->__('ID'),
-            'sortable'  => true,
-            'width'     => '60px',
-            'index'     => 'entity_id'
+            'index'     => 'entity_id',
         ]);
         $this->addColumn('name', [
             'header'    => Mage::helper('sales')->__('Product Name'),
             'index'     => 'name',
-            'column_css_class' => 'name'
+            'column_css_class' => 'name',
         ]);
 
         $sets = Mage::getResourceModel('eav/entity_attribute_set_collection')
@@ -114,22 +104,20 @@ class Mage_Bundle_Block_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Search_
                 'index' => 'attribute_set_id',
                 'type'  => 'options',
                 'options' => $sets,
-            ]
+            ],
         );
 
         $this->addColumn('sku', [
             'header'    => Mage::helper('sales')->__('SKU'),
             'width'     => '80px',
             'index'     => 'sku',
-            'column_css_class' => 'sku'
+            'column_css_class' => 'sku',
         ]);
         $this->addColumn('price', [
-            'header'    => Mage::helper('sales')->__('Price'),
             'align'     => 'center',
             'type'      => 'currency',
             'currency_code' => $this->getStore()->getCurrentCurrencyCode(),
             'rate'      => $this->getStore()->getBaseCurrency()->getRate($this->getStore()->getCurrentCurrencyCode()),
-            'index'     => 'price'
         ]);
 
         $this->addColumn('is_selected', [
@@ -183,11 +171,13 @@ class Mage_Bundle_Block_Adminhtml_Catalog_Product_Edit_Tab_Bundle_Option_Search_
     {
         if ($products = $this->getRequest()->getPost('products', null)) {
             return $products;
-        } elseif ($productss = $this->getRequest()->getParam('productss', null)) {
-            return explode(',', $productss);
-        } else {
-            return [];
         }
+
+        if ($productss = $this->getRequest()->getParam('productss', null)) {
+            return explode(',', $productss);
+        }
+
+        return [];
     }
 
     /**

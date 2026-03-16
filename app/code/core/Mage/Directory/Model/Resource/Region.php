@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Directory
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Directory Region Resource Model
  *
- * @category   Mage
  * @package    Mage_Directory
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_Abstract
 {
@@ -30,8 +22,7 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
     protected $_regionNameTable;
 
     /**
-     * Define main and locale region name tables
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -42,8 +33,8 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
     /**
      * Retrieve select object for load object data
      *
-     * @param string $field
-     * @param mixed $value
+     * @param string                   $field
+     * @param mixed                    $value
      * @param Mage_Core_Model_Abstract $object
      *
      * @return Varien_Db_Select
@@ -62,7 +53,7 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
         $select->joinLeft(
             ['lrn' => $this->_regionNameTable],
             "{$regionField} = lrn.region_id AND {$condition}",
-            []
+            [],
         );
 
         if ($locale != $systemLocale) {
@@ -71,7 +62,7 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
             $select->joinLeft(
                 ['srn' => $this->_regionNameTable],
                 "{$regionField} = srn.region_id AND {$condition}",
-                ['name' => $nameExpr]
+                ['name' => $nameExpr],
             );
         } else {
             $select->columns(['name'], 'lrn');
@@ -84,9 +75,9 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
      * Load object by country id and code or default name
      *
      * @param Mage_Core_Model_Abstract $object
-     * @param int $countryId
-     * @param string $value
-     * @param string $field
+     * @param string                   $countryId
+     * @param string                   $value
+     * @param string                   $field
      *
      * @return $this
      */
@@ -100,7 +91,7 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
             ->joinLeft(
                 ['rname' => $this->_regionNameTable],
                 $joinCondition,
-                ['name']
+                ['name'],
             )
             ->where('region.country_id = ?', $countryId)
             ->where("region.{$field} = ?", $value);
@@ -118,28 +109,24 @@ class Mage_Directory_Model_Resource_Region extends Mage_Core_Model_Resource_Db_A
     /**
      * Loads region by region code and country id
      *
-     * @param Mage_Directory_Model_Region $region
-     * @param string $regionCode
-     * @param string $countryId
-     *
+     * @param  string $regionCode
+     * @param  string $countryId
      * @return $this
      */
     public function loadByCode(Mage_Directory_Model_Region $region, $regionCode, $countryId)
     {
-        return $this->_loadByCountry($region, $countryId, (string)$regionCode, 'code');
+        return $this->_loadByCountry($region, $countryId, (string) $regionCode, 'code');
     }
 
     /**
      * Load data by country id and default region name
      *
-     * @param Mage_Directory_Model_Region $region
-     * @param string $regionName
-     * @param string $countryId
-     *
+     * @param  string $regionName
+     * @param  string $countryId
      * @return $this
      */
     public function loadByName(Mage_Directory_Model_Region $region, $regionName, $countryId)
     {
-        return $this->_loadByCountry($region, $countryId, (string)$regionName, 'default_name');
+        return $this->_loadByCountry($region, $countryId, (string) $regionName, 'default_name');
     }
 }

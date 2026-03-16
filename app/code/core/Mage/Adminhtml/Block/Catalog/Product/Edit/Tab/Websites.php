@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product Stores tab
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Websites extends Mage_Adminhtml_Block_Store_Switcher
 {
@@ -73,7 +65,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Websites extends Mage_Adminh
     /**
      * Returns whether product associated with website with $websiteId
      *
-     * @param int $websiteId
+     * @param  int  $websiteId
      * @return bool
      */
     public function hasWebsite($websiteId)
@@ -94,7 +86,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Websites extends Mage_Adminh
     /**
      * Retrieve store name by its ID
      *
-     * @param int $storeId
+     * @param  int         $storeId
      * @return null|string
      */
     public function getStoreName($storeId)
@@ -105,7 +97,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Websites extends Mage_Adminh
     /**
      * Get HTML of store chooser
      *
-     * @param Mage_Core_Model_Store $storeTo
+     * @param  Mage_Core_Model_Store $storeTo
      * @return string
      */
     public function getChooseFromStoreHtml($storeTo)
@@ -117,6 +109,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Websites extends Mage_Adminh
                 if (!$this->hasWebsite($_website->getId())) {
                     continue;
                 }
+
                 $optGroupLabel = $this->escapeHtml($_website->getName());
                 $this->_storeFromHtml .= '<optgroup label="' . $optGroupLabel . '"></optgroup>';
                 foreach ($this->getGroupCollection($_website) as $_group) {
@@ -127,10 +120,13 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Websites extends Mage_Adminh
                         $this->_storeFromHtml .= $this->escapeHtml($_store->getName()) . '</option>';
                     }
                 }
+
                 $this->_storeFromHtml .= '</optgroup>';
             }
+
             $this->_storeFromHtml .= '</select>';
         }
-        return str_replace('__store_identifier__', $storeTo->getId(), $this->_storeFromHtml);
+
+        return str_replace('__store_identifier__', (string) $storeTo->getId(), $this->_storeFromHtml);
     }
 }

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml sales order view gift messages controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Sales_Order_View_GiftmessageController extends Mage_Adminhtml_Controller_Action
 {
@@ -29,7 +21,7 @@ class Mage_Adminhtml_Sales_Order_View_GiftmessageController extends Mage_Adminht
     public const ADMIN_RESOURCE = 'sales/order';
 
     /**
-     * Additional initialization
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -44,17 +36,17 @@ class Mage_Adminhtml_Sales_Order_View_GiftmessageController extends Mage_Adminht
                 ->saveAllInOrder();
         } catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError($e->getMessage());
-        } catch (Exception $e) {
+        } catch (Exception) {
             $this->_getSession()->addError(Mage::helper('giftmessage')->__('An error occurred while saving the gift message.'));
         }
 
         if ($this->getRequest()->getParam('type') == 'order_item') {
             $this->getResponse()->setBody(
-                $this->_getGiftmessageSaveModel()->getSaved() ? 'YES' : 'NO'
+                $this->_getGiftmessageSaveModel()->getSaved() ? 'YES' : 'NO',
             );
         } else {
             $this->getResponse()->setBody(
-                Mage::helper('giftmessage')->__('The gift message has been saved.')
+                Mage::helper('giftmessage')->__('The gift message has been saved.'),
             );
         }
     }

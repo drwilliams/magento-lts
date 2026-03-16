@@ -1,25 +1,17 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
  * Adminhtml shipment packaging
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml_Block_Template
 {
@@ -37,6 +29,8 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
      * Configuration for popup window for packaging
      *
      * @return string
+     * @throws Exception
+     * @throws Mage_Core_Exception
      */
     public function getConfigDataJson()
     {
@@ -44,11 +38,14 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         $orderId = $this->getRequest()->getParam('order_id');
         $urlParams = [];
 
-        $itemsQty       = [];
-        $itemsPrice     = [];
-        $itemsName      = [];
-        $itemsWeight    = [];
-        $itemsProductId = [];
+        $createLabelUrl     = '';
+        $itemsGridUrl       = '';
+        $itemsQty           = [];
+        $itemsPrice         = [];
+        $itemsName          = [];
+        $itemsWeight        = [];
+        $itemsProductId     = [];
+        $itemsOrderItemId   = [];
 
         if ($shipmentId) {
             $urlParams['shipment_id'] = $shipmentId;
@@ -78,6 +75,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
                 $itemsOrderItemId[$orderItemId]  = $orderItemId;
             }
         }
+
         $data = [
             'createLabelUrl'            => $createLabelUrl,
             'itemsGridUrl'              => $itemsGridUrl,
@@ -115,6 +113,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
             ]);
             return $carrier->getContainerTypes($params);
         }
+
         return [];
     }
 
@@ -129,13 +128,14 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         if ($carrier) {
             return $carrier->getCustomizableContainerTypes();
         }
+
         return [];
     }
 
     /**
      * Return name of container type by its code
      *
-     * @param string $code
+     * @param  string $code
      * @return string
      */
     public function getContainerTypeByCode($code)
@@ -143,15 +143,16 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         $carrier = $this->getShipment()->getOrder()->getShippingCarrier();
         if ($carrier) {
             $containerTypes = $carrier->getContainerTypes();
-            return !empty($containerTypes[$code]) ? $containerTypes[$code] : '';
+            return empty($containerTypes[$code]) ? '' : $containerTypes[$code];
         }
+
         return '';
     }
 
     /**
      * Return name of delivery confirmation type by its code
      *
-     * @param string $code
+     * @param  string $code
      * @return string
      */
     public function getDeliveryConfirmationTypeByCode($code)
@@ -161,15 +162,16 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         if ($carrier) {
             $params = new Varien_Object(['country_recipient' => $countryId]);
             $confirmationTypes = $carrier->getDeliveryConfirmationTypes($params);
-            return !empty($confirmationTypes[$code]) ? $confirmationTypes[$code] : '';
+            return empty($confirmationTypes[$code]) ? '' : $confirmationTypes[$code];
         }
+
         return '';
     }
 
     /**
      * Return name of content type by its code
      *
-     * @param string $code
+     * @param  string $code
      * @return string
      */
     public function getContentTypeByCode($code)
@@ -178,6 +180,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         if (!empty($contentTypes[$code])) {
             return $contentTypes[$code];
         }
+
         return '';
     }
 
@@ -194,15 +197,17 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         } else {
             $packages = [];
         }
+
         return $packages;
     }
 
     /**
      * Get item of shipment by its id
      *
-     * @param int $itemId
-     * @param string $itemsOf
+     * @param  int                 $itemId
+     * @param  string              $itemsOf
      * @return Varien_Object
+     * @throws Mage_Core_Exception
      */
     public function getShipmentItem($itemId, $itemsOf)
     {
@@ -210,10 +215,13 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         foreach ($items as $item) {
             if ($itemsOf == 'order' && $item->getOrderItemId() == $itemId) {
                 return $item;
-            } elseif ($itemsOf == 'shipment' && $item->getId() == $itemId) {
+            }
+
+            if ($itemsOf == 'shipment' && $item->getId() == $itemId) {
                 return $item;
             }
         }
+
         return new Varien_Object();
     }
 
@@ -229,12 +237,13 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         $address = $order->getShippingAddress();
         $shipperAddressCountryCode = Mage::getStoreConfig(
             Mage_Shipping_Model_Shipping::XML_PATH_STORE_COUNTRY_ID,
-            $storeId
+            $storeId,
         );
         $recipientAddressCountryCode = $address->getCountryId();
         if ($shipperAddressCountryCode != $recipientAddressCountryCode) {
             return true;
         }
+
         return false;
     }
 
@@ -251,6 +260,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
         if ($carrier && is_array($carrier->getDeliveryConfirmationTypes($params))) {
             return $carrier->getDeliveryConfirmationTypes($params);
         }
+
         return [];
     }
 
@@ -258,6 +268,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
      * Print button for creating pdf
      *
      * @return string
+     * @throws Mage_Core_Exception
      */
     public function getPrintButton()
     {
@@ -267,7 +278,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
             ->createBlock('adminhtml/widget_button')
             ->setData([
                 'label'   => Mage::helper('sales')->__('Print'),
-                'onclick' => Mage::helper('core/js')->getSetLocationJs($url)
+                'onclick' => Mage::helper('core/js')->getSetLocationJs($url),
             ])
             ->toHtml();
     }
@@ -306,6 +317,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
             ]);
             return $carrier->getContentTypes($params);
         }
+
         return [];
     }
 
@@ -323,7 +335,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
     /**
      * Display formatted price
      *
-     * @param float $price
+     * @param  float  $price
      * @return string
      */
     public function displayPrice($price)
@@ -334,7 +346,7 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
     /**
      * Display formatted customs price
      *
-     * @param float $price
+     * @param  float  $price
      * @return string
      */
     public function displayCustomsPrice($price)
@@ -346,15 +358,15 @@ class Mage_Adminhtml_Block_Sales_Order_Shipment_Packaging extends Mage_Adminhtml
     /**
      * Get ordered qty of item
      *
-     * @param int $itemId
-     * @return int|null
+     * @param  int      $itemId
+     * @return null|int
      */
     public function getQtyOrderedItem($itemId)
     {
         if ($itemId) {
             return $this->getShipment()->getOrder()->getItemById($itemId)->getQtyOrdered() * 1;
-        } else {
-            return;
         }
+
+        return null;
     }
 }

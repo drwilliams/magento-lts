@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml dashboard most active buyers
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Dashboard_Tab_Customers_Most extends Mage_Adminhtml_Block_Dashboard_Grid
 {
@@ -57,39 +49,41 @@ class Mage_Adminhtml_Block_Dashboard_Tab_Customers_Most extends Mage_Adminhtml_B
         return parent::_prepareCollection();
     }
 
+    /**
+     * @throws Exception
+     * @throws Mage_Core_Model_Store_Exception
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('name', [
             'header'    => $this->__('Customer Name'),
             'sortable'  => false,
-            'index'     => 'name'
+            'index'     => 'name',
         ]);
 
         $this->addColumn('orders_count', [
             'header'    => $this->__('Number of Orders'),
             'sortable'  => false,
             'index'     => 'orders_count',
-            'type'      => 'number'
+            'type'      => 'number',
         ]);
 
-        $baseCurrencyCode = (string) Mage::app()->getStore((int)$this->getParam('store'))->getBaseCurrencyCode();
+        $baseCurrencyCode = (string) Mage::app()->getStore((int) $this->getParam('store'))->getBaseCurrencyCode();
 
         $this->addColumn('orders_avg_amount', [
             'header'    => $this->__('Average Order Amount'),
-            'align'     => 'right',
             'sortable'  => false,
             'type'      => 'currency',
             'currency_code'  => $baseCurrencyCode,
-            'index'     => 'orders_avg_amount'
+            'index'     => 'orders_avg_amount',
         ]);
 
         $this->addColumn('orders_sum_amount', [
             'header'    => $this->__('Total Order Amount'),
-            'align'     => 'right',
             'sortable'  => false,
             'type'      => 'currency',
             'currency_code'  => $baseCurrencyCode,
-            'index'     => 'orders_sum_amount'
+            'index'     => 'orders_sum_amount',
         ]);
 
         $this->setFilterVisibility(false);
@@ -98,6 +92,10 @@ class Mage_Adminhtml_Block_Dashboard_Tab_Customers_Most extends Mage_Adminhtml_B
         return parent::_prepareColumns();
     }
 
+    /**
+     * @inheritDoc
+     * @param Mage_Sales_Model_Order $row
+     */
     public function getRowUrl($row)
     {
         return $this->getUrl('*/customer/edit', ['id' => $row->getCustomerId()]);

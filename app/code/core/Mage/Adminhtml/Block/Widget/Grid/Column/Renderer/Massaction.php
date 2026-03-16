@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Grid widget column renderer massaction
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Massaction extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Checkbox
 {
@@ -43,14 +35,12 @@ class Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Massaction extends Mage_A
     {
         $out = parent::renderProperty();
         $out = preg_replace('/class=".*?"/i', '', $out);
-        $out .= ' class="a-center"';
-        return $out;
+        return $out . ' class="a-center"';
     }
 
     /**
      * Returns HTML of the object
      *
-     * @param Varien_Object $row
      * @return string
      */
     public function render(Varien_Object $row)
@@ -58,20 +48,20 @@ class Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Massaction extends Mage_A
         if ($this->getColumn()->getGrid()->getMassactionIdFieldOnlyIndexValue()) {
             $this->setNoObjectId(true);
         }
+
         return parent::render($row);
     }
 
     /**
      * Returns HTML of the checkbox
      *
-     * @param string $value
-     * @param bool   $checked
+     * @param  string $value
+     * @param  string $checked
      * @return string
      */
     protected function _getCheckboxHtml($value, $checked)
     {
         $html = '<input type="checkbox" name="' . $this->getColumn()->getName() . '" ';
-        $html .= 'value="' . $this->escapeHtml($value) . '" class="massaction-checkbox"' . $checked . '/>';
-        return $html;
+        return $html . ('value="' . $this->escapeHtml($value) . '" class="massaction-checkbox"' . $checked . '/>');
     }
 }

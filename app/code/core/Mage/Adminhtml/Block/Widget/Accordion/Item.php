@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Accordion item
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Widget_Accordion_Item extends Mage_Adminhtml_Block_Widget
 {
@@ -39,9 +31,8 @@ class Mage_Adminhtml_Block_Widget_Accordion_Item extends Mage_Adminhtml_Block_Wi
     {
         $title  = $this->getData('title');
         $url    = $this->getContentUrl() ? $this->getContentUrl() : '#';
-        $title  = '<a href="' . $url . '" class="' . $this->getTarget() . '">' . $title . '</a>';
 
-        return $title;
+        return '<a href="' . $url . '" class="' . $this->getTarget() . '">' . $title . '</a>';
     }
 
     public function getContent()
@@ -50,9 +41,11 @@ class Mage_Adminhtml_Block_Widget_Accordion_Item extends Mage_Adminhtml_Block_Wi
         if (is_string($content)) {
             return $content;
         }
+
         if ($content instanceof Mage_Core_Block_Abstract) {
             return $content->toHtml();
         }
+
         return null;
     }
 
@@ -62,6 +55,7 @@ class Mage_Adminhtml_Block_Widget_Accordion_Item extends Mage_Adminhtml_Block_Wi
         if ($this->getOpen()) {
             $class .= ' open';
         }
+
         return $class;
     }
 
@@ -73,7 +67,6 @@ class Mage_Adminhtml_Block_Widget_Accordion_Item extends Mage_Adminhtml_Block_Wi
         $html .= '</dt>';
         $html .= '<dd id="dd-' . $this->getHtmlId() . '" class="' . $this->getClass() . '">';
         $html .= $content;
-        $html .= '</dd>';
-        return $html;
+        return $html . '</dd>';
     }
 }

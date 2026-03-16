@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Quiq simple product creation
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Attributes
 {
@@ -41,12 +33,12 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
         $form->setDataObject($this->_getProduct());
 
         $fieldset = $form->addFieldset('simple_product', [
-            'legend' => Mage::helper('catalog')->__('Quick simple product creation')
+            'legend' => Mage::helper('catalog')->__('Quick simple product creation'),
         ]);
         $this->_addElementTypes($fieldset);
         $attributesConfig = [
             'autogenerate' => ['name', 'sku'],
-            'additional'   => ['name', 'sku', 'visibility', 'status']
+            'additional'   => ['name', 'sku', 'visibility', 'status'],
         ];
 
         $availableTypes = ['text', 'select', 'multiselect', 'textarea', 'price', 'weight'];
@@ -68,7 +60,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
                     // If not applied to configurable
                     && !in_array(Mage_Catalog_Model_Product_Type::TYPE_CONFIGURABLE, $attribute->getApplyTo())
                     // If not used in configurable
-                    && !in_array($attribute->getId(), $usedAttributes))
+                    && !array_key_exists($attribute->getId(), $usedAttributes))
                 // Or in additional
                 || in_array($attributeCode, $attributesConfig['additional'])
             ) {
@@ -76,6 +68,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
                 if (!in_array($inputType, $availableTypes)) {
                     continue;
                 }
+
                 $attribute->setAttributeCode('simple_product_' . $attributeCode);
                 $element = $fieldset->addField(
                     'simple_product_' . $attributeCode,
@@ -84,7 +77,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
                         'label'    => $attribute->getFrontend()->getLabel(),
                         'name'     => $attributeCode,
                         'required' => $attribute->getIsRequired(),
-                    ]
+                    ],
                 )->setEntityAttribute($attribute);
 
                 if (in_array($attributeCode, $attributesConfig['autogenerate'])) {
@@ -96,7 +89,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
                         . 'onclick="toggleValueElements(this, this.parentNode)" checked="checked" /> '
                         . '<label for="simple_product_' . $attributeCode . '_autogenerate" >'
                         . Mage::helper('catalog')->__('Autogenerate')
-                        . '</label>'
+                        . '</label>',
                     );
                 }
 
@@ -115,15 +108,15 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
                 'values' => $attribute->getSource()->getAllOptions(true, true),
                 'required' => true,
                 'class'    => 'validate-configurable',
-                'onchange' => 'superProduct.showPricing(this, \'' . $attributeCode . '\')'
+                'onchange' => "superProduct.showPricing(this, '" . $attributeCode . "')",
             ]);
 
             $fieldset->addField('simple_product_' . $attributeCode . '_pricing_value', 'hidden', [
-                'name' => 'pricing[' . $attributeCode . '][value]'
+                'name' => 'pricing[' . $attributeCode . '][value]',
             ]);
 
             $fieldset->addField('simple_product_' . $attributeCode . '_pricing_type', 'hidden', [
-                'name' => 'pricing[' . $attributeCode . '][is_percent]'
+                'name' => 'pricing[' . $attributeCode . '][is_percent]',
             ]);
         }
 
@@ -133,7 +126,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
             'name'  => 'stock_data[qty]',
             'class' => 'validate-number',
             'required' => true,
-            'value'  => 0
+            'value'  => 0,
         ]);
 
         $fieldset->addField('simple_product_inventory_is_in_stock', 'select', [
@@ -141,9 +134,9 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
             'name'  => 'stock_data[is_in_stock]',
             'values' => [
                 ['value' => 1, 'label' => Mage::helper('catalog')->__('In Stock')],
-                ['value' => 0, 'label' => Mage::helper('catalog')->__('Out of Stock')]
+                ['value' => 0, 'label' => Mage::helper('catalog')->__('Out of Stock')],
             ],
-            'value' => 1
+            'value' => 1,
         ]);
 
         $stockHiddenFields = [
@@ -152,13 +145,13 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
             'use_config_max_sale_qty'       => 1,
             'use_config_backorders'         => 1,
             'use_config_notify_stock_qty'   => 1,
-            'is_qty_decimal'                => 0
+            'is_qty_decimal'                => 0,
         ];
 
         foreach ($stockHiddenFields as $fieldName => $fieldValue) {
             $fieldset->addField('simple_product_inventory_' . $fieldName, 'hidden', [
                 'name'  => 'stock_data[' . $fieldName . ']',
-                'value' => $fieldValue
+                'value' => $fieldValue,
             ]);
         }
 
@@ -166,8 +159,8 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
             'text' => $this->getButtonHtml(
                 Mage::helper('catalog')->__('Quick Create'),
                 'superProduct.quickCreateNewProduct()',
-                'save'
-            )
+                'save',
+            ),
         ]);
 
         $this->setForm($form);
@@ -185,6 +178,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Config_Simple extends 
         if (!$this->_product) {
             $this->_product = Mage::registry('current_product');
         }
+
         return $this->_product;
     }
 }

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml AdminNotification controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Action
 {
@@ -27,7 +19,7 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
         $this->_title($this->__('System'))->_title($this->__('Notifications'));
 
         $this->loadLayout()
-            ->_setActiveMenu('system/notification')
+            ->_setActiveMenu('system/adminnotification')
             ->_addBreadcrumb(Mage::helper('adminnotification')->__('Messages Inbox'), Mage::helper('adminhtml')->__('Messages Inbox'))
             ->_addContent($this->getLayout()->createBlock('adminhtml/notification_inbox'))
             ->renderLayout();
@@ -59,6 +51,7 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
             $this->_redirectReferer();
             return;
         }
+
         $this->_redirect('*/*/');
     }
 
@@ -78,8 +71,9 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
                             ->save();
                     }
                 }
+
                 $this->_getSession()->addSuccess(
-                    Mage::helper('adminnotification')->__('Total of %d record(s) have been marked as read.', count($ids))
+                    Mage::helper('adminnotification')->__('Total of %d record(s) have been marked as read.', count($ids)),
                 );
             } catch (Mage_Core_Exception $e) {
                 $session->addError($e->getMessage());
@@ -87,6 +81,7 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
                 $session->addException($e, Mage::helper('adminnotification')->__('An error occurred while marking the messages as read.'));
             }
         }
+
         $this->_redirect('*/*/');
     }
 
@@ -115,6 +110,7 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
             $this->_redirect('*/*/');
             return;
         }
+
         $this->_redirect('*/*/');
     }
 
@@ -134,8 +130,9 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
                             ->save();
                     }
                 }
+
                 $this->_getSession()->addSuccess(
-                    Mage::helper('adminnotification')->__('Total of %d record(s) have been removed.', count($ids))
+                    Mage::helper('adminnotification')->__('Total of %d record(s) have been removed.', count($ids)),
                 );
             } catch (Mage_Core_Exception $e) {
                 $session->addError($e->getMessage());
@@ -143,6 +140,7 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
                 $session->addException($e, Mage::helper('adminnotification')->__('An error occurred while removing messages.'));
             }
         }
+
         $this->_redirectReferer();
     }
 
@@ -152,20 +150,11 @@ class Mage_Adminhtml_NotificationController extends Mage_Adminhtml_Controller_Ac
     protected function _isAllowed()
     {
         $action = strtolower($this->getRequest()->getActionName());
-        switch ($action) {
-            case 'massmarkasread':
-            case 'markasread':
-                $acl = 'system/adminnotification/mark_as_read';
-                break;
-
-            case 'massremove':
-            case 'remove':
-                $acl = 'system/adminnotification/remove';
-                break;
-
-            default:
-                $acl = 'system/adminnotification/show_list';
-        }
+        $acl = match ($action) {
+            'massmarkasread', 'markasread' => 'system/adminnotification/mark_as_read',
+            'massremove', 'remove' => 'system/adminnotification/remove',
+            default => 'system/adminnotification/show_list',
+        };
         return Mage::getSingleton('admin/session')->isAllowed($acl);
     }
 }

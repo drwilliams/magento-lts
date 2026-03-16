@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Tax rule controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Checkout_AgreementController extends Mage_Adminhtml_Controller_Action
 {
@@ -65,7 +57,7 @@ class Mage_Adminhtml_Checkout_AgreementController extends Mage_Adminhtml_Control
             $agreementModel->load($id);
             if (!$agreementModel->getId()) {
                 Mage::getSingleton('adminhtml/session')->addError(
-                    Mage::helper('checkout')->__('This condition no longer exists.')
+                    Mage::helper('checkout')->__('This condition no longer exists.'),
                 );
                 $this->_redirect('*/*/');
                 return;
@@ -102,7 +94,7 @@ class Mage_Adminhtml_Checkout_AgreementController extends Mage_Adminhtml_Control
                 return;
             } catch (Mage_Core_Exception $e) {
                 Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-            } catch (Exception $e) {
+            } catch (Exception) {
                 Mage::getSingleton('adminhtml/session')->addError(Mage::helper('checkout')->__('An error occurred while saving this condition.'));
             }
 
@@ -113,7 +105,7 @@ class Mage_Adminhtml_Checkout_AgreementController extends Mage_Adminhtml_Control
 
     public function deleteAction()
     {
-        $id = (int)$this->getRequest()->getParam('id');
+        $id = (int) $this->getRequest()->getParam('id');
         $model = Mage::getSingleton('checkout/agreement')
             ->load($id);
         if (!$model->getId()) {
@@ -131,7 +123,7 @@ class Mage_Adminhtml_Checkout_AgreementController extends Mage_Adminhtml_Control
             return;
         } catch (Mage_Core_Exception $e) {
             Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-        } catch (Exception $e) {
+        } catch (Exception) {
             Mage::getSingleton('adminhtml/session')->addError(Mage::helper('checkout')->__('An error occurred while deleting this condition.'));
         }
 

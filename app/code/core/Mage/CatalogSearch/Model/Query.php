@@ -1,50 +1,39 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogSearch
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog search query model
  *
- * @category   Mage
  * @package    Mage_CatalogSearch
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method Mage_CatalogSearch_Model_Resource_Query _getResource()
- * @method Mage_CatalogSearch_Model_Resource_Query getResource()
+ * @method Mage_CatalogSearch_Model_Resource_Query            _getResource()
  * @method Mage_CatalogSearch_Model_Resource_Query_Collection getCollection()
+ * @method int                                                getDisplayInTerms()
+ * @method int                                                getIsActive()
+ * @method int                                                getIsProcessed()
+ * @method string                                             getName()
+ * @method int                                                getNumResults()
+ * @method int                                                getPopularity()
+ * @method string                                             getQueryText()
+ * @method string                                             getRedirect()
+ * @method Mage_CatalogSearch_Model_Resource_Query            getResource()
  * @method Mage_CatalogSearch_Model_Resource_Query_Collection getResourceCollection()
- *
- * @method int getDisplayInTerms()
- * @method $this setDisplayInTerms(int $value)
- * @method int getIsActive()
- * @method $this setIsActive(int $value)
- * @method int getIsProcessed()
- * @method $this setIsProcessed(int $value)
- * @method string getName()
- * @method int getNumResults()
- * @method $this setNumResults(int $value)
- * @method int getPopularity()
- * @method $this setPopularity(int $value)
- * @method string getQueryText()
- * @method $this setQueryText(string $value)
- * @method $this setRatio(float $value)
- * @method string getRedirect()
- * @method $this setRedirect(string $value)
- * @method string getSynonymFor()
- * @method $this setSynonymFor(string $value)
- * @method string getUpdatedAt()
- * @method $this setUpdatedAt(string $value)
+ * @method string                                             getSynonymFor()
+ * @method $this                                              setDisplayInTerms(int $value)
+ * @method $this                                              setIsActive(int $value)
+ * @method $this                                              setIsProcessed(int $value)
+ * @method $this                                              setNumResults(int $value)
+ * @method $this                                              setPopularity(int $value)
+ * @method $this                                              setQueryText(string $value)
+ * @method $this                                              setRatio(float $value)
+ * @method $this                                              setRedirect(string $value)
+ * @method $this                                              setSynonymFor(string $value)
  */
 class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
 {
@@ -56,14 +45,17 @@ class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
     protected $_eventObject = 'catalogsearch_query';
 
     public const CACHE_TAG                     = 'SEARCH_QUERY';
+
     public const XML_PATH_MIN_QUERY_LENGTH     = 'catalog/search/min_query_length';
+
     public const XML_PATH_MAX_QUERY_LENGTH     = 'catalog/search/max_query_length';
+
     public const XML_PATH_MAX_QUERY_WORDS      = 'catalog/search/max_query_words';
+
     public const XML_PATH_AJAX_SUGGESTION_COUNT = 'catalog/search/show_autocomplete_results_count';
 
     /**
-     * Init resource model
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -102,6 +94,7 @@ class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
                 ->addTaxPercents();
             $this->setData('result_collection', $collection);
         }
+
         return $collection;
     }
 
@@ -119,13 +112,14 @@ class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
                 ->setQueryFilter($this->getQueryText());
             $this->setData('suggest_collection', $collection);
         }
+
         return $collection;
     }
 
     /**
      * Load Query object by query string
      *
-     * @param string $text
+     * @param  string $text
      * @return $this
      */
     public function loadByQuery($text)
@@ -139,7 +133,7 @@ class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
     /**
      * Load Query object only by query text (skip 'synonym For')
      *
-     * @param string $text
+     * @param  string $text
      * @return $this
      */
     public function loadByQueryText($text)
@@ -168,8 +162,9 @@ class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
     public function getStoreId()
     {
         if (!$storeId = $this->getData('store_id')) {
-            $storeId = Mage::app()->getStore()->getId();
+            return Mage::app()->getStore()->getId();
         }
+
         return $storeId;
     }
 
@@ -193,8 +188,8 @@ class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
     /**
      * Retrieve minimum query length
      *
-     * @deprecated after 1.3.2.3 use getMinQueryLength() instead
      * @return int
+     * @deprecated after 1.3.2.3 use getMinQueryLength() instead
      */
     public function getMinQueryLenght()
     {
@@ -214,8 +209,8 @@ class Mage_CatalogSearch_Model_Query extends Mage_Core_Model_Abstract
     /**
      * Retrieve maximum query length
      *
-     * @deprecated after 1.3.2.3 use getMaxQueryLength() instead
      * @return int
+     * @deprecated after 1.3.2.3 use getMaxQueryLength() instead
      */
     public function getMaxQueryLenght()
     {

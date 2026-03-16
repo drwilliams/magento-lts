@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Report most viewed collection
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_Reports_Model_Resource_Report_Collection_Abstract
 {
@@ -39,6 +31,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
     /**
      * Initialize custom resource model
      *
+     * @throws Zend_Exception
      */
     public function __construct()
     {
@@ -78,15 +71,17 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                 }
             }
         }
+
         return $this->_selectedColumns;
     }
 
     /**
      * Make select object for date boundary
      *
-     * @param mixed $from
-     * @param mixed $to
-     * @return Zend_Db_Select
+     * @param  mixed               $from
+     * @param  mixed               $to
+     * @return Varien_Db_Select
+     * @throws Mage_Core_Exception
      */
     protected function _makeBoundarySelect($from, $to)
     {
@@ -110,6 +105,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
      * Init collection select
      *
      * @return $this
+     * @throws Zend_Db_Select_Exception
      */
     protected function _initSelect()
     {
@@ -149,49 +145,12 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
             $mainTable = $this->getTable(Mage_Reports_Model_Resource_Report_Product_Viewed::AGGREGATION_DAILY);
             $select->from($mainTable, $this->_getSelectedColumns());
         }
+
         if (!$this->isTotals()) {
             $select->group(['period', 'product_id']);
         }
+
         $select->where('rating_pos <= ?', $this->_ratingLimit);
-
-        return $this;
-    }
-
-    /**
-     * Get SQL for get record count
-     *
-     * @return Varien_Db_Select
-     */
-    public function getSelectCountSql()
-    {
-        $this->_renderFilters();
-        $select = clone $this->getSelect();
-        $select->reset(Zend_Db_Select::ORDER);
-        return $this->getConnection()->select()->from($select, 'COUNT(*)');
-    }
-
-    /**
-     * Set ids for store restrictions
-     *
-     * @param  array $storeIds
-     * @return $this
-     */
-    public function addStoreRestrictions($storeIds)
-    {
-        if (!is_array($storeIds)) {
-            $storeIds = [$storeIds];
-        }
-        $currentStoreIds = $this->_storesIds;
-        if (isset($currentStoreIds) && $currentStoreIds != Mage_Core_Model_App::ADMIN_STORE_ID
-            && $currentStoreIds != [Mage_Core_Model_App::ADMIN_STORE_ID]
-        ) {
-            if (!is_array($currentStoreIds)) {
-                $currentStoreIds = [$currentStoreIds];
-            }
-            $this->_storesIds = array_intersect($currentStoreIds, $storeIds);
-        } else {
-            $this->_storesIds = $storeIds;
-        }
 
         return $this;
     }
@@ -201,6 +160,9 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
      * but before adding unions and calculating totals
      *
      * @return $this
+     * @throws Mage_Core_Exception
+     * @throws Zend_Date_Exception
+     * @throws Zend_Db_Select_Exception
      */
     protected function _beforeLoad()
     {
@@ -213,8 +175,8 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
 
             // apply date boundaries (before calling $this->_applyDateRangeFilter())
             $dtFormat   = Varien_Date::DATE_INTERNAL_FORMAT;
-            $periodFrom = (!is_null($this->_from) ? new Zend_Date($this->_from, $dtFormat) : null);
-            $periodTo   = (!is_null($this->_to) ? new Zend_Date($this->_to, $dtFormat) : null);
+            $periodFrom = (is_null($this->_from) ? null : new Zend_Date($this->_from, $dtFormat));
+            $periodTo   = (is_null($this->_to) ? null : new Zend_Date($this->_to, $dtFormat));
             if ($this->_period == 'year') {
                 if ($periodFrom) {
                     // not the first day of the year
@@ -225,7 +187,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                         if (!$periodTo || $dtTo->isEarlier($periodTo)) {
                             $selectUnions[] = $this->_makeBoundarySelect(
                                 $dtFrom->toString($dtFormat),
-                                $dtTo->toString($dtFormat)
+                                $dtTo->toString($dtFormat),
                             );
 
                             // first day of the next year
@@ -246,7 +208,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                         if (!$periodFrom || $dtFrom->isLater($periodFrom)) {
                             $selectUnions[] = $this->_makeBoundarySelect(
                                 $dtFrom->toString($dtFormat),
-                                $dtTo->toString($dtFormat)
+                                $dtTo->toString($dtFormat),
                             );
 
                             // last day of the previous year
@@ -266,7 +228,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                         $dtTo = $periodTo->getDate();
                         $selectUnions[] = $this->_makeBoundarySelect(
                             $dtFrom->toString($dtFormat),
-                            $dtTo->toString($dtFormat)
+                            $dtTo->toString($dtFormat),
                         );
 
                         $this->getSelect()->where('1<>1');
@@ -282,7 +244,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                         if (!$periodTo || $dtTo->isEarlier($periodTo)) {
                             $selectUnions[] = $this->_makeBoundarySelect(
                                 $dtFrom->toString($dtFormat),
-                                $dtTo->toString($dtFormat)
+                                $dtTo->toString($dtFormat),
                             );
 
                             // first day of the next month
@@ -299,7 +261,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                         if (!$periodFrom || $dtFrom->isLater($periodFrom)) {
                             $selectUnions[] = $this->_makeBoundarySelect(
                                 $dtFrom->toString($dtFormat),
-                                $dtTo->toString($dtFormat)
+                                $dtTo->toString($dtFormat),
                             );
 
                             // last day of the previous month
@@ -317,7 +279,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                         $dtTo = $periodTo->getDate();
                         $selectUnions[] = $this->_makeBoundarySelect(
                             $dtFrom->toString($dtFormat),
-                            $dtTo->toString($dtFormat)
+                            $dtTo->toString($dtFormat),
                         );
 
                         $this->getSelect()->where('1<>1');
@@ -338,6 +300,7 @@ class Mage_Reports_Model_Resource_Report_Product_Viewed_Collection extends Mage_
                     $query = $helper->getQueryUsingAnalyticFunction($union);
                     $unionParts[] = '(' . $query . ')';
                 }
+
                 $this->getSelect()->reset()->union($unionParts, Zend_Db_Select::SQL_UNION_ALL);
             }
 

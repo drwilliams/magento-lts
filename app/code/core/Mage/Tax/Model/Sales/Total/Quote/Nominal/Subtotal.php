@@ -1,23 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Tax
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Nominal subtotal tax total
  *
- * @category   Mage
  * @package    Mage_Tax
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Tax_Model_Sales_Total_Quote_Nominal_Subtotal extends Mage_Tax_Model_Sales_Total_Quote_Subtotal
 {
@@ -31,7 +24,6 @@ class Mage_Tax_Model_Sales_Total_Quote_Nominal_Subtotal extends Mage_Tax_Model_S
     /**
      * Don't fetch anything
      *
-     * @param Mage_Sales_Model_Quote_Address $address
      * @return array
      */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
@@ -42,7 +34,6 @@ class Mage_Tax_Model_Sales_Total_Quote_Nominal_Subtotal extends Mage_Tax_Model_S
     /**
      * Get nominal items only
      *
-     * @param Mage_Sales_Model_Quote_Address $address
      * @return array
      */
     protected function _getAddressItems(Mage_Sales_Model_Quote_Address $address)

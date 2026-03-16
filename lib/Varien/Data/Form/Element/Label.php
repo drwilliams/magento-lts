@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Data
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Data form abstract class
  *
- * @category   Varien
  * @package    Varien_Data
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method bool getBold()
  */
@@ -45,7 +37,6 @@ class Varien_Data_Form_Element_Label extends Varien_Data_Form_Element_Abstract
         $html = $this->getBold() ? '<strong>' : '';
         $html .= $this->getEscapedValue();
         $html .= $this->getBold() ? '</strong>' : '';
-        $html .= $this->getAfterElementHtml();
-        return $html;
+        return $html . $this->getAfterElementHtml();
     }
 }

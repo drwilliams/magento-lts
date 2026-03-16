@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Paypal
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Paypal Standard Checkout Controller
  *
- * @category   Mage
  * @package    Mage_Paypal
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Paypal_StandardController extends Mage_Core_Controller_Front_Action
 {
@@ -30,18 +22,17 @@ class Mage_Paypal_StandardController extends Mage_Core_Controller_Front_Action
     /**
      *  Get order
      *
-     *  @return  Mage_Sales_Model_Order
+     * @return Mage_Sales_Model_Order
      */
     public function getOrder()
     {
-        if ($this->_order == null) {
-        }
         return $this->_order;
     }
 
     /**
      * Send expire header to ajax response
      *
+     * @SuppressWarnings("PHPMD.ExitExpression")
      */
     protected function _expireAjax()
     {
@@ -52,7 +43,7 @@ class Mage_Paypal_StandardController extends Mage_Core_Controller_Front_Action
     }
 
     /**
-     * Get singleton with paypal strandard order transaction information
+     * Get singleton with PayPal standard order transaction information
      *
      * @return Mage_Paypal_Model_Standard
      */
@@ -63,7 +54,6 @@ class Mage_Paypal_StandardController extends Mage_Core_Controller_Front_Action
 
     /**
      * When a customer chooses Paypal on Checkout/Payment page
-     *
      */
     public function redirectAction()
     {
@@ -86,8 +76,10 @@ class Mage_Paypal_StandardController extends Mage_Core_Controller_Front_Action
             if ($order->getId()) {
                 $order->cancel()->save();
             }
+
             Mage::helper('paypal/checkout')->restoreQuote();
         }
+
         $this->_redirect('checkout/cart');
     }
 

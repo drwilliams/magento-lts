@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog comapare controller
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Product_CompareController extends Mage_Core_Controller_Front_Action
 {
@@ -78,7 +70,7 @@ class Mage_Catalog_Product_CompareController extends Mage_Core_Controller_Front_
             if ($product->getId()/* && !$product->isSuper()*/) {
                 Mage::getSingleton('catalog/product_compare_list')->addProduct($product);
                 Mage::getSingleton('catalog/session')->addSuccess(
-                    $this->__('The product %s has been added to comparison list.', Mage::helper('core')->escapeHtml($product->getName()))
+                    $this->__('The product %s has been added to comparison list.', Mage::helper('core')->escapeHtml($product->getName())),
                 );
                 Mage::dispatchEvent('catalog_product_compare_add_product', ['product' => $product]);
             }
@@ -107,7 +99,7 @@ class Mage_Catalog_Product_CompareController extends Mage_Core_Controller_Front_
                     $item->addCustomerData(Mage::getSingleton('customer/session')->getCustomer());
                 } elseif ($this->_customerId) {
                     $item->addCustomerData(
-                        Mage::getModel('customer/customer')->load($this->_customerId)
+                        Mage::getModel('customer/customer')->load($this->_customerId),
                     );
                 } else {
                     $item->addVisitorId(Mage::getSingleton('log/visitor')->getId());
@@ -118,7 +110,7 @@ class Mage_Catalog_Product_CompareController extends Mage_Core_Controller_Front_
                 if ($item->getId()) {
                     $item->delete();
                     Mage::getSingleton('catalog/session')->addSuccess(
-                        $this->__('The product %s has been removed from comparison list.', $product->getName())
+                        $this->__('The product %s has been removed from comparison list.', $product->getName()),
                     );
                     Mage::dispatchEvent('catalog_product_compare_remove_product', ['product' => $item]);
                     Mage::helper('catalog/product_compare')->calculate();
@@ -165,7 +157,7 @@ class Mage_Catalog_Product_CompareController extends Mage_Core_Controller_Front_
     /**
      * Setter for customer id
      *
-     * @param int $id
+     * @param  int   $id
      * @return $this
      */
     public function setCustomerId($id)
@@ -177,7 +169,7 @@ class Mage_Catalog_Product_CompareController extends Mage_Core_Controller_Front_
     /**
      * Check if product is available
      *
-     * @param int $productId
+     * @param  int  $productId
      * @return bool
      */
     public function isProductAvailable($productId)

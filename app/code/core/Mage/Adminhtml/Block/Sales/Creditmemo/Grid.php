@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 use Mage_Adminhtml_Block_Widget_Grid_Massaction_Abstract as MassAction;
@@ -18,9 +12,7 @@ use Mage_Adminhtml_Block_Widget_Grid_Massaction_Abstract as MassAction;
 /**
  * Adminhtml sales orders grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Sales_Creditmemo_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -29,7 +21,6 @@ class Mage_Adminhtml_Block_Sales_Creditmemo_Grid extends Mage_Adminhtml_Block_Wi
         parent::__construct();
         $this->setId('sales_creditmemo_grid');
         $this->setDefaultSort('created_at');
-        $this->setDefaultDir('DESC');
     }
 
     /**
@@ -100,28 +91,23 @@ class Mage_Adminhtml_Block_Sales_Creditmemo_Grid extends Mage_Adminhtml_Block_Wi
             'header'    => Mage::helper('customer')->__('Refunded'),
             'index'     => 'grand_total',
             'type'      => 'currency',
-            'align'     => 'right',
             'currency'  => 'order_currency_code',
         ]);
 
         $this->addColumn(
             'action',
             [
-                'header'    => Mage::helper('sales')->__('Action'),
-                'width'     => '50px',
                 'type'      => 'action',
                 'getter'     => 'getId',
                 'actions'   => [
                     [
                         'caption' => Mage::helper('sales')->__('View'),
                         'url'     => ['base' => '*/sales_creditmemo/view'],
-                        'field'   => 'creditmemo_id'
-                    ]
+                        'field'   => 'creditmemo_id',
+                    ],
                 ],
-                'filter'    => false,
-                'sortable'  => false,
-                'is_system' => true
-            ]
+                'is_system' => true,
+            ],
         );
 
         $this->addExportType('*/*/exportCsv', Mage::helper('sales')->__('CSV'));
@@ -140,28 +126,29 @@ class Mage_Adminhtml_Block_Sales_Creditmemo_Grid extends Mage_Adminhtml_Block_Wi
         $this->getMassactionBlock()->setUseSelectAll(false);
 
         $this->getMassactionBlock()->addItem(MassAction::PDF_CREDITMEMOS_ORDER, [
-             'label' => Mage::helper('sales')->__('PDF Credit Memos'),
-             'url'  => $this->getUrl('*/sales_creditmemo/pdfcreditmemos'),
+            'label' => Mage::helper('sales')->__('PDF Credit Memos'),
+            'url'  => $this->getUrl('*/sales_creditmemo/pdfcreditmemos'),
         ]);
 
         return $this;
     }
 
     /**
-     * @param Mage_Sales_Model_Order_Creditmemo $row
-     * @return false|string
+     * @inheritDoc
+     * @param  Mage_Sales_Model_Order_Creditmemo $row
+     * @throws Mage_Core_Exception
      */
     public function getRowUrl($row)
     {
         if (!Mage::getSingleton('admin/session')->isAllowed('sales/order/creditmemo')) {
-            return false;
+            return '';
         }
 
         return $this->getUrl(
             '*/sales_creditmemo/view',
             [
                 'creditmemo_id' => $row->getId(),
-            ]
+            ],
         );
     }
 

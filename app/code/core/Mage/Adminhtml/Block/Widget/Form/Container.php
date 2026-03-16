@@ -1,32 +1,28 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
  * Adminhtml form container block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Widget_Container
 {
     protected $_objectId = 'id';
+
     protected $_formScripts = [];
+
     protected $_formInitScripts = [];
+
     protected $_mode = 'edit';
+
     protected $_blockGroup = 'adminhtml';
 
     public function __construct()
@@ -45,6 +41,7 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
         $this->_addButton('reset', [
             'label'     => Mage::helper('adminhtml')->__('Reset'),
             'onclick'   => 'setLocation(window.location.href)',
+            'class'     => 'reset',
         ], -1);
 
         $objId = $this->getRequest()->getParam($this->_objectId);
@@ -53,7 +50,7 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
             $this->_addButton('delete', [
                 'label'     => Mage::helper('adminhtml')->__('Delete'),
                 'class'     => 'delete',
-                'onclick'   => Mage::helper('core/js')->getDeleteConfirmJs($this->getDeleteUrl())
+                'onclick'   => Mage::helper('core/js')->getDeleteConfirmJs($this->getDeleteUrl()),
             ]);
         }
 
@@ -77,6 +74,7 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
                 . $this->_mode
                 . '_form'));
         }
+
         return parent::_prepareLayout();
     }
 
@@ -98,16 +96,16 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
     {
         return $this->getUrl('*/*/delete', [
             $this->_objectId => $this->getRequest()->getParam($this->_objectId),
-            Mage_Core_Model_Url::FORM_KEY => $this->getFormKey()
+            Mage_Core_Model_Url::FORM_KEY => $this->getFormKey(),
         ]);
     }
 
     /**
      * Get form save URL
      *
+     * @return string
      * @deprecated
      * @see getFormActionUrl()
-     * @return string
      */
     public function getSaveUrl()
     {
@@ -124,6 +122,7 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
         if ($this->hasFormActionUrl()) {
             return $this->getData('form_action_url');
         }
+
         return $this->getUrl('*/' . $this->_controller . '/save');
     }
 
@@ -144,6 +143,7 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
         if (!empty($this->_formInitScripts) && is_array($this->_formInitScripts)) {
             return '<script type="text/javascript">' . implode("\n", $this->_formInitScripts) . '</script>';
         }
+
         return '';
     }
 
@@ -155,6 +155,7 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
         if (!empty($this->_formScripts) && is_array($this->_formScripts)) {
             return '<script type="text/javascript">' . implode("\n", $this->_formScripts) . '</script>';
         }
+
         return '';
     }
 
@@ -185,7 +186,7 @@ class Mage_Adminhtml_Block_Widget_Form_Container extends Mage_Adminhtml_Block_Wi
     /**
      * Set data object and pass it to form
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return $this
      */
     public function setDataObject($object)

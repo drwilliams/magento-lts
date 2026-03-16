@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Dataflow
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2021-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Convert csv parser
  *
- * @category   Mage
  * @package    Mage_Dataflow
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Dataflow_Model_Session_Parser_Csv extends Mage_Dataflow_Model_Convert_Parser_Abstract
 {
@@ -26,6 +18,7 @@ class Mage_Dataflow_Model_Session_Parser_Csv extends Mage_Dataflow_Model_Convert
     {
         $fDel = $this->getVar('delimiter', ',');
         $fEnc = $this->getVar('enclose', '"');
+        $fEsc = $this->getVar('escape', '\\');
 
         if ($fDel == '\\t') {
             $fDel = "\t";
@@ -42,21 +35,23 @@ class Mage_Dataflow_Model_Session_Parser_Csv extends Mage_Dataflow_Model_Convert
         $sessionId = Mage::registry('current_dataflow_session_id');
         $import = Mage::getModel('dataflow/import');
         $map = new Varien_Convert_Mapper_Column();
-        for ($i = 0; $line = fgetcsv($fp, 4096, $fDel, $fEnc); $i++) {
+        for ($i = 0; $line = fgetcsv($fp, 4096, $fDel, $fEnc, $fEsc); $i++) {
             if ($i == 0) {
                 if ($this->getVar('fieldnames')) {
                     $fields = $line;
                     continue;
-                } else {
-                    foreach ($line as $j => $f) {
-                        $fields[$j] = 'column' . ($j + 1);
-                    }
+                }
+
+                foreach (array_keys($line) as $j) {
+                    $fields[$j] = 'column' . ($j + 1);
                 }
             }
+
             $row = [];
             foreach ($fields as $j => $f) {
                 $row[$f] = $line[$j];
             }
+
             /*
             if ($i <= 100)
             {
@@ -75,6 +70,7 @@ class Mage_Dataflow_Model_Session_Parser_Csv extends Mage_Dataflow_Model_Convert
             $import->save();
             //unset($import);
         }
+
         fclose($fp);
         unset($sessionId);
         //$this->setData($data);
@@ -103,9 +99,11 @@ class Mage_Dataflow_Model_Session_Parser_Csv extends Mage_Dataflow_Model_Convert
             foreach ($fields as $f) {
                 $line[] = $fEnc . str_replace(['"', '\\'], [$fEsc . '"', $fEsc . '\\'], $f) . $fEnc;
             }
+
             $lines[] = implode($fDel, $line);
         }
-        foreach ($data as $i => $row) {
+
+        foreach ($data as $row) {
             $line = [];
             foreach ($fields as $f) {
                 /*
@@ -118,8 +116,10 @@ class Mage_Dataflow_Model_Session_Parser_Csv extends Mage_Dataflow_Model_Convert
 
                 $line[] = $fEnc . $v . $fEnc;
             }
+
             $lines[] = implode($fDel, $line);
         }
+
         $result = implode($lDel, $lines);
         $this->setData($result);
 

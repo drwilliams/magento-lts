@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_DB
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2018-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Mysqli database connector
  *
- * @category   Mage
  * @package    Mage_Db
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_DB_Mysqli
 {
@@ -45,6 +37,7 @@ class Mage_DB_Mysqli
      * @var mysqli
      */
     protected $conn;
+
     /**
      * Fetch mode
      * @var int
@@ -61,14 +54,14 @@ class Mage_DB_Mysqli
 
     /**
      * Connect
-     * @param string $host
-     * @param string $user
-     * @param string $paswd
-     * @param string $db
-     * @param int $port
+     * @param  string $host
+     * @param  string $user
+     * @param  string $paswd
+     * @param  string $db
+     * @param  int    $port
      * @return mixed
      *
-     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     * @SuppressWarnings("PHPMD.ErrorControlOperator")
      */
     public function connect($host, $user, $paswd, $db, $port = self::DEFAULT_PORT)
     {
@@ -77,23 +70,23 @@ class Mage_DB_Mysqli
         if (0 !== mysqli_connect_errno($this->conn)) {
             throw new Mage_DB_Exception(mysqli_connect_error($this->conn));
         }
+
         return $res;
     }
 
     /**
      * Select database
-     * @param $db db name
+     * @param        $db db name
      * @return mixed
      */
     public function selectDb($db)
     {
-        $res = mysqli_select_db($this->conn, $db);
-        return $res;
+        return mysqli_select_db($this->conn, $db);
     }
 
     /**
      * Escape string
-     * @param string $str
+     * @param  string $str
      * @return string
      */
     public function escapeString($str)
@@ -103,7 +96,7 @@ class Mage_DB_Mysqli
 
     /**
      * Escape table name
-     * @param string $table
+     * @param  string $table
      * @return string
      */
     public function escapeTableName($table)
@@ -113,7 +106,7 @@ class Mage_DB_Mysqli
 
     /**
      * Escape field name
-     * @param string $fld
+     * @param  string $fld
      * @return string
      */
     public function escapeFieldName($fld)
@@ -123,7 +116,7 @@ class Mage_DB_Mysqli
 
     /**
      * Escape field value
-     * @param $data
+     * @param         $data
      * @return string
      */
     public function escapeFieldValue($data)
@@ -133,19 +126,20 @@ class Mage_DB_Mysqli
 
     /**
      * Fetch all rows
-     * @param $sql
+     * @param        $sql
      * @return array
      */
     public function fetchAll($sql)
     {
         $res = $this->query($sql);
         for ($out = []; $row = $res->fetch_array($this->fetch_mode); $out[] = $row);
+
         return $out;
     }
 
     /**
      * Fetch one row
-     * @param $sql
+     * @param        $sql
      * @return array
      */
     public function fetchOne($sql)
@@ -156,9 +150,9 @@ class Mage_DB_Mysqli
 
     /**
      * Fetch rows grouped by key
-     * @param $sql
-     * @param $key
-     * @param $arrayMode force Array mode
+     * @param        $sql
+     * @param        $key
+     * @param        $arrayMode force Array mode
      * @return array
      */
     public function fetchGroupedArrayByKey($sql, $key, $arrayMode = true)
@@ -170,31 +164,34 @@ class Mage_DB_Mysqli
                 if (!isset($out[$row[$key]])) {
                     $out[$row[$key]] = [];
                 }
+
                 $out[$row[$key]][] = $row;
             } else {
                 $out[$row[$key]] = $row;
             }
         }
+
         return $out;
     }
 
     /**
      * Fetch one field from all rows and place to list
-     * @param string $sql
-     * @param string $fld
+     * @param  string $sql
+     * @param  string $fld
      * @return array
      */
     public function fetchOneFieldAll($sql, $fld)
     {
         $res = $this->query($sql);
         for ($out = []; $row = $res->fetch_array($this->fetch_mode); $out[] = $row[$fld]);
+
         return $out;
     }
 
     /**
      * List one item
-     * @param $table
-     * @param $condition
+     * @param        $table
+     * @param        $condition
      * @return array
      */
     public function listOne($table, $condition)
@@ -206,8 +203,8 @@ class Mage_DB_Mysqli
 
     /**
      * List items in table by condition
-     * @param string $table        table name
-     * @param string $condition    optional, if empty 1=1 is used
+     * @param  string $table     table name
+     * @param  string $condition optional, if empty 1=1 is used
      * @return array
      */
     public function listAll($table, $condition = '1=1')
@@ -219,9 +216,9 @@ class Mage_DB_Mysqli
 
     /**
      * List by key single entry
-     * @param string $table   table name
-     * @param string $value   field value
-     * @param string $key     field name
+     * @param  string $table table name
+     * @param  string $value field value
+     * @param  string $key   field name
      * @return array
      */
     public function listByKeyOne($table, $value, $key = 'id')
@@ -235,10 +232,10 @@ class Mage_DB_Mysqli
 
     /**
      * List by key all rows in table
-     * @param string $table   table name
-     * @param string $value   value of key field
-     * @param string $key     key field name
-     * @param string $add     additional conditions
+     * @param  string $table table name
+     * @param  string $value value of key field
+     * @param  string $key   key field name
+     * @param  string $add   additional conditions
      * @return array
      */
     public function listByKeyAll($table, $value, $key = 'id', $add = '')
@@ -252,9 +249,9 @@ class Mage_DB_Mysqli
 
     /**
      * List by key grouped
-     * @param string $table
-     * @param string $key
-     * @param bool $forcedArrayMode
+     * @param  string $table
+     * @param  string $key
+     * @param  bool   $forcedArrayMode
      * @return array
      */
     public function listByKeyGrouped($table, $key = 'id', $forcedArrayMode = false)
@@ -266,7 +263,6 @@ class Mage_DB_Mysqli
 
     /**
      * Escape field names
-     * @param array $arrNames
      * @return array
      */
     public function escapeFieldNames(array $arrNames)
@@ -275,12 +271,12 @@ class Mage_DB_Mysqli
         for ($i = 0, $c = count($arrNames); $i < $c; $i++) {
             $out[] = $this->escapeFieldName($arrNames[$i]);
         }
+
         return $out;
     }
 
     /**
      * Escape field values
-     * @param array $arrNames
      * @return array
      */
     public function escapeFieldValues(array $arrNames)
@@ -293,13 +289,14 @@ class Mage_DB_Mysqli
                 $out[] = $arrNames[$i];
             }
         }
+
         return $out;
     }
 
     /**
      * Throw connect exception
-     * @throws Mage_DB_Exception
      * @return never
+     * @throws Mage_DB_Exception
      */
     protected function throwConnectException()
     {
@@ -308,9 +305,9 @@ class Mage_DB_Mysqli
 
     /**
      * Query - perform with throwing exception on error
-     * @param string $sql query
-     * @throws Mage_DB_Exception
+     * @param  string            $sql query
      * @return mixed
+     * @throws Mage_DB_Exception
      */
     public function query($sql)
     {
@@ -318,12 +315,13 @@ class Mage_DB_Mysqli
         if (!$res) {
             throw new Mage_DB_Exception($this->conn->error);
         }
+
         return $res;
     }
 
     /**
      * Unsafe query - perform without error checking
-     * @param string $sql query
+     * @param  string $sql query
      * @return mixed
      */
     public function unsafeQuery($sql)
@@ -333,28 +331,27 @@ class Mage_DB_Mysqli
 
     /**
      * Insert assoc array to table
-     * @param string $table
-     * @param array $data
-     * @param bool $replace
+     * @param  string $table
+     * @param  bool   $replace
      * @return mixed
      */
     public function insertAssocOne($table, array $data, $replace = false)
     {
         $keys = $this->escapeFieldNames(array_keys($data));
-        $keys = "(" . implode(",", $keys) . ")";
+        $keys = '(' . implode(',', $keys) . ')';
+
         $table = $this->escapeTableName($table);
         $sql = $replace ? "REPLACE INTO {$table} " : "INSERT INTO {$table} ";
         $values = $this->escapeFieldValues(array_values($data));
-        $values = " VALUES (" . implode(",", $values) . ")";
+        $values = ' VALUES (' . implode(',', $values) . ')';
         $sql .= $keys . $values;
         return $this->query($sql);
     }
 
     /**
      * Insert several records to table
-     * @param string $table
-     * @param array $data
-     * @param bool $replace   use REPLACE INTO instead of INSERT INTO
+     * @param  string $table
+     * @param  bool   $replace use REPLACE INTO instead of INSERT INTO
      * @return array
      */
     public function insertAssocMultiple($table, array $data, $replace = false, $excludeFields = [])
@@ -372,40 +369,44 @@ class Mage_DB_Mysqli
         }
 
         $keys = $this->escapeFieldNames($keys);
-        $sql .= " ( ";
+        $sql .= ' ( ';
         for ($i = 0, $c = count($keys); $i < $c; $i++) {
             $sql .= $keys[$i];
             if ($i != $c - 1) {
-                $sql .= ",";
+                $sql .= ',';
             }
         }
-        $sql .= " ) VALUES ";
+
+        $sql .= ' ) VALUES ';
         for ($i = 0, $c = count($data); $i < $c; $i++) {
             $row = $data[$i];
             for ($j = 0, $jc = count($excluded); $j < $jc; $j++) {
                 unset($data[$excluded[$j]]);
             }
+
             $values = $this->escapeFieldValues(array_values($row));
-            $sql .= "( ";
+            $sql .= '( ';
             for ($j = 0, $jc = count($values); $j < $jc; $j++) {
                 $sql .= $values[$j];
                 if ($j != $jc - 1) {
-                    $sql .= ",";
+                    $sql .= ',';
                 }
             }
-            $sql .= " )";
+
+            $sql .= ' )';
             if ($i != $c - 1) {
-                $sql .= ",";
+                $sql .= ',';
             }
         }
+
         return $this->query($sql);
     }
 
     /**
      * Set table data by condition
-     * @param $table
-     * @param $data
-     * @param $condition
+     * @param        $table
+     * @param        $data
+     * @param        $condition
      * @return mixed
      */
     public function updateAssoc($table, array $data, $condition = '1=1')
@@ -415,19 +416,19 @@ class Mage_DB_Mysqli
         foreach ($data as $k => $v) {
             $k = $this->escapeFieldName($k);
             $v = $this->escapeFieldValue($v);
-            $set[] = $k . " = " . $v;
+            $set[] = $k . ' = ' . $v;
         }
-        $set = implode(",", $set);
+
+        $set = implode(',', $set);
         $sql = "UPDATE {$table} SET {$set} WHERE {$condition}";
         return $this->query($sql);
     }
 
     /**
      * Update entry by pk
-     * @param string $table
-     * @param array $data
-     * @param string $value
-     * @param string $key
+     * @param  string $table
+     * @param  string $value
+     * @param  string $key
      * @return mixed
      */
     public function updateAssocByKey($table, array $data, $value, $key = 'id')
@@ -439,16 +440,17 @@ class Mage_DB_Mysqli
         foreach ($data as $k => $v) {
             $k = $this->escapeFieldName($k);
             $v = $this->escapeFieldValue($v);
-            $set[] = $k . " = " . $v;
+            $set[] = $k . ' = ' . $v;
         }
-        $set = implode(",", $set);
+
+        $set = implode(',', $set);
         $sql = "UPDATE {$table} SET {$set} WHERE {$key} = {$value}";
         return $this->query($sql);
     }
 
     /**
      * Convert ids to string
-     * @param array|string $ids
+     * @param  array|string $ids
      * @return string
      */
     public function idsToString($ids)
@@ -456,30 +458,31 @@ class Mage_DB_Mysqli
         if (is_scalar($ids)) {
             return $this->escapeFieldValue((string) $ids);
         }
+
         $out = [];
         foreach ($ids as $id) {
             $out .= $this->escapeFieldValue($id);
         }
-        return implode(",", $out);
+
+        return implode(',', $out);
     }
 
     /**
      * Ids equality condition
-     * @param mixed $ids   array or string
+     * @param  mixed  $ids array or string
      * @return string
      */
     public function idsEqualCondition($ids)
     {
         $vals = $this->idsToString($ids);
-        $condition = is_scalar($ids) ? " = {$vals} " : " IN ({$vals}) ";
-        return $condition;
+        return is_scalar($ids) ? " = {$vals} " : " IN ({$vals}) ";
     }
 
     /**
      * Delete items by id
-     * @param string $table
-     * @param mixed $ids      array or string
-     * @param string $key     key field
+     * @param  string $table
+     * @param  mixed  $ids   array or string
+     * @param  string $key   key field
      * @return mixed
      */
     public function deleteById($table, $ids, $key = 'id')
@@ -493,8 +496,8 @@ class Mage_DB_Mysqli
 
     /**
      * Count items in table by condition
-     * @param string $table
-     * @param string $condition ex: "a>0"
+     * @param  string $table
+     * @param  string $condition ex: "a>0"
      * @return int
      */
     public function simpleCount($table, $condition)
@@ -504,12 +507,13 @@ class Mage_DB_Mysqli
         if (empty($data['cnt'])) {
             return 0;
         }
+
         return (int) $data['cnt'];
     }
 
     public function lastInsertId()
     {
-        $sql = "SELECT LAST_INSERT_ID() as `id`";
+        $sql = 'SELECT LAST_INSERT_ID() as `id`';
         $data = $this->fetchOne($sql);
         return $data['id'];
     }

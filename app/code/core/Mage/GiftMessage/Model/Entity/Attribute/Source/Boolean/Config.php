@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_GiftMessage
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Gift Message attribute source model
  *
- * @category   Mage
  * @package    Mage_GiftMessage
- * @author     Magento Core Team <core@magentocommerce.com>
  * @deprecated after 1.4.2.0
  */
 class Mage_GiftMessage_Model_Entity_Attribute_Source_Boolean_Config extends Mage_Eav_Model_Entity_Attribute_Source_Boolean
@@ -34,18 +26,19 @@ class Mage_GiftMessage_Model_Entity_Attribute_Source_Boolean_Config extends Mage
             $this->_options = [
                 [
                     'label' => Mage::helper('giftmessage')->__('Yes'),
-                    'value' =>  1
+                    'value' =>  1,
                 ],
                 [
                     'label' => Mage::helper('giftmessage')->__('No'),
-                    'value' =>  0
+                    'value' =>  0,
                 ],
                 [
                     'label' => Mage::helper('giftmessage')->__('Use config'),
-                    'value' =>  2
-                ]
+                    'value' =>  2,
+                ],
             ];
         }
+
         return $this->_options;
     }
 }

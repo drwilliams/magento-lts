@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Reports Product Index Abstract Product Resource Collection
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract extends Mage_Catalog_Model_Resource_Product_Collection
 {
@@ -39,7 +31,6 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
 
     /**
      * Retrieve Product Index table name
-     *
      */
     abstract protected function _getTableName();
 
@@ -57,12 +48,13 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
                 [
                     'product_id'    => 'product_id',
                     'item_store_id' => 'store_id',
-                    'added_at'      => 'added_at'
+                    'added_at'      => 'added_at',
                 ],
-                $this->_getWhereCondition()
+                $this->_getWhereCondition(),
             );
             $this->setFlag('is_idx_table_joined', true);
         }
+
         return $this;
     }
 
@@ -83,7 +75,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
     /**
      * Add filter by product ids
      *
-     * @param array $ids
+     * @param  array                                                         $ids
      * @return Mage_Reports_Model_Resource_Product_Index_Collection_Abstract
      */
     public function addFilterByIds($ids)
@@ -93,6 +85,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
         } else {
             $this->getSelect()->where('e.entity_id IN(?)', $ids);
         }
+
         return $this;
     }
 
@@ -119,19 +112,19 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
     /**
      * Set customer id, that will be used in 'whereCondition'
      *
-     * @param int $id
+     * @param  int                                                           $id
      * @return Mage_Reports_Model_Resource_Product_Index_Collection_Abstract
      */
     public function setCustomerId($id)
     {
-        $this->_customerId = (int)$id;
+        $this->_customerId = (int) $id;
         return $this;
     }
 
     /**
      * Add order by "added at"
      *
-     * @param string $dir
+     * @param  string                                                        $dir
      * @return Mage_Reports_Model_Resource_Product_Index_Collection_Abstract
      */
     public function setAddedAtOrder($dir = self::SORT_ORDER_DESC)
@@ -139,13 +132,13 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
         if ($this->getFlag('is_idx_table_joined')) {
             $this->getSelect()->order('added_at ' . $dir);
         }
+
         return $this;
     }
 
     /**
      * Set list of ids with expected order
      *
-     * @param array $ids
      * @return Mage_Reports_Model_Resource_Product_Index_Collection_Abstract
      */
     public function setSortIds(array $ids)
@@ -168,8 +161,10 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
                     $orderedItems[$id] = $this->_items[$id];
                 }
             }
+
             $this->_items = $orderedItems;
         }
+
         return $this;
     }
 
@@ -188,7 +183,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
     /**
      * Add exclude Product Ids
      *
-     * @param int|array $productIds
+     * @param  array|int                                                     $productIds
      * @return Mage_Reports_Model_Resource_Product_Index_Collection_Abstract
      */
     public function excludeProductIds($productIds)
@@ -196,6 +191,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Collection_Abstract ext
         if (empty($productIds)) {
             return $this;
         }
+
         $this->_joinIdxTable();
         $this->getSelect()->where('idx_table.product_id NOT IN(?)', $productIds);
         return $this;

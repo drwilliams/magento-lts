@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog Category Attribute Default and Available Sort By Backend Model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Category_Attribute_Backend_Sortby extends Mage_Eav_Model_Entity_Attribute_Backend_Abstract
 {
     /**
      * Validate process
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return bool
      */
     public function validate($object)
@@ -41,13 +33,11 @@ class Mage_Catalog_Model_Category_Attribute_Backend_Sortby extends Mage_Eav_Mode
 
         if ($this->getAttribute()->getIsRequired()) {
             $attributeValue = $object->getData($attributeCode);
-            if ($this->getAttribute()->isValueEmpty($attributeValue)) {
-                if (is_array($attributeValue) && count($attributeValue) > 0) {
-                } else {
-                    if (!$isUseConfig) {
-                        return false;
-                    }
-                }
+            if ($this->getAttribute()->isValueEmpty($attributeValue)
+                && !(is_array($attributeValue) && $attributeValue !== [])
+                && !$isUseConfig
+            ) {
+                return false;
             }
         }
 
@@ -63,15 +53,14 @@ class Mage_Catalog_Model_Category_Attribute_Backend_Sortby extends Mage_Eav_Mode
                 if (!is_array($available)) {
                     $available = explode(',', $available);
                 }
-                $data = (!in_array('default_sort_by', $postDataConfig)) ? $object->getData($attributeCode) :
-                       Mage::getStoreConfig("catalog/frontend/default_sort_by");
+
+                $data = (in_array('default_sort_by', $postDataConfig)) ? Mage::getStoreConfig('catalog/frontend/default_sort_by')
+                       : $object->getData($attributeCode);
                 if (!in_array($data, $available)) {
                     Mage::throwException(Mage::helper('eav')->__('Default Product Listing Sort by does not exist in Available Product Listing Sort By.'));
                 }
-            } else {
-                if (!in_array('available_sort_by', $postDataConfig)) {
-                    Mage::throwException(Mage::helper('eav')->__('Default Product Listing Sort by does not exist in Available Product Listing Sort By.'));
-                }
+            } elseif (!in_array('available_sort_by', $postDataConfig)) {
+                Mage::throwException(Mage::helper('eav')->__('Default Product Listing Sort by does not exist in Available Product Listing Sort By.'));
             }
         }
 
@@ -81,7 +70,7 @@ class Mage_Catalog_Model_Category_Attribute_Backend_Sortby extends Mage_Eav_Mode
     /**
      * Before Attribute Save Process
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return $this
      */
     public function beforeSave($object)
@@ -92,16 +81,19 @@ class Mage_Catalog_Model_Category_Attribute_Backend_Sortby extends Mage_Eav_Mode
             if (!is_array($data)) {
                 $data = [];
             }
+
             $object->setData($attributeCode, implode(',', $data));
         }
+
         if (is_null($object->getData($attributeCode))) {
             $object->setData($attributeCode, false);
         }
+
         return $this;
     }
 
     /**
-     * @param Varien_Object $object
+     * @param  Varien_Object                                          $object
      * @return $this|Mage_Eav_Model_Entity_Attribute_Backend_Abstract
      */
     public function afterLoad($object)
@@ -113,6 +105,7 @@ class Mage_Catalog_Model_Category_Attribute_Backend_Sortby extends Mage_Eav_Mode
                 $object->setData($attributeCode, explode(',', $data));
             }
         }
+
         return $this;
     }
 }

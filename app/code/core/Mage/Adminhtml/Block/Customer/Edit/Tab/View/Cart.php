@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml customer cart items grid block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Cart extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -30,11 +22,10 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Cart extends Mage_Adminhtml_Bl
         parent::__construct();
         $this->setId('customer_view_cart_grid');
         $this->setDefaultSort('added_at');
-        $this->setDefaultDir('desc');
         $this->setSortable(false);
         $this->setPagerVisibility(false);
         $this->setFilterVisibility(false);
-        $this->setEmptyText(Mage::helper('customer')->__('There are no items in customer\'s shopping cart at the moment'));
+        $this->setEmptyText(Mage::helper('customer')->__("There are no items in customer's shopping cart at the moment"));
     }
 
     /**
@@ -49,6 +40,7 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Cart extends Mage_Adminhtml_Bl
         if ($this->getWebsiteId()) {
             $quote->setWebsite(Mage::app()->getWebsite($this->getWebsiteId()));
         }
+
         $quote->loadByCustomer(Mage::registry('current_customer'));
 
         $collection = $quote ? $quote->getItemsCollection(false) : new Varien_Data_Collection();
@@ -65,43 +57,39 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Cart extends Mage_Adminhtml_Bl
      */
     protected function _prepareColumns()
     {
-        $currencyCode = (string)Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE);
+        $currencyCode = Mage_Directory_Helper_Data::getConfigCurrencyBase();
         $this->addColumn('product_id', [
             'header' => Mage::helper('customer')->__('Product ID'),
             'index' => 'product_id',
-            'width' => '100px'
+            'width' => '100px',
         ])->addColumn('name', [
             'header' => Mage::helper('customer')->__('Product Name'),
-            'index' => 'name'
+            'index' => 'name',
         ])->addColumn('sku', [
             'header' => Mage::helper('customer')->__('SKU'),
             'index' => 'sku',
-            'width' => '100px'
+            'width' => '100px',
         ])->addColumn('qty', [
             'header' => Mage::helper('customer')->__('Qty'),
             'index' => 'qty',
             'type'  => 'number',
-            'width' => '60px'
+            'width' => '60px',
         ])->addColumn('price', [
-            'header' => Mage::helper('customer')->__('Price'),
-            'index' => 'price',
             'type'  => 'currency',
-            'currency_code' => $currencyCode
+            'currency_code' => $currencyCode,
         ])->addColumn('total', [
             'header' => Mage::helper('customer')->__('Total'),
             'index' => 'row_total',
             'type'  => 'currency',
-            'currency_code' => $currencyCode
+            'currency_code' => $currencyCode,
         ]);
 
         return parent::_prepareColumns();
     }
 
     /**
-     * Retrieve row url
-     *
+     * @inheritDoc
      * @param Mage_Sales_Model_Quote_Item $row
-     * @return string
      */
     public function getRowUrl($row)
     {

@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Uploader
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Uploader
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
 {
@@ -27,8 +19,8 @@ class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
      *
      * @var array
      */
-    protected $_mimeTypes =
-        [
+    protected $_mimeTypes
+        = [
             'x123' => 'application/vnd.lotus-1-2-3',
             'x3dml' => 'text/vnd.in3d.3dml',
             'x3g2' => 'video/3gpp2',
@@ -236,6 +228,7 @@ class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
             'xjisp' => 'application/vnd.jisp',
             'xjlt' => 'application/vnd.hp-jlyt',
             'xjoda' => 'application/vnd.joost.joda-archive',
+            'xwebp' => 'image/webp',
             'xjpe' => 'image/jpeg',
             'xjpeg' => 'image/jpeg',
             'xjpg' => 'image/jpeg',
@@ -636,7 +629,7 @@ class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
     {
         $nodes = Mage::getConfig()->getNode('global/mime/types');
         if ($nodes) {
-            $nodes = (array)$nodes;
+            $nodes = (array) $nodes;
             foreach ($nodes as $key => $value) {
                 $this->_mimeTypes[$key] = $value;
             }
@@ -646,7 +639,7 @@ class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
     /**
      * Get MIME type by file extension from list of pre-defined MIME types
      *
-     * @param string $ext
+     * @param  string $ext
      * @return string
      */
     public function getMimeTypeByExtension($ext)
@@ -668,13 +661,13 @@ class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
     /**
      * Get array of MIME types associated with given file extension
      *
-     * @param array|string $extensionsList
+     * @param  array|string $extensionsList
      * @return array
      */
     public function getMimeTypeFromExtensionList($extensionsList)
     {
         if (is_string($extensionsList)) {
-            $extensionsList = array_map('trim', explode(',', $extensionsList));
+            $extensionsList = array_map(trim(...), explode(',', $extensionsList));
         }
 
         return array_map([$this, 'getMimeTypeByExtension'], $extensionsList);
@@ -703,11 +696,16 @@ class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
     /**
      * Get max upload size
      *
-     * @return mixed
+     * @return string
      */
     public function getDataMaxSize()
     {
-        return min($this->getPostMaxSize(), $this->getUploadMaxSize());
+        $postMaxSize = $this->getPostMaxSize();
+        $uploadMaxSize = $this->getUploadMaxSize();
+        $postMaxSizeBytes = ini_parse_quantity($postMaxSize);
+        $uploadMaxSizeBytes = ini_parse_quantity($uploadMaxSize);
+
+        return min($postMaxSizeBytes, $uploadMaxSizeBytes) === $postMaxSizeBytes ? $postMaxSize : $uploadMaxSize;
     }
 
     /**
@@ -717,27 +715,6 @@ class Mage_Uploader_Helper_File extends Mage_Core_Helper_Abstract
      */
     public function getDataMaxSizeInBytes()
     {
-        $iniSize = $this->getDataMaxSize();
-        $size = substr($iniSize, 0, -1);
-        $parsedSize = 0;
-        switch (strtolower(substr($iniSize, strlen($iniSize) - 1))) {
-            case 't':
-                $parsedSize = $size * (1024 * 1024 * 1024 * 1024);
-                break;
-            case 'g':
-                $parsedSize = $size * (1024 * 1024 * 1024);
-                break;
-            case 'm':
-                $parsedSize = $size * (1024 * 1024);
-                break;
-            case 'k':
-                $parsedSize = $size * 1024;
-                break;
-            case 'b':
-            default:
-                $parsedSize = $size;
-                break;
-        }
-        return (int)$parsedSize;
+        return ini_parse_quantity($this->getDataMaxSize());
     }
 }

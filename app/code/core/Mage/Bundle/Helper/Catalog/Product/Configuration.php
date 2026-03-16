@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Bundle
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Helper for fetching properties by product configurational item
  *
- * @category   Mage
  * @package    Mage_Bundle
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_Abstract implements Mage_Catalog_Helper_Product_Configuration_Interface
 {
@@ -28,7 +20,7 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
      * Get selection quantity
      *
      * @param Mage_Catalog_Model_Product $product
-     * @param int $selectionId
+     * @param int                        $selectionId
      *
      * @return float
      */
@@ -38,14 +30,14 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
         if ($selectionQty) {
             return $selectionQty->getValue();
         }
+
         return 0;
     }
 
     /**
      * Obtain final price of selection in a bundle product
      *
-     * @param Mage_Catalog_Model_Product_Configuration_Item_Interface $item
-     * @param Mage_Catalog_Model_Product $selectionProduct
+     * @param  Mage_Catalog_Model_Product $selectionProduct
      * @return float
      */
     public function getSelectionFinalPrice(
@@ -59,7 +51,7 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
             $item->getQty() * 1,
             $this->getSelectionQty($item->getProduct(), $selectionProduct->getSelectionId()),
             false,
-            true
+            true,
         );
     }
 
@@ -69,7 +61,6 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
      * Returns array of options objects.
      * Each option object will contain array of selections objects
      *
-     * @param Mage_Catalog_Model_Product_Configuration_Item_Interface $item
      * @return array
      */
     public function getBundleOptions(Mage_Catalog_Model_Product_Configuration_Item_Interface $item)
@@ -94,7 +85,7 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
             if (!empty($bundleSelectionIds)) {
                 $selectionsCollection = $typeInstance->getSelectionsByIds(
                     unserialize($selectionsQuoteItemOption->getValue(), ['allowed_classes' => false]),
-                    $product
+                    $product,
                 );
 
                 /** @var Mage_Bundle_Model_Option[] $bundleOptions */
@@ -103,7 +94,7 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
                     if ($bundleOption->getSelections()) {
                         $option = [
                             'label' => $bundleOption->getTitle(),
-                            'value' => []
+                            'value' => [],
                         ];
 
                         $bundleSelections = $bundleOption->getSelections();
@@ -113,7 +104,7 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
                             if ($qty) {
                                 $option['value'][] = $qty . ' x ' . $this->escapeHtml($bundleSelection->getName())
                                     . ' ' . Mage::helper('core')->currency(
-                                        $this->getSelectionFinalPrice($item, $bundleSelection)
+                                        $this->getSelectionFinalPrice($item, $bundleSelection),
                                     );
                             }
                         }
@@ -132,14 +123,13 @@ class Mage_Bundle_Helper_Catalog_Product_Configuration extends Mage_Core_Helper_
     /**
      * Retrieves product options list
      *
-     * @param Mage_Catalog_Model_Product_Configuration_Item_Interface $item
      * @return array
      */
     public function getOptions(Mage_Catalog_Model_Product_Configuration_Item_Interface $item)
     {
         return array_merge(
             $this->getBundleOptions($item),
-            Mage::helper('catalog/product_configuration')->getCustomOptions($item)
+            Mage::helper('catalog/product_configuration')->getCustomOptions($item),
         );
     }
 }

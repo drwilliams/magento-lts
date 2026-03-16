@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -23,22 +17,20 @@
  * - template (file name)
  * - module (for template)
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method getFromEmail()
- * @method $this setFromEmail(string $string)
  * @method getFromName()
- * @method $this setFromName(string $string)
- * @method string getTemplate()
- * @method $this setTemplate(string $string)
- * @method string|array getToEmail()
- * @method $this setToEmail(string|array $string)
+ * @method string       getTemplate()
+ * @method array|string getToEmail()
  * @method getToName()
- * @method $this setToName(string $string)
  * @method string getType()
- * @method $this setType(string $string)
+ * @method $this  setFromEmail(string $string)
+ * @method $this  setFromName(string $string)
+ * @method $this  setTemplate(string $string)
+ * @method $this  setToEmail(array|string $string)
+ * @method $this  setToName(string $string)
+ * @method $this  setType(string $string)
  */
 class Mage_Core_Model_Email extends Varien_Object
 {
@@ -58,8 +50,8 @@ class Mage_Core_Model_Email extends Varien_Object
     }
 
     /**
-     * @param string|array $var
-     * @param string|null $value
+     * @param  array|string $var
+     * @param  null|string  $value
      * @return $this
      */
     public function setTemplateVar($var, $value = null)
@@ -71,6 +63,7 @@ class Mage_Core_Model_Email extends Varien_Object
         } else {
             $this->_tplVars[$var] = $value;
         }
+
         return $this;
     }
 
@@ -95,10 +88,12 @@ class Mage_Core_Model_Email extends Varien_Object
             foreach ($this->getTemplateVars() as $var => $value) {
                 $this->_block->assign($var, $value);
             }
+
             $this->_block->assign('_type', strtolower($this->getType()))
                 ->assign('_section', 'body');
             $body = $this->_block->toHtml();
         }
+
         return $body;
     }
 
@@ -112,6 +107,7 @@ class Mage_Core_Model_Email extends Varien_Object
             $this->_block->assign('_section', 'subject');
             $subject = $this->_block->toHtml();
         }
+
         return $subject;
     }
 
@@ -142,7 +138,7 @@ class Mage_Core_Model_Email extends Varien_Object
             'mail'      => $mail,
             'template'  => $this->getTemplate(),
             'transport' => $transport,
-            'variables' => $this->getTemplateVars()
+            'variables' => $this->getTemplateVars(),
         ]);
 
         if ($transport->getTransport()) {
@@ -154,7 +150,7 @@ class Mage_Core_Model_Email extends Varien_Object
         Mage::dispatchEvent('email_send_after', [
             'to'         => $this->getToEmail(),
             'subject'    => $this->getSubject(),
-            'email_body' => $this->getBody()
+            'email_body' => $this->getBody(),
         ]);
 
         return $this;

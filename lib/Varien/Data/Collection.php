@@ -1,28 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Data
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Data collection
  *
- * @category   Varien
  * @package    Varien_Data
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Varien_Data_Collection implements IteratorAggregate, Countable
 {
     public const SORT_ORDER_ASC    = 'ASC';
+
     public const SORT_ORDER_DESC   = 'DESC';
 
     /**
@@ -63,7 +56,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Current page number for items pager
      *
-     * @var int
+     * @var null|int
      */
     protected $_curPage = 1;
 
@@ -72,14 +65,14 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
      *
      * if page size is false, then we works with all items
      *
-     * @var int | false
+     * @var null|false|int
      */
     protected $_pageSize = false;
 
     /**
      * Total items number
      *
-     * @var int|null
+     * @var null|int
      */
     protected $_totalRecords;
 
@@ -103,16 +96,12 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
      */
     protected $_flags = [];
 
-    public function __construct()
-    {
-    }
-
     /**
      * Add collection filter
      *
-     * @param string $field
-     * @param string|array $value
-     * @param string $type and|or|string
+     * @param  string           $field The field to filter on
+     * @param  array|int|string $value The value to filter by
+     * @param  string           $type  Logical operator for the filter ('and' or 'or'). Default is 'and'
      * @return $this
      */
     public function addFilter($field, $value, $type = 'and')
@@ -136,8 +125,8 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
      * - array('foo', 'bar') -- get all filters with field name 'foo' or 'bar'
      * - array() -- get all filters
      *
-     * @param string|array $field
-     * @return Varien_Object|array|null
+     * @param  array|string             $field
+     * @return null|array|Varien_Object
      */
     public function getFilter($field)
     {
@@ -146,6 +135,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
             if (empty($field)) {
                 return $this->_filters;
             }
+
             // non-empty array: collect all filters that match specified field names
             $result = [];
             foreach ($this->_filters as $filter) {
@@ -153,6 +143,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
                     $result[] = $filter;
                 }
             }
+
             return $result;
         }
 
@@ -162,6 +153,8 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
                 return $filter;
             }
         }
+
+        return null;
     }
 
     /**
@@ -177,7 +170,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Set collection loading status flag
      *
-     * @param bool $flag
+     * @param  bool  $flag
      * @return $this
      */
     protected function _setIsLoaded($flag = true)
@@ -196,11 +189,13 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     {
         if ($this->_curPage + $displacement <= 1) {
             return 1;
-        } elseif ($this->_curPage + $displacement > $this->getLastPageNumber()) {
-            return $this->getLastPageNumber();
-        } else {
-            return $this->_curPage + $displacement;
         }
+
+        if ($this->_curPage + $displacement > $this->getLastPageNumber()) {
+            return $this->getLastPageNumber();
+        }
+
+        return $this->_curPage + $displacement;
     }
 
     /**
@@ -213,11 +208,13 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
         $collectionSize = (int) $this->getSize();
         if (0 === $collectionSize) {
             return 1;
-        } elseif ($this->_pageSize) {
-            return ceil($collectionSize / $this->_pageSize);
-        } else {
-            return 1;
         }
+
+        if ($this->_pageSize) {
+            return (int) ceil($collectionSize / $this->_pageSize);
+        }
+
+        return 1;
     }
 
     /**
@@ -241,6 +238,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
         if (is_null($this->_totalRecords)) {
             $this->_totalRecords = count($this->getItems());
         }
+
         return (int) $this->_totalRecords;
     }
 
@@ -291,8 +289,8 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Retrieve field values from all items
      *
-     * @param   string $colName
-     * @return  array
+     * @param  string $colName
+     * @return array
      */
     public function getColumnValues($colName)
     {
@@ -302,15 +300,16 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
         foreach ($this->getItems() as $item) {
             $col[] = $item->getData($colName);
         }
+
         return $col;
     }
 
     /**
      * Search all items by field value
      *
-     * @param   string $column
-     * @param   mixed $value
-     * @return  array
+     * @param  string $column
+     * @param  mixed  $value
+     * @return array
      */
     public function getItemsByColumnValue($column, $value)
     {
@@ -322,15 +321,16 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
                 $res[] = $item;
             }
         }
+
         return $res;
     }
 
     /**
      * Search first item by field value
      *
-     * @param   string $column
-     * @param   mixed $value
-     * @return  Varien_Object|null
+     * @param  string             $column
+     * @param  mixed              $value
+     * @return null|Varien_Object
      */
     public function getItemByColumnValue($column, $value)
     {
@@ -341,14 +341,15 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
                 return $item;
             }
         }
+
         return null;
     }
 
     /**
      * Adding item to item array
      *
-     * @param   Varien_Object $item
-     * @return  $this
+     * @return $this
+     * @throws Exception
      */
     public function addItem(Varien_Object $item)
     {
@@ -356,19 +357,21 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
 
         if (!is_null($itemId)) {
             if (isset($this->_items[$itemId])) {
-                throw new Exception('Item (' . get_class($item) . ') with the same id "' . $item->getId() . '" already exist');
+                throw new Exception('Item (' . $item::class . ') with the same id "' . $item->getId() . '" already exist');
             }
+
             $this->_items[$itemId] = $item;
         } else {
             $this->_addItem($item);
         }
+
         return $this;
     }
 
     /**
      * Add item that has no id to collection
      *
-     * @param Varien_Object $item
+     * @param  Varien_Object $item
      * @return $this
      */
     protected function _addItem($item)
@@ -380,7 +383,6 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Retrieve item id
      *
-     * @param Varien_Object $item
      * @return mixed
      */
     protected function _getItemId(Varien_Object $item)
@@ -399,20 +401,22 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
         foreach ($this->getItems() as $item) {
             $ids[] = $this->_getItemId($item);
         }
+
         return $ids;
     }
 
     /**
      * Remove item from collection by item key
      *
-     * @param   mixed $key
-     * @return  $this
+     * @param  mixed $key
+     * @return $this
      */
     public function removeItemByKey($key)
     {
         if (isset($this->_items[$key])) {
             unset($this->_items[$key]);
         }
+
         return $this;
     }
 
@@ -434,63 +438,67 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
      *
      * Returns array with results of callback for each item
      *
-     * @param string|callable $callback
-     * @param array $args
+     * @param  callable|string $callback
      * @return array
      */
     public function walk($callback, array $args = [])
     {
         $results = [];
-        $useItemCallback = is_string($callback) && strpos($callback, '::') === false;
-        foreach ($this->getItems() as $id => $item) {
+        $useItemCallback = is_string($callback) && !str_contains($callback, '::');
+        foreach ($this->getItems() as $itemId => $item) {
             if ($useItemCallback) {
-                $cb = [$item, $callback];
+                $method = [$item, $callback];
             } else {
-                $cb = $callback;
+                $method = $callback;
                 array_unshift($args, $item);
             }
-            $results[$id] = call_user_func_array($cb, $args);
+
+            $results[$itemId] = call_user_func_array($method, $args);
         }
+
         return $results;
     }
 
     /**
      * @param callable $obj_method
-     * @param array $args
+     * @param array    $args
      */
     public function each($obj_method, $args = [])
     {
-        foreach ($args->_items as $k => $item) {
-            $args->_items[$k] = call_user_func($obj_method, $item);
+        foreach ($args->_items as $key => $item) {
+            $args->_items[$key] = call_user_func($obj_method, $item);
         }
     }
 
     /**
      * Setting data for all collection items
      *
-     * @param   mixed $key
-     * @param   mixed $value
-     * @return  $this
+     * @param  mixed $key
+     * @param  mixed $value
+     * @return $this
      */
     public function setDataToAll($key, $value = null)
     {
         if (is_array($key)) {
-            foreach ($key as $k => $v) {
-                $this->setDataToAll($k, $v);
+            foreach ($key as $arrKey => $arrValue) {
+                $this->setDataToAll($arrKey, $arrValue);
             }
+
             return $this;
         }
+
         foreach ($this->getItems() as $item) {
             $item->setData($key, $value);
         }
+
         return $this;
     }
 
     /**
      * Set current page
      *
-     * @param   int $page
-     * @return  $this
+     * @param  null|int $page
+     * @return $this
      */
     public function setCurPage($page)
     {
@@ -501,8 +509,8 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Set collection page size
      *
-     * @param   int $size
-     * @return  $this
+     * @param  null|int $size
+     * @return $this
      */
     public function setPageSize($size)
     {
@@ -513,9 +521,9 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Set select order
      *
-     * @param   string $field
-     * @param   string $direction
-     * @return  $this
+     * @param  string $field
+     * @param  string $direction
+     * @return $this
      */
     public function setOrder($field, $direction = self::SORT_ORDER_DESC)
     {
@@ -526,8 +534,8 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Set collection item class name
      *
-     * @param   string $className
-     * @return  $this
+     * @param  string $className
+     * @return $this
      */
     public function setItemObjectClass($className)
     {
@@ -555,7 +563,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Render sql select conditions
      *
-     * @return  Varien_Data_Collection
+     * @return Varien_Data_Collection
      */
     protected function _renderFilters()
     {
@@ -565,7 +573,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Render sql select orders
      *
-     * @return  Varien_Data_Collection
+     * @return Varien_Data_Collection
      */
     protected function _renderOrders()
     {
@@ -575,7 +583,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Render sql select limit
      *
-     * @return  Varien_Data_Collection
+     * @return Varien_Data_Collection
      */
     protected function _renderLimit()
     {
@@ -585,7 +593,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Set select distinct
      *
-     * @param bool $flag
+     * @param  bool  $flag
      * @return $this
      */
     public function distinct($flag)
@@ -596,8 +604,8 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Load data
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
+     * @param  bool  $printQuery
+     * @param  bool  $logQuery
      * @return $this
      */
     public function loadData($printQuery = false, $logQuery = false)
@@ -608,8 +616,8 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Load data
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
+     * @param  bool  $printQuery
+     * @param  bool  $logQuery
      * @return $this
      */
     public function load($printQuery = false, $logQuery = false)
@@ -632,15 +640,15 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
         foreach ($this as $item) {
             $xml .= $item->toXml();
         }
-        $xml .= '</items>
+
+        return $xml . '</items>
         </collection>';
-        return $xml;
     }
 
     /**
      * Convert collection to array
      *
-     * @param array $arrRequiredFields
+     * @param  array $arrRequiredFields
      * @return array
      */
     public function toArray($arrRequiredFields = [])
@@ -652,6 +660,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
         foreach ($this as $item) {
             $arrItems['items'][] = $item->toArray($arrRequiredFields);
         }
+
         return $arrItems;
     }
 
@@ -666,9 +675,9 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
      *      )
      * )
      *
-     * @param string $valueField
-     * @param string $labelField
-     * @param array $additional
+     * @param  string $valueField
+     * @param  string $labelField
+     * @param  array  $additional
      * @return array
      */
     protected function _toOptionArray($valueField = 'id', $labelField = 'name', $additional = [])
@@ -682,8 +691,10 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
             foreach ($additional as $code => $field) {
                 $data[$code] = $item->getData($field);
             }
+
             $res[] = $data;
         }
+
         return $res;
     }
 
@@ -709,9 +720,9 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
      * return items hash
      * array($value => $label)
      *
-     * @param   string $valueField
-     * @param   string $labelField
-     * @return  array
+     * @param  string $valueField
+     * @param  string $labelField
+     * @return array
      */
     protected function _toOptionHash($valueField = 'id', $labelField = 'name')
     {
@@ -719,22 +730,25 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
         foreach ($this as $item) {
             $res[$item->getData($valueField)] = $item->getData($labelField);
         }
+
         return $res;
     }
 
     /**
      * Retrieve item by id
      *
-     * @param   mixed $idValue
-     * @return  Varien_Object|null
+     * @param  mixed              $idValue
+     * @return null|Varien_Object
      */
     public function getItemById($idValue)
     {
         $this->load();
-        if (isset($this->_items[$idValue])) {
-            return $this->_items[$idValue];
+
+        if ($idValue === null) {
+            $idValue = '';
         }
-        return null;
+
+        return $this->_items[$idValue] ?? null;
     }
 
     /**
@@ -760,7 +774,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     }
 
     /**
-     * @param string $key
+     * @param  string $key
      * @return $this
      */
     public function setCacheKey($key)
@@ -778,7 +792,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     }
 
     /**
-     * @param array $tags
+     * @param  array $tags
      * @return $this
      */
     public function setCacheTags($tags)
@@ -806,19 +820,19 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Retrieve Flag
      *
-     * @param string $flag
+     * @param  string $flag
      * @return mixed
      */
     public function getFlag($flag)
     {
-        return isset($this->_flags[$flag]) ? $this->_flags[$flag] : null;
+        return $this->_flags[$flag] ?? null;
     }
 
     /**
      * Set Flag
      *
-     * @param string $flag
-     * @param mixed $value
+     * @param  string $flag
+     * @param  mixed  $value
      * @return $this
      */
     public function setFlag($flag, $value = null)
@@ -830,7 +844,7 @@ class Varien_Data_Collection implements IteratorAggregate, Countable
     /**
      * Has Flag
      *
-     * @param string $flag
+     * @param  string $flag
      * @return bool
      */
     public function hasFlag($flag)

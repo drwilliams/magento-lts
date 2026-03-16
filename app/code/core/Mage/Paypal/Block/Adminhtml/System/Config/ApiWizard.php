@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Paypal
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Custom renderer for PayPal API credentials wizard popup
  *
- * @category   Mage
  * @package    Mage_Paypal
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Paypal_Block_Adminhtml_System_Config_ApiWizard extends Mage_Adminhtml_Block_System_Config_Form_Field
 {
@@ -36,13 +28,13 @@ class Mage_Paypal_Block_Adminhtml_System_Config_ApiWizard extends Mage_Adminhtml
         if (!$this->getTemplate()) {
             $this->setTemplate($this->_wizardTemplate);
         }
+
         return $this;
     }
 
     /**
      * Unset some non-related element parameters
      *
-     * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
     public function render(Varien_Data_Form_Element_Abstract $element)
@@ -54,7 +46,6 @@ class Mage_Paypal_Block_Adminhtml_System_Config_ApiWizard extends Mage_Adminhtml
     /**
      * Get the button and scripts contents
      *
-     * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
@@ -63,7 +54,7 @@ class Mage_Paypal_Block_Adminhtml_System_Config_ApiWizard extends Mage_Adminhtml
         $elementHtmlId = $element->getHtmlId();
         $this->addData(array_merge(
             $this->_getButtonData($elementHtmlId, $originalData),
-            $this->_getSandboxButtonData($elementHtmlId, $originalData)
+            $this->_getSandboxButtonData($elementHtmlId, $originalData),
         ));
         return $this->_toHtml();
     }
@@ -71,8 +62,8 @@ class Mage_Paypal_Block_Adminhtml_System_Config_ApiWizard extends Mage_Adminhtml
     /**
      * Prepare button data
      *
-     * @param string $elementHtmlId
-     * @param array $originalData
+     * @param  string $elementHtmlId
+     * @param  array  $originalData
      * @return array
      */
     protected function _getButtonData($elementHtmlId, $originalData)
@@ -87,8 +78,8 @@ class Mage_Paypal_Block_Adminhtml_System_Config_ApiWizard extends Mage_Adminhtml
     /**
      * Prepare sandbox button data
      *
-     * @param string $elementHtmlId
-     * @param array $originalData
+     * @param  string $elementHtmlId
+     * @param  array  $originalData
      * @return array
      */
     protected function _getSandboxButtonData($elementHtmlId, $originalData)

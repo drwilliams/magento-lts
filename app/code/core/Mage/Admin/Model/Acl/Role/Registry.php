@@ -1,32 +1,24 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Admin
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Acl role registry
  *
- * @category   Mage
  * @package    Mage_Admin
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Admin_Model_Acl_Role_Registry extends Zend_Acl_Role_Registry
 {
     /**
      * Add parent to the $role node
      *
-     * @param Zend_Acl_Role_Interface|string $role
-     * @param array|Zend_Acl_Role_Interface|string $parents
+     * @param  string|Zend_Acl_Role_Interface       $role
+     * @param  array|string|Zend_Acl_Role_Interface $parents
      * @return $this
      */
     public function addParent($role, $parents)
@@ -38,13 +30,14 @@ class Mage_Admin_Model_Acl_Role_Registry extends Zend_Acl_Role_Registry
                 $roleId = $role;
                 $role = $this->get($role);
             }
-        } catch (Zend_Acl_Role_Registry_Exception $e) {
-            throw new Zend_Acl_Role_Registry_Exception("Child Role id '$roleId' does not exist");
+        } catch (Zend_Acl_Role_Registry_Exception $zendAclRoleRegistryException) {
+            throw new Zend_Acl_Role_Registry_Exception("Child Role id '$roleId' does not exist", $zendAclRoleRegistryException->getCode(), $zendAclRoleRegistryException);
         }
 
         if (!is_array($parents)) {
             $parents = [$parents];
         }
+
         foreach ($parents as $parent) {
             try {
                 if ($parent instanceof Zend_Acl_Role_Interface) {
@@ -52,13 +45,16 @@ class Mage_Admin_Model_Acl_Role_Registry extends Zend_Acl_Role_Registry
                 } else {
                     $roleParentId = $parent;
                 }
+
                 $roleParent = $this->get($roleParentId);
             } catch (Zend_Acl_Role_Registry_Exception $e) {
-                throw new Zend_Acl_Role_Registry_Exception("Parent Role id '$roleParentId' does not exist");
+                throw new Zend_Acl_Role_Registry_Exception("Parent Role id '$roleParentId' does not exist", $e->getCode(), $e);
             }
+
             $this->_roles[$roleId]['parents'][$roleParentId] = $roleParent;
             $this->_roles[$roleParentId]['children'][$roleId] = $role;
         }
+
         return $this;
     }
 }

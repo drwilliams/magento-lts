@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Paypal
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * PayPal Standard checkout request API
  *
- * @category   Mage
  * @package    Mage_Paypal
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
 {
@@ -51,6 +43,7 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
         'cpp_payflow_color'      => 'payflowcolor',
         'lc'                     => 'locale',
     ];
+
     protected $_exportToRequestFilters = [
         'amount'   => '_filterAmount',
         'shipping' => '_filterAmount',
@@ -69,10 +62,10 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
     ];
 
     /**
-      * Fields that should be replaced in debug with '***'
-      *
-      * @var array
-      */
+     * Fields that should be replaced in debug with '***'
+     *
+     * @var array
+     */
     protected $_debugReplacePrivateDataKeys = ['business'];
 
     /**
@@ -85,6 +78,7 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
         Mage_Paypal_Model_Cart::TOTAL_TAX      => 'tax',
         Mage_Paypal_Model_Cart::TOTAL_SHIPPING => 'shipping',
     ];
+
     protected $_lineItemExportItemsFormat = [
         'id'     => 'item_number_%d',
         'name'   => 'item_name_%d',
@@ -93,7 +87,7 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
     ];
 
     protected $_lineItemExportItemsFilters = [
-         'qty'      => '_filterQty'
+        'qty'      => '_filterQty',
     ];
 
     /**
@@ -131,6 +125,7 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
             if (isset($request['tax'])) {
                 $request['tax_cart'] = $request['tax'];
             }
+
             if (isset($request['discount_amount'])) {
                 $request['discount_amount_cart'] = $request['discount_amount'];
             }
@@ -166,21 +161,17 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
     }
 
     /**
-     * @deprecated after 1.4.1.0
-     *
      * @param array $request
+     * @deprecated after 1.4.1.0
      */
-    public function debugRequest($request)
-    {
-    }
+    public function debugRequest($request) {}
 
     /**
      * Add shipping total as a line item.
      * For some reason PayPal ignores shipping total variables exactly when line items is enabled
      * Note that $i = 1
      *
-     * @param array $request
-     * @param int $i
+     * @param  int  $i
      * @return bool
      */
     protected function _exportLineItems(array &$request, $i = 1)
@@ -188,16 +179,18 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
         if (!$this->_cart) {
             return false;
         }
+
         if ($this->getIsLineItemsEnabled()) {
             $this->_cart->isShippingAsItem(true);
         }
+
         return parent::_exportLineItems($request, $i);
     }
 
     /**
      * Import address object, if set, to the request
      *
-     * @param array $request
+     * @param array|Varien_Object $request
      */
     protected function _importAddress(&$request)
     {
@@ -206,6 +199,7 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
             if ($this->getNoShipping()) {
                 $request['no_shipping'] = 1;
             }
+
             return;
         }
 
@@ -223,6 +217,7 @@ class Mage_Paypal_Model_Api_Standard extends Mage_Paypal_Model_Api_Abstract
         if ($regionCode) {
             $request['state'] = $regionCode;
         }
+
         $this->_importStreetFromAddress($address, $request, 'address1', 'address2');
         $this->_applyCountryWorkarounds($request);
 

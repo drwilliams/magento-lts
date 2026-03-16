@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Customer account billing agreements block
- *
- * @author Magento Core Team <core@magentocommerce.com>
  *
  * @method $this setBackUrl(string $value)
  * @method $this setCreateUrl(string $value)
@@ -33,14 +25,14 @@ class Mage_Sales_Block_Billing_Agreements extends Mage_Core_Block_Template
     /**
      * Billing agreements collection
      *
-     * @var Mage_Sales_Model_Resource_Billing_Agreement_Collection|null
+     * @var null|Mage_Sales_Model_Resource_Billing_Agreement_Collection
      */
     protected $_billingAgreements = null;
 
     /**
      * Set Billing Agreement instance
      *
-     * @return Mage_Core_Block_Abstract
+     * @return $this
      */
     protected function _prepareLayout()
     {
@@ -65,14 +57,14 @@ class Mage_Sales_Block_Billing_Agreements extends Mage_Core_Block_Template
                 ->addFieldToFilter('customer_id', Mage::getSingleton('customer/session')->getCustomerId())
                 ->setOrder('agreement_id', 'desc');
         }
+
         return $this->_billingAgreements;
     }
 
     /**
      * Retrieve item value by key
      *
-     * @param Mage_Sales_Model_Billing_Agreement $item
-     * @param string $key
+     * @param  string $key
      * @return string
      */
     public function getItemValue(Mage_Sales_Model_Billing_Agreement $item, $key)
@@ -96,6 +88,7 @@ class Mage_Sales_Block_Billing_Agreements extends Mage_Core_Block_Template
             default:
                 $value = $item->getData($key) ?: $this->__('N/A');
         }
+
         return $this->escapeHtml($value);
     }
 
@@ -113,6 +106,7 @@ class Mage_Sales_Block_Billing_Agreements extends Mage_Core_Block_Template
                 $this->_paymentMethods[$paymentMethod->getCode()] = $paymentMethod->getTitle();
             }
         }
+
         return $this->_paymentMethods;
     }
 
@@ -131,6 +125,7 @@ class Mage_Sales_Block_Billing_Agreements extends Mage_Core_Block_Template
                 $paymentMethodOptions[$paymentMethod->getCode()] = $paymentMethod->getTitle();
             }
         }
+
         return $paymentMethodOptions;
     }
 

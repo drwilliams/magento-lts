@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Downloadable
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Downloadable links API model
  *
- * @category   Mage
  * @package    Mage_Downloadable
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Downloadable_Model_Link_Api_V2 extends Mage_Downloadable_Model_Link_Api
 {
@@ -26,12 +18,13 @@ class Mage_Downloadable_Model_Link_Api_V2 extends Mage_Downloadable_Model_Link_A
      * Clean the object, leave only property values
      *
      * @param object $var
+     * @param-out array $var
      */
     protected function _prepareData(&$var)
     {
         if (is_object($var)) {
             $var = get_object_vars($var);
-            foreach ($var as $key => &$value) {
+            foreach ($var as &$value) {
                 $this->_prepareData($value);
             }
         }
@@ -40,11 +33,11 @@ class Mage_Downloadable_Model_Link_Api_V2 extends Mage_Downloadable_Model_Link_A
     /**
      * Add downloadable content to product
      *
-     * @param int|string $productId
-     * @param object $resource
-     * @param string $resourceType
-     * @param string|int $store
-     * @param string $identifierType ('sku'|'id')
+     * @param  int|string $productId
+     * @param  object     $resource
+     * @param  string     $resourceType
+     * @param  int|string $store
+     * @param  string     $identifierType ('sku'|'id')
      * @return bool
      */
     public function add($productId, $resource, $resourceType, $store = null, $identifierType = null)

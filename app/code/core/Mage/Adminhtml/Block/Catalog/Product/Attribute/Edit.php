@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product attribute edit page
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
@@ -37,8 +29,8 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit extends Mage_Adminhtml
                     'label'     => Mage::helper('catalog')->__('Close Window'),
                     'class'     => 'cancel',
                     'onclick'   => 'window.close()',
-                    'level'     => -1
-                ]
+                    'level'     => -1,
+                ],
             );
         } else {
             $this->_addButton(
@@ -46,9 +38,9 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit extends Mage_Adminhtml
                 [
                     'label'     => Mage::helper('catalog')->__('Save and Continue Edit'),
                     'onclick'   => 'saveAndContinueEdit()',
-                    'class'     => 'save'
+                    'class'     => 'save continue',
                 ],
-                100
+                100,
             );
         }
 
@@ -72,8 +64,10 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit extends Mage_Adminhtml
             if (is_array($frontendLabel)) {
                 $frontendLabel = $frontendLabel[0];
             }
+
             return Mage::helper('catalog')->__('Edit Product Attribute "%s"', $this->escapeHtml($frontendLabel));
         }
+
         return Mage::helper('catalog')->__('New Product Attribute');
     }
 

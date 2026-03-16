@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Class Mage_Adminhtml_Block_Tax_Rule_Grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Tax_Model_Resource_Calculation_Rule_Collection getCollection()
  */
@@ -32,7 +24,7 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
         parent::__construct();
         $this->setDefaultSort('tax_rule_id');
         $this->setId('taxRuleGrid');
-        $this->setDefaultDir('asc');
+        $this->setDefaultDir('ASC');
         $this->setSaveParametersInSession(true);
     }
 
@@ -53,6 +45,7 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
                 ->addProductTaxClassesToResult()
                 ->addRatesToResult();
         }
+
         return $this;
     }
 
@@ -76,6 +69,7 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
                     break;
             }
         }
+
         return parent::_addColumnFilterToCollection($column);
     }
 
@@ -91,7 +85,7 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
                 'align' => 'left',
                 'index' => 'code',
                 'filter_index' => 'code',
-            ]
+            ],
         );
 
         $this->addColumn(
@@ -106,7 +100,7 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
                 'show_missing_option_values' => true,
                 'options' => Mage::getModel('tax/class')->getCollection()
                     ->setClassTypeFilter(Mage_Tax_Model_Class::TAX_CLASS_TYPE_CUSTOMER)->toOptionHash(),
-            ]
+            ],
         );
 
         $this->addColumn(
@@ -121,7 +115,7 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
                 'show_missing_option_values' => true,
                 'options' => Mage::getModel('tax/class')->getCollection()
                     ->setClassTypeFilter(Mage_Tax_Model_Class::TAX_CLASS_TYPE_PRODUCT)->toOptionHash(),
-            ]
+            ],
         );
 
         $this->addColumn(
@@ -135,7 +129,7 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
                 'type'    => 'options',
                 'show_missing_option_values' => true,
                 'options' => Mage::getModel('tax/calculation_rate')->getCollection()->toOptionHashOptimized(),
-            ]
+            ],
         );
 
         $this->addColumn(
@@ -143,8 +137,8 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
             [
                 'header' => Mage::helper('tax')->__('Priority'),
                 'width' => '50px',
-                'index' => 'priority'
-            ]
+                'index' => 'priority',
+            ],
         );
 
         $this->addColumn(
@@ -152,8 +146,8 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
             [
                 'header' => Mage::helper('tax')->__('Subtotal only'),
                 'width' => '50px',
-                'index' => 'calculate_subtotal'
-            ]
+                'index' => 'calculate_subtotal',
+            ],
         );
 
         $this->addColumn(
@@ -161,8 +155,8 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
             [
                 'header' => Mage::helper('tax')->__('Sort Order'),
                 'width' => '50px',
-                'index' => 'position'
-            ]
+                'index' => 'position',
+            ],
         );
 
         $actionsUrl = $this->getUrl('*/*/');
@@ -171,10 +165,9 @@ class Mage_Adminhtml_Block_Tax_Rule_Grid extends Mage_Adminhtml_Block_Widget_Gri
     }
 
     /**
-     * Return url
-     *
-     * @param Mage_Tax_Model_Calculation_Rule $row
-     * @return string
+     * @inheritDoc
+     * @param  Mage_Tax_Model_Calculation_Rule $row
+     * @throws Mage_Core_Exception
      */
     public function getRowUrl($row)
     {

@@ -1,49 +1,44 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog Configurable Product Attribute Model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute _getResource()
- * @method Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute getResource()
+ * @method Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute            _getResource()
+ * @method string                                                                     getAttributeCode()
+ * @method int                                                                        getAttributeId()
  * @method Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection getCollection()
- *
- * @method string getAttributeCode()
- * @method int getAttributeId()
- * @method $this setAttributeId(int $value)
- * @method $this setLabel(string $value)
- * @method int getPosition()
- * @method $this setPosition(int $value)
- * @method array getPrices()
- * @method $this setPrices(array $value)
- * @method int getProductId()
- * @method $this setProductId(int $value)
- * @method Mage_Catalog_Model_Resource_Eav_Attribute getProductAttribute()
- * @method $this setProductAttribute(Mage_Catalog_Model_Resource_Eav_Attribute $value)
- * @method int getStoreId()
- * @method $this setStoreId(int $value)
- * @method int getUseDefault()
- * @method $this setUseDefault(int $value)
- * @method array getValues()
+ * @method int                                                                        getPosition()
+ * @method array                                                                      getPrices()
+ * @method Mage_Catalog_Model_Resource_Eav_Attribute                                  getProductAttribute()
+ * @method int                                                                        getProductId()
+ * @method Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute            getResource()
+ * @method Mage_Catalog_Model_Resource_Product_Type_Configurable_Attribute_Collection getResourceCollection()
+ * @method int                                                                        getStoreId()
+ * @method int                                                                        getUseDefault()
+ * @method array                                                                      getValues()
+ * @method $this                                                                      setAttributeId(int $value)
+ * @method $this                                                                      setLabel(string $value)
+ * @method $this                                                                      setPosition(int $value)
+ * @method $this                                                                      setPrices(array $value)
+ * @method $this                                                                      setProductAttribute(Mage_Catalog_Model_Resource_Eav_Attribute $value)
+ * @method $this                                                                      setProductId(int $value)
+ * @method $this                                                                      setStoreId(int $value)
+ * @method $this                                                                      setUseDefault(int $value)
  */
 class Mage_Catalog_Model_Product_Type_Configurable_Attribute extends Mage_Core_Model_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('catalog/product_type_configurable_attribute');
@@ -52,7 +47,7 @@ class Mage_Catalog_Model_Product_Type_Configurable_Attribute extends Mage_Core_M
     /**
      * Add price data to attribute
      *
-     * @param array $priceData
+     * @param  array $priceData
      * @return $this
      */
     public function addPrice($priceData)
@@ -61,6 +56,7 @@ class Mage_Catalog_Model_Product_Type_Configurable_Attribute extends Mage_Core_M
         if (is_null($data)) {
             $data = [];
         }
+
         $data[] = $priceData;
         $this->setPrices($data);
         return $this;
@@ -75,7 +71,9 @@ class Mage_Catalog_Model_Product_Type_Configurable_Attribute extends Mage_Core_M
     {
         if ($this->getData('use_default') && $this->getProductAttribute()) {
             return $this->getProductAttribute()->getStoreLabel();
-        } elseif (is_null($this->getData('label')) && $this->getProductAttribute()) {
+        }
+
+        if (is_null($this->getData('label')) && $this->getProductAttribute()) {
             $this->setData('label', $this->getProductAttribute()->getStoreLabel());
         }
 

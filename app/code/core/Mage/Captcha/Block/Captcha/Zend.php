@@ -1,27 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Captcha
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Captcha block
  *
- * @category   Core
  * @package    Mage_Captcha
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method string getFormId()
- * @method bool getIsAjax()
+ * @method bool   getIsAjax()
  */
 class Mage_Captcha_Block_Captcha_Zend extends Mage_Core_Block_Template
 {
@@ -51,7 +43,7 @@ class Mage_Captcha_Block_Captcha_Zend extends Mage_Core_Block_Template
     {
         return Mage::getUrl(
             Mage::app()->getStore()->isAdmin() ? 'adminhtml/refresh/refresh' : 'captcha/refresh',
-            ['_secure' => Mage::app()->getStore()->isCurrentlySecure()]
+            ['_secure' => Mage::app()->getStore()->isCurrentlySecure()],
         );
     }
 
@@ -63,16 +55,25 @@ class Mage_Captcha_Block_Captcha_Zend extends Mage_Core_Block_Template
     protected function _toHtml()
     {
         if (Mage::helper('captcha')->isEnabled() && $this->getCaptchaModel()->isRequired()) {
+            if ($this->hasData('img_width')) {
+                $this->getCaptchaModel()->setWidth($this->getData('img_width'));
+            }
+
+            if ($this->hasData('img_height')) {
+                $this->getCaptchaModel()->setHeight($this->getData('img_height'));
+            }
+
             $this->getCaptchaModel()->generate();
             return parent::_toHtml();
         }
+
         return '';
     }
 
     /**
      * Returns captcha model
      *
-     * @return Mage_Captcha_Model_Interface
+     * @return Mage_Captcha_Model_Zend
      */
     public function getCaptchaModel()
     {

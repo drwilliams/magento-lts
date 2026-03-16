@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Api2
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * API2 attributes grid block
  *
- * @category   Mage
  * @package    Mage_Api2
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Api2_Block_Adminhtml_Attribute_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -43,7 +35,7 @@ class Mage_Api2_Block_Adminhtml_Attribute_Grid extends Mage_Adminhtml_Block_Widg
 
         foreach (Mage_Api2_Model_Auth_User::getUserTypes() as $type => $label) {
             $collection->addItem(
-                new Varien_Object(['user_type_name' => $label, 'user_type_code' => $type])
+                new Varien_Object(['user_type_name' => $label, 'user_type_code' => $type]),
             );
         }
 
@@ -61,7 +53,7 @@ class Mage_Api2_Block_Adminhtml_Attribute_Grid extends Mage_Adminhtml_Block_Widg
     {
         $this->addColumn('user_type_name', [
             'header'    => $this->__('User Type'),
-            'index'     => 'user_type_name'
+            'index'     => 'user_type_name',
         ]);
 
         return parent::_prepareColumns();
@@ -72,7 +64,7 @@ class Mage_Api2_Block_Adminhtml_Attribute_Grid extends Mage_Adminhtml_Block_Widg
      *
      * @return $this
      */
-    public function _prepareLayout()
+    protected function _prepareLayout()
     {
         $this->setFilterVisibility(false);
         $this->setPagerVisibility(false);
@@ -83,8 +75,8 @@ class Mage_Api2_Block_Adminhtml_Attribute_Grid extends Mage_Adminhtml_Block_Widg
     /**
      * Get row URL
      *
-     * @param Varien_Object $row
-     * @return string|null
+     * @param  Varien_Object $row
+     * @return null|string
      */
     public function getRowUrl($row)
     {

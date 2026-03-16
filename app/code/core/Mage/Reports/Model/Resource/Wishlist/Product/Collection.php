@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Wishlist Report collection
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Reports_Model_Resource_Wishlist_Product_Collection extends Mage_Wishlist_Model_Resource_Product_Collection
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('wishlist/wishlist');
@@ -37,7 +32,7 @@ class Mage_Reports_Model_Resource_Wishlist_Product_Collection extends Mage_Wishl
             ->join(
                 ['wi' => $wishlistItemTable],
                 'wi.product_id = e.entity_id',
-                ['wishlists' => new Zend_Db_Expr('COUNT(wi.wishlist_item_id)')]
+                ['wishlists' => new Zend_Db_Expr('COUNT(wi.wishlist_item_id)')],
             )
             ->where('wi.product_id = e.entity_id')
             ->group('wi.product_id');
@@ -64,8 +59,8 @@ class Mage_Reports_Model_Resource_Wishlist_Product_Collection extends Mage_Wishl
                 ['wishlist' => $this->getTable('wishlist/wishlist')],
                 [
                     'wishlist_cnt' => new Zend_Db_Expr('COUNT(wishlist.wishlist_id)'),
-                    'wishlist.customer_id'
-                ]
+                    'wishlist.customer_id',
+                ],
             )
             ->group('wishlist.customer_id');
         return $this;
@@ -84,7 +79,7 @@ class Mage_Reports_Model_Resource_Wishlist_Product_Collection extends Mage_Wishl
         $countSelect->reset(Zend_Db_Select::LIMIT_OFFSET);
         $countSelect->reset(Zend_Db_Select::GROUP);
         $countSelect->reset(Zend_Db_Select::COLUMNS);
-        $countSelect->columns("COUNT(*)");
+        $countSelect->columns('COUNT(*)');
 
         return $countSelect;
     }
@@ -92,8 +87,8 @@ class Mage_Reports_Model_Resource_Wishlist_Product_Collection extends Mage_Wishl
     /**
      * Set order to result
      *
-     * @param string $attribute
-     * @param string $dir
+     * @param  string $attribute
+     * @param  string $dir
      * @return $this
      */
     public function setOrder($attribute, $dir = self::SORT_ORDER_DESC)

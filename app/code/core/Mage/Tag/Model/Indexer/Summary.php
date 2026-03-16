@@ -1,43 +1,35 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Tag
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Tag Indexer Model
  *
- * @category   Mage
  * @package    Mage_Tag
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Tag_Model_Resource_Indexer_Summary _getResource()
+ * @method int                                     getBasePopularity()
+ * @method int                                     getCustomers()
+ * @method int                                     getHistoricalUses()
+ * @method int                                     getPopularity()
+ * @method int                                     getProducts()
  * @method Mage_Tag_Model_Resource_Indexer_Summary getResource()
- * @method int getTagId()
- * @method $this setTagId(int $value)
- * @method int getStoreId()
- * @method $this setStoreId(int $value)
- * @method int getCustomers()
- * @method $this setCustomers(int $value)
- * @method int getProducts()
- * @method $this setProducts(int $value)
- * @method int getUses()
- * @method $this setUses(int $value)
- * @method int getHistoricalUses()
- * @method $this setHistoricalUses(int $value)
- * @method int getPopularity()
- * @method $this setPopularity(int $value)
- * @method int getBasePopularity()
- * @method $this setBasePopularity(int $value)
+ * @method int                                     getStoreId()
+ * @method int                                     getTagId()
+ * @method int                                     getUses()
+ * @method $this                                   setBasePopularity(int $value)
+ * @method $this                                   setCustomers(int $value)
+ * @method $this                                   setHistoricalUses(int $value)
+ * @method $this                                   setPopularity(int $value)
+ * @method $this                                   setProducts(int $value)
+ * @method $this                                   setStoreId(int $value)
+ * @method $this                                   setTagId(int $value)
+ * @method $this                                   setUses(int $value)
  */
 class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
 {
@@ -51,13 +43,16 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
             Mage_Index_Model_Event::TYPE_MASS_ACTION,
         ],
         Mage_Tag_Model_Tag::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Tag_Model_Tag_Relation::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
-        ]
+            Mage_Index_Model_Event::TYPE_SAVE,
+        ],
     ];
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('tag/indexer_summary');
@@ -93,14 +88,12 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
         return [
             'visibility',
             'status',
-            'website_ids'
+            'website_ids',
         ];
     }
 
     /**
      * Register data required by process in event object
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerEvent(Mage_Index_Model_Event $event)
     {
@@ -115,8 +108,6 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
 
     /**
      * Register data required by catalog product save process
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerCatalogProductSaveEvent(Mage_Index_Model_Event $event)
     {
@@ -135,8 +126,6 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
 
     /**
      * Register data required by catalog product delete process
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerCatalogProductDeleteEvent(Mage_Index_Model_Event $event)
     {
@@ -150,8 +139,6 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
 
     /**
      * Register data required by catalog product massaction process
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerCatalogProductMassActionEvent(Mage_Index_Model_Event $event)
     {
@@ -186,9 +173,6 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
         }
     }
 
-    /**
-     * @param Mage_Index_Model_Event $event
-     */
     protected function _registerCatalogProduct(Mage_Index_Model_Event $event)
     {
         switch ($event->getType()) {
@@ -206,9 +190,6 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
         }
     }
 
-    /**
-     * @param Mage_Index_Model_Event $event
-     */
     protected function _registerTag(Mage_Index_Model_Event $event)
     {
         if ($event->getType() == Mage_Index_Model_Event::TYPE_SAVE) {
@@ -216,9 +197,6 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
         }
     }
 
-    /**
-     * @param Mage_Index_Model_Event $event
-     */
     protected function _registerTagRelation(Mage_Index_Model_Event $event)
     {
         if ($event->getType() == Mage_Index_Model_Event::TYPE_SAVE) {
@@ -228,8 +206,6 @@ class Mage_Tag_Model_Indexer_Summary extends Mage_Index_Model_Indexer_Abstract
 
     /**
      * Process event
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _processEvent(Mage_Index_Model_Event $event)
     {

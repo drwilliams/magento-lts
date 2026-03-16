@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract block for display sales (quote/order/invoice etc.) items
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Block_Items_Abstract extends Mage_Core_Block_Template
 {
@@ -33,7 +25,7 @@ class Mage_Sales_Block_Items_Abstract extends Mage_Core_Block_Template
     protected $_itemRenders = [];
 
     /**
-     * Initialize default item renderer
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -44,17 +36,17 @@ class Mage_Sales_Block_Items_Abstract extends Mage_Core_Block_Template
     /**
      * Add renderer for item product type
      *
-     * @param   string $type
-     * @param   string $block
-     * @param   string $template
-     * @return  $this
+     * @param  string $type
+     * @param  string $block
+     * @param  string $template
+     * @return $this
      */
     public function addItemRender($type, $block, $template)
     {
         $this->_itemRenders[$type] = [
             'block'     => $block,
             'template'  => $template,
-            'renderer'  => null
+            'renderer'  => null,
         ];
 
         return $this;
@@ -63,7 +55,7 @@ class Mage_Sales_Block_Items_Abstract extends Mage_Core_Block_Template
     /**
      * Retrieve item renderer block
      *
-     * @param string $type
+     * @param  string                   $type
      * @return Mage_Core_Block_Abstract
      */
     public function getItemRenderer($type)
@@ -78,13 +70,13 @@ class Mage_Sales_Block_Items_Abstract extends Mage_Core_Block_Template
                 ->setTemplate($this->_itemRenders[$type]['template'])
                 ->setRenderedBlock($this);
         }
+
         return $this->_itemRenders[$type]['renderer'];
     }
 
     /**
      * Prepare item before output
      *
-     * @param Mage_Core_Block_Abstract $renderer
      * @return $this
      */
     protected function _prepareItem(Mage_Core_Block_Abstract $renderer)
@@ -95,7 +87,6 @@ class Mage_Sales_Block_Items_Abstract extends Mage_Core_Block_Template
     /**
      * Return product type for quote/order item
      *
-     * @param Varien_Object $item
      * @return string
      */
     protected function _getItemType(Varien_Object $item)
@@ -107,14 +98,14 @@ class Mage_Sales_Block_Items_Abstract extends Mage_Core_Block_Template
         } else {
             $type = $item->getProductType();
         }
+
         return $type;
     }
 
     /**
      * Get item row html
      *
-     * @param   Varien_Object $item
-     * @return  string
+     * @return string
      */
     public function getItemHtml(Varien_Object $item)
     {

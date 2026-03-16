@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogSearch
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Search collection
  *
- * @category   Mage
  * @package    Mage_CatalogSearch
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
@@ -39,7 +31,7 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
     /**
      * Add search query filter
      *
-     * @param string $query
+     * @param  string $query
      * @return $this
      */
     public function addSearchFilter($query)
@@ -64,13 +56,14 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
                 $attribute->setEntity($this->getEntity());
             }
         }
+
         return $this->_attributesCollection;
     }
 
     /**
      * Check attribute is Text and is Searchable
      *
-     * @param Mage_Catalog_Model_Entity_Attribute $attribute
+     * @param  Mage_Catalog_Model_Entity_Attribute $attribute
      * @return bool
      */
     protected function _isAttributeTextAndSearchable($attribute)
@@ -82,13 +75,14 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
         ) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Check attributes has options and searchable
      *
-     * @param Mage_Catalog_Model_Entity_Attribute $attribute
+     * @param  Mage_Catalog_Model_Entity_Attribute $attribute
      * @return bool
      */
     protected function _hasAttributeOptionsAndSearchable($attribute)
@@ -105,8 +99,8 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
     /**
      * Retrieve SQL for search entities
      *
-     * @param string $query
-     * @return string
+     * @param  string           $query
+     * @return Varien_Db_Select
      */
     protected function _getSearchEntityIdsSql($query)
     {
@@ -115,7 +109,7 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
 
         /** @var Mage_Core_Model_Resource_Helper_Abstract $resHelper */
         $resHelper = Mage::getResourceHelper('core');
-        $likeOptions = ['position' => 'any'];
+        $likeOptions = ['position' => 'start'];
 
         /**
          * Collect tables and attribute ids of attributes with string values
@@ -147,9 +141,9 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
                     ['t2' => $table],
                     $this->getConnection()->quoteInto(
                         't1.entity_id = t2.entity_id AND t1.attribute_id = t2.attribute_id AND t2.store_id = ?',
-                        $this->getStoreId()
+                        $this->getStoreId(),
                     ),
-                    []
+                    [],
                 )
                 ->where('t1.attribute_id IN (?)', $attributeIds)
                 ->where('t1.store_id = ?', 0)
@@ -161,21 +155,20 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
             $selects[] = "SELECT * FROM ({$sql}) AS inoptionsql"; // inheritant unions may be inside
         }
 
-        $sql = $this->getConnection()->select()->union($selects, Zend_Db_Select::SQL_UNION_ALL);
-        return $sql;
+        return $this->getConnection()->select()->union($selects, Zend_Db_Select::SQL_UNION_ALL);
     }
 
     /**
      * Retrieve SQL for search entities by option
      *
-     * @param string $query
-     * @return false|string
+     * @param  string                 $query
+     * @return false|Varien_Db_Select
      */
     protected function _getSearchInOptionSql($query)
     {
         $attributeIds    = [];
         $attributeTables = [];
-        $storeId = (int)$this->getStoreId();
+        $storeId = (int) $this->getStoreId();
 
         /**
          * Collect attributes with options
@@ -186,6 +179,7 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
                 $attributeIds[] = $attribute->getId();
             }
         }
+
         if (empty($attributeIds)) {
             return false;
         }
@@ -205,19 +199,19 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
             ->from(
                 ['d' => $optionValueTable],
                 ['option_id',
-                      'o.attribute_id',
-                      'store_id' => $ifStoreId,
-                      'a.frontend_input']
+                    'o.attribute_id',
+                    'store_id' => $ifStoreId,
+                    'a.frontend_input'],
             )
             ->joinLeft(
                 ['s' => $optionValueTable],
                 $this->getConnection()->quoteInto('s.option_id = d.option_id AND s.store_id=?', $storeId),
-                []
+                [],
             )
             ->join(
                 ['o' => $optionTable],
                 'o.option_id=d.option_id',
-                []
+                [],
             )
             ->join(['a' => $attributesTable], 'o.attribute_id=a.attribute_id', [])
             ->where('d.store_id=0')
@@ -242,8 +236,9 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
                         $where[] = sprintf($whereCond, $option['attribute_id'], $option['store_id']);
                     }
                 }
+
                 if ($where) {
-                    $selects[$frontendInput] = (string)$this->getConnection()->select()
+                    $selects[$frontendInput] = (string) $this->getConnection()->select()
                         ->from($attributeTables[$frontendInput], 'entity_id')
                         ->where(implode(' OR ', $where));
                 }
@@ -255,12 +250,14 @@ class Mage_CatalogSearch_Model_Resource_Search_Collection extends Mage_Catalog_M
         foreach ($options as $option) {
             $where[] = sprintf('(attribute_id=%d AND value=%d)', $option['attribute_id'], $option['option_id']);
         }
+
         if ($where) {
-            $selects[] = (string)$this->getConnection()->select()
+            $selects[] = (string) $this->getConnection()->select()
                 ->from($resource->getTableName('catalogindex/eav'), 'entity_id')
                 ->where(implode(' OR ', $where))
                 ->where("store_id={$storeId}");
         }
+
         return $this->getConnection()->select()->union($selects, Zend_Db_Select::SQL_UNION_ALL);
     }
 }

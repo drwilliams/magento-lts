@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2017-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Reports orders collection
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Sales_Model_Order getFirstItem()
  */
@@ -34,19 +26,19 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Sales amount expression
      *
-     * @var string|null
+     * @var null|string
      */
     protected $_salesAmountExpression;
 
     /**
      * Check range for live mode
      *
-     * @param mixed $range
+     * @param  mixed $range
      * @return $this
      */
     public function checkIsLive($range)
     {
-        $this->_isLive = (bool)!Mage::getStoreConfig('sales/dashboard/use_aggregated_data');
+        $this->_isLive = (bool) !Mage::getStoreConfig('sales/dashboard/use_aggregated_data');
         return $this;
     }
 
@@ -63,10 +55,10 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Prepare report summary
      *
-     * @param string $range
-     * @param mixed $customStart
-     * @param mixed $customEnd
-     * @param int $isFilter
+     * @param  string $range
+     * @param  mixed  $customStart
+     * @param  mixed  $customEnd
+     * @param  int    $isFilter
      * @return $this
      */
     public function prepareSummary($range, $customStart, $customEnd, $isFilter = 0)
@@ -99,7 +91,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
                     $adapter->getIfNullSql('main_table.base_total_refunded', 0),
                     $adapter->getIfNullSql('main_table.base_tax_refunded', 0),
                     $adapter->getIfNullSql('main_table.base_shipping_refunded', 0),
-                ]
+                ],
             ]);
 
             Mage::dispatchEvent('sales_prepare_amount_expression', [
@@ -108,7 +100,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
             ]);
             $this->_salesAmountExpression = vsprintf(
                 $expressionTransferObject->getExpression(),
-                $expressionTransferObject->getArguments()
+                $expressionTransferObject->getArguments(),
             );
         }
 
@@ -118,10 +110,10 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Prepare report summary from live data
      *
-     * @param string $range
-     * @param mixed $customStart
-     * @param mixed $customEnd
-     * @param int $isFilter
+     * @param  string $range
+     * @param  mixed  $customStart
+     * @param  mixed  $customEnd
+     * @param  int    $isFilter
      * @return $this
      */
     protected function _prepareSummaryLive($range, $customStart, $customEnd, $isFilter = 0)
@@ -141,13 +133,13 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
                     sprintf(
                         'SUM((%s) * %s)',
                         $expression,
-                        $adapter->getIfNullSql('main_table.base_to_global_rate', 0)
-                    )
-                )
+                        $adapter->getIfNullSql('main_table.base_to_global_rate', 0),
+                    ),
+                ),
             ]);
         } else {
             $this->getSelect()->columns([
-                'revenue' => new Zend_Db_Expr(sprintf('SUM(%s)', $expression))
+                'revenue' => new Zend_Db_Expr(sprintf('SUM(%s)', $expression)),
             ]);
         }
 
@@ -157,7 +149,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
             $range,
             'created_at',
             $dateRange['from'],
-            $dateRange['to']
+            $dateRange['to'],
         );
 
         $this->getSelect()
@@ -179,9 +171,9 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Prepare report summary from aggregated data
      *
-     * @param string $range
-     * @param mixed $customStart
-     * @param mixed $customEnd
+     * @param  string $range
+     * @param  mixed  $customStart
+     * @param  mixed  $customEnd
      * @return $this
      */
     protected function _prepareSummaryAggregated($range, $customStart, $customEnd)
@@ -205,7 +197,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
         ->group($rangePeriod);
 
         $this->getSelect()->where(
-            $this->_getConditionSql('main_table.period', $this->getDateRange($range, $customStart, $customEnd))
+            $this->_getConditionSql('main_table.period', $this->getDateRange($range, $customStart, $customEnd)),
         );
 
         $statuses = Mage::getSingleton('sales/config')
@@ -214,6 +206,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
         if (empty($statuses)) {
             $statuses = [0];
         }
+
         $this->addFieldToFilter('main_table.order_status', ['nin' => $statuses]);
 
         return $this;
@@ -222,38 +215,26 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Get range expression
      *
-     * @param string $range
+     * @param  Mage_Reports_Helper_Data::PERIOD_* $range
      * @return Zend_Db_Expr
      */
     protected function _getRangeExpression($range)
     {
-        switch ($range) {
-            case '24h':
-                $expression = $this->getConnection()->getConcatSql([
-                    $this->getConnection()->getDateFormatSql('{{attribute}}', '%Y-%m-%d %H:'),
-                    $this->getConnection()->quote('00')
-                ]);
-                break;
-            case '7d':
-            case '1m':
-                $expression = $this->getConnection()->getDateFormatSql('{{attribute}}', '%Y-%m-%d');
-                break;
-            case '1y':
-            case '2y':
-            case 'custom':
-            default:
-                $expression = $this->getConnection()->getDateFormatSql('{{attribute}}', '%Y-%m');
-                break;
-        }
-
-        return $expression;
+        return match ($range) {
+            Mage_Reports_Helper_Data::PERIOD_24_HOURS => $this->getConnection()->getConcatSql([
+                $this->getConnection()->getDateFormatSql('{{attribute}}', '%Y-%m-%d %H:'),
+                $this->getConnection()->quote('00'),
+            ]),
+            Mage_Reports_Helper_Data::PERIOD_7_DAYS, Mage_Reports_Helper_Data::PERIOD_1_MONTH, Mage_Reports_Helper_Data::PERIOD_3_MONTHS, Mage_Reports_Helper_Data::PERIOD_6_MONTHS => $this->getConnection()->getDateFormatSql('{{attribute}}', '%Y-%m-%d'),
+            default => $this->getConnection()->getDateFormatSql('{{attribute}}', '%Y-%m'),
+        };
     }
 
     /**
      * Retrieve range expression adapted for attribute
      *
-     * @param string $range
-     * @param string $attribute
+     * @param  string $range
+     * @param  string $attribute
      * @return string
      */
     protected function _getRangeExpressionForAttribute($range, $attribute)
@@ -265,10 +246,10 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Retrieve query for attribute with timezone conversion
      *
-     * @param string $range
-     * @param string $attribute
-     * @param mixed $from
-     * @param mixed $to
+     * @param  string $range
+     * @param  string $attribute
+     * @param  mixed  $from
+     * @param  mixed  $to
      * @return string
      */
     protected function _getTZRangeOffsetExpression($range, $attribute, $from = null, $to = null)
@@ -277,17 +258,17 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
             '{{attribute}}',
             Mage::getResourceModel('sales/report_order')
                     ->getStoreTZOffsetQuery($this->getMainTable(), $attribute, $from, $to),
-            $this->_getRangeExpression($range)
+            $this->_getRangeExpression($range),
         );
     }
 
     /**
      * Retrieve range expression with timezone conversion adapted for attribute
      *
-     * @param string $range
-     * @param string $attribute
-     * @param string $tzFrom
-     * @param string $tzTo
+     * @param  string $range
+     * @param  string $attribute
+     * @param  string $tzFrom
+     * @param  string $tzTo
      * @return string
      */
     protected function _getTZRangeExpressionForAttribute($range, $attribute, $tzFrom = '+00:00', $tzTo = null)
@@ -295,6 +276,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
         if ($tzTo == null) {
             $tzTo = Mage::app()->getLocale()->storeDate()->toString(Zend_Date::GMT_DIFF_SEP);
         }
+
         $adapter = $this->getConnection();
         $expression = $this->_getRangeExpression($range);
         $attribute  = $adapter->quoteIdentifier($attribute);
@@ -306,10 +288,10 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Calculate From and To dates (or times) by given period
      *
-     * @param string $range
-     * @param string $customStart
-     * @param string $customEnd
-     * @param bool $returnObjects
+     * @param  Mage_Reports_Helper_Data::PERIOD_* $range
+     * @param  string                             $customStart
+     * @param  string                             $customEnd
+     * @param  bool                               $returnObjects
      * @return array
      */
     public function getDateRange($range, $customStart, $customEnd, $returnObjects = false)
@@ -327,38 +309,47 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
         $dateStart->setSecond(0);
 
         switch ($range) {
-            case '24h':
+            case Mage_Reports_Helper_Data::PERIOD_24_HOURS:
                 $dateEnd = Mage::app()->getLocale()->date();
                 $dateEnd->addHour(1);
                 $dateStart = clone $dateEnd;
                 $dateStart->subDay(1);
                 break;
 
-            case '7d':
-                // substract 6 days we need to include
-                // only today and not hte last one from range
+            case Mage_Reports_Helper_Data::PERIOD_7_DAYS:
+                // subtract 6 days we need to include
+                // only today and not the last one from range
                 $dateStart->subDay(6);
                 break;
 
-            case '1m':
+            case Mage_Reports_Helper_Data::PERIOD_1_MONTH:
+            case Mage_Reports_Helper_Data::PERIOD_3_MONTHS:
+            case Mage_Reports_Helper_Data::PERIOD_6_MONTHS:
                 $dateStart->setDay(Mage::getStoreConfig('reports/dashboard/mtd_start'));
+                if ($range === Mage_Reports_Helper_Data::PERIOD_3_MONTHS) {
+                    $dateStart->subMonth(2);
+                } elseif ($range === Mage_Reports_Helper_Data::PERIOD_6_MONTHS) {
+                    $dateStart->subMonth(5);
+                }
+
                 break;
 
-            case 'custom':
-                $dateStart = $customStart ? $customStart : $dateEnd;
-                $dateEnd   = $customEnd ? $customEnd : $dateEnd;
+            case Mage_Reports_Helper_Data::PERIOD_CUSTOM:
+                $dateStart = $customStart ?: $dateEnd;
+                $dateEnd   = $customEnd ?: $dateEnd;
                 break;
 
-            case '1y':
-            case '2y':
+            case Mage_Reports_Helper_Data::PERIOD_1_YEAR:
+            case Mage_Reports_Helper_Data::PERIOD_2_YEARS:
                 $startMonthDay = explode(',', Mage::getStoreConfig('reports/dashboard/ytd_start'));
-                $startMonth = isset($startMonthDay[0]) ? (int)$startMonthDay[0] : 1;
-                $startDay = isset($startMonthDay[1]) ? (int)$startMonthDay[1] : 1;
+                $startMonth = isset($startMonthDay[0]) ? (int) $startMonthDay[0] : 1;
+                $startDay = isset($startMonthDay[1]) ? (int) $startMonthDay[1] : 1;
                 $dateStart->setMonth($startMonth);
                 $dateStart->setDay($startDay);
                 if ($range == '2y') {
                     $dateStart->subYear(1);
                 }
+
                 break;
         }
 
@@ -367,9 +358,9 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
 
         if ($returnObjects) {
             return [$dateStart, $dateEnd];
-        } else {
-            return ['from' => $dateStart, 'to' => $dateEnd, 'datetime' => true];
         }
+
+        return ['from' => $dateStart, 'to' => $dateEnd, 'datetime' => true];
     }
 
     /**
@@ -386,7 +377,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Calculate totals report
      *
-     * @param int|bool $isFilter
+     * @param  bool|int $isFilter
      * @return $this
      */
     public function calculateTotals($isFilter = 0)
@@ -403,7 +394,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Calculate totals live report
      *
-     * @param int $isFilter
+     * @param  int   $isFilter
      * @return $this
      */
     protected function _calculateTotalsLive($isFilter = 0)
@@ -428,21 +419,21 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
                 [
                     'revenue'  => new Zend_Db_Expr(sprintf('SUM((%s) * %s)', $revenueExp, $rateExp)),
                     'tax'      => new Zend_Db_Expr(sprintf('SUM((%s) * %s)', $taxExp, $rateExp)),
-                    'shipping' => new Zend_Db_Expr(sprintf('SUM((%s) * %s)', $shippingExp, $rateExp))
-                ]
+                    'shipping' => new Zend_Db_Expr(sprintf('SUM((%s) * %s)', $shippingExp, $rateExp)),
+                ],
             );
         } else {
             $this->getSelect()->columns(
                 [
                     'revenue'  => new Zend_Db_Expr(sprintf('SUM(%s)', $revenueExp)),
                     'tax'      => new Zend_Db_Expr(sprintf('SUM(%s)', $taxExp)),
-                    'shipping' => new Zend_Db_Expr(sprintf('SUM(%s)', $shippingExp))
-                ]
+                    'shipping' => new Zend_Db_Expr(sprintf('SUM(%s)', $shippingExp)),
+                ],
             );
         }
 
         $this->getSelect()->columns([
-            'quantity' => 'COUNT(main_table.entity_id)'
+            'quantity' => 'COUNT(main_table.entity_id)',
         ])
         ->where('main_table.state NOT IN (?)', [
             Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
@@ -454,7 +445,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Calculate totals aggregated report
      *
-     * @param int $isFilter
+     * @param  int   $isFilter
      * @return $this
      */
     protected function _calculateTotalsAggregated($isFilter = 0)
@@ -484,7 +475,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Calculate lifitime sales
      *
-     * @param bool|int $isFilter
+     * @param  bool|int $isFilter
      * @return $this
      */
     public function calculateSales($isFilter = 0)
@@ -495,6 +486,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
         if (empty($statuses)) {
             $statuses = [0];
         }
+
         $adapter = $this->getConnection();
 
         if (Mage::getStoreConfig('sales/dashboard/use_aggregated_data')) {
@@ -503,19 +495,20 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
             $averageExpr = $adapter->getCheckSql(
                 'SUM(main_table.orders_count) > 0',
                 'SUM(main_table.total_revenue_amount)/SUM(main_table.orders_count)',
-                0
+                '0',
             );
             $this->getSelect()->columns([
                 'lifetime' => new Zend_Db_Expr('SUM(main_table.total_revenue_amount)'),
-                'average'  => $averageExpr
+                'average'  => $averageExpr,
             ]);
 
             if (!$isFilter) {
                 $this->addFieldToFilter(
                     'store_id',
-                    ['eq' => Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId()]
+                    ['eq' => Mage::app()->getStore(Mage_Core_Model_Store::ADMIN_CODE)->getId()],
                 );
             }
+
             $this->getSelect()->where('main_table.order_status NOT IN(?)', $statuses);
         } else {
             $this->setMainTable('sales/order');
@@ -530,21 +523,22 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
             $this->getSelect()
                 ->columns([
                     'lifetime' => new Zend_Db_Expr("SUM({$expr})"),
-                    'average'  => new Zend_Db_Expr("AVG({$expr})")
+                    'average'  => new Zend_Db_Expr("AVG({$expr})"),
                 ])
                 ->where('main_table.status NOT IN(?)', $statuses)
                 ->where('main_table.state NOT IN(?)', [
                     Mage_Sales_Model_Order::STATE_NEW,
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT]);
         }
+
         return $this;
     }
 
     /**
      * Set date range
      *
-     * @param string $from
-     * @param string $to
+     * @param  string $from
+     * @param  string $to
      * @return $this
      */
     public function setDateRange($from, $to)
@@ -553,8 +547,8 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
             ->addFieldToFilter('created_at', ['from' => $from, 'to' => $to])
             ->addFieldToFilter('state', ['neq' => Mage_Sales_Model_Order::STATE_CANCELED])
             ->getSelect()
-                ->columns(['orders' => 'COUNT(DISTINCT(main_table.entity_id))'])
-                ->group('entity_id');
+            ->columns(['orders' => 'COUNT(DISTINCT(main_table.entity_id))'])
+            ->group('entity_id');
 
         $this->getSelect()->columns([
             'items' => 'SUM(main_table.total_qty_ordered)']);
@@ -565,7 +559,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Set store filter collection
      *
-     * @param array $storeIds
+     * @param  array $storeIds
      * @return $this
      */
     public function setStoreIds($storeIds)
@@ -587,7 +581,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
                 'refunded'  => new Zend_Db_Expr('SUM(main_table.base_total_refunded)'),
                 'profit'    => new Zend_Db_Expr("SUM($baseSubtotalInvoiced) "
                                 . "+ SUM({$baseDiscountRefunded}) - SUM({$baseSubtotalRefunded}) "
-                                . "- SUM({$baseDiscountInvoiced}) - SUM({$baseTotalInvocedCost})")
+                                . "- SUM({$baseDiscountInvoiced}) - SUM({$baseTotalInvocedCost})"),
             ]);
         } else {
             $this->getSelect()->columns([
@@ -602,7 +596,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
                                 . "+ SUM({$baseDiscountRefunded} * main_table.base_to_global_rate) "
                                 . "- SUM({$baseSubtotalRefunded} * main_table.base_to_global_rate) "
                                 . "- SUM({$baseDiscountInvoiced} * main_table.base_to_global_rate) "
-                                . "- SUM({$baseTotalInvocedCost} * main_table.base_to_global_rate)")
+                                . "- SUM({$baseTotalInvocedCost} * main_table.base_to_global_rate)"),
             ]);
         }
 
@@ -631,7 +625,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Join Customer Name (concat)
      *
-     * @param string $alias
+     * @param  string $alias
      * @return $this
      */
     public function joinCustomerName($alias = 'name')
@@ -639,7 +633,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
         $fields  = [
             'main_table.customer_firstname',
             'main_table.customer_middlename',
-            'main_table.customer_lastname'
+            'main_table.customer_lastname',
         ];
         $fieldConcat = $this->getConnection()->getConcatSql($fields, ' ');
         $this->getSelect()->columns([$alias => $fieldConcat]);
@@ -663,18 +657,18 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Add revenue
      *
-     * @param bool $convertCurrency
+     * @param  bool  $convertCurrency
      * @return $this
      */
     public function addRevenueToSelect($convertCurrency = false)
     {
         if ($convertCurrency) {
             $this->getSelect()->columns([
-                'revenue' => '(main_table.base_grand_total * main_table.base_to_global_rate)'
+                'revenue' => '(main_table.base_grand_total * main_table.base_to_global_rate)',
             ]);
         } else {
             $this->getSelect()->columns([
-                'revenue' => 'base_grand_total'
+                'revenue' => 'base_grand_total',
             ]);
         }
 
@@ -684,7 +678,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Add summary average totals
      *
-     * @param int $storeId
+     * @param  int   $storeId
      * @return $this
      */
     public function addSumAvgTotals($storeId = 0)
@@ -714,7 +708,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Sort order by total amount
      *
-     * @param string $dir
+     * @param  string $dir
      * @return $this
      */
     public function orderByTotalAmount($dir = self::SORT_ORDER_DESC)
@@ -726,7 +720,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Order by orders count
      *
-     * @param string $dir
+     * @param  string $dir
      * @return $this
      */
     public function orderByOrdersCount($dir = self::SORT_ORDER_DESC)
@@ -738,7 +732,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Order by customer registration
      *
-     * @param string $dir
+     * @param  string $dir
      * @return $this
      */
     public function orderByCustomerRegistration($dir = self::SORT_ORDER_DESC)
@@ -750,7 +744,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Sort order by order created_at date
      *
-     * @param string $dir
+     * @param  string $dir
      * @return $this
      */
     public function orderByCreatedAt($dir = self::SORT_ORDER_DESC)
@@ -773,7 +767,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
         $countSelect->reset(Zend_Db_Select::COLUMNS);
         $countSelect->reset(Zend_Db_Select::GROUP);
         $countSelect->reset(Zend_Db_Select::HAVING);
-        $countSelect->columns("COUNT(DISTINCT main_table.entity_id)");
+        $countSelect->columns('COUNT(DISTINCT main_table.entity_id)');
 
         return $countSelect;
     }
@@ -792,12 +786,12 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
     /**
      * Add period filter by created_at attribute
      *
-     * @param string $period
+     * @param  string $period
      * @return $this
      */
     public function addCreateAtPeriodFilter($period)
     {
-        list($from, $to) = $this->getDateRange($period, 0, 0, true);
+        [$from, $to] = $this->getDateRange($period, '0', '0', true);
 
         $this->checkIsLive($period);
 
@@ -809,7 +803,7 @@ class Mage_Reports_Model_Resource_Order_Collection extends Mage_Sales_Model_Reso
 
         $this->addFieldToFilter($fieldToFilter, [
             'from'  => $from->toString(Varien_Date::DATETIME_INTERNAL_FORMAT),
-            'to'    => $to->toString(Varien_Date::DATETIME_INTERNAL_FORMAT)
+            'to'    => $to->toString(Varien_Date::DATETIME_INTERNAL_FORMAT),
         ]);
 
         return $this;

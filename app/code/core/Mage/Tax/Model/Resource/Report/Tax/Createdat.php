@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Tax
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Tax report resource model with aggregation by created at
  *
- * @category   Mage
  * @package    Mage_Tax
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Resource_Report_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('tax/tax_order_aggregated_created', 'id');
@@ -30,8 +25,8 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
     /**
      * Aggregate Tax data by order created at
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     public function aggregate($from = null, $to = null)
@@ -42,11 +37,11 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
     /**
      * Aggregate Tax data by orders
      *
-     * @throws Exception
-     * @param string $aggregationField
-     * @param mixed $from
-     * @param mixed $to
+     * @param  string    $aggregationField
+     * @param  mixed     $from
+     * @param  mixed     $to
      * @return $this
+     * @throws Exception
      */
     protected function _aggregateByOrder($aggregationField, $from, $to)
     {
@@ -65,7 +60,7 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
                     'created_at',
                     'updated_at',
                     $from,
-                    $to
+                    $to,
                 );
             } else {
                 $subSelect = null;
@@ -78,8 +73,8 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
                     ['e' => $this->getTable('sales/order')],
                     'e.' . $aggregationField,
                     $from,
-                    $to
-                )
+                    $to,
+                ),
             );
 
             $columns = [
@@ -89,7 +84,7 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
                 'order_status'          => 'e.status',
                 'percent'               => 'MAX(tax.' . $writeAdapter->quoteIdentifier('percent') . ')',
                 'orders_count'          => 'COUNT(DISTINCT e.entity_id)',
-                'tax_base_amount_sum'   => 'SUM(tax.base_amount * e.base_to_global_rate)'
+                'tax_base_amount_sum'   => 'SUM(tax.base_amount * e.base_to_global_rate)',
             ];
 
             $select = $writeAdapter->select();
@@ -99,7 +94,7 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
 
             $select->where('e.state NOT IN (?)', [
                 Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                Mage_Sales_Model_Order::STATE_NEW
+                Mage_Sales_Model_Order::STATE_NEW,
             ]);
 
             if ($subSelect !== null) {
@@ -115,12 +110,12 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
 
             $columns = [
                 'period'                => 'period',
-                'store_id'              => new Zend_Db_Expr(Mage_Core_Model_App::ADMIN_STORE_ID),
+                'store_id'              => new Zend_Db_Expr((string) Mage_Core_Model_App::ADMIN_STORE_ID),
                 'code'                  => 'code',
                 'order_status'          => 'order_status',
                 'percent'               => 'MAX(' . $writeAdapter->quoteIdentifier('percent') . ')',
                 'orders_count'          => 'SUM(orders_count)',
-                'tax_base_amount_sum'   => 'SUM(tax_base_amount_sum)'
+                'tax_base_amount_sum'   => 'SUM(tax_base_amount_sum)',
             ];
 
             $select
@@ -135,9 +130,9 @@ class Mage_Tax_Model_Resource_Report_Tax_Createdat extends Mage_Reports_Model_Re
             $insertQuery = $writeAdapter->insertFromSelect($select, $this->getMainTable(), array_keys($columns));
             $writeAdapter->query($insertQuery);
             $writeAdapter->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $writeAdapter->rollBack();
-            throw $e;
+            throw $exception;
         }
 
         return $this;

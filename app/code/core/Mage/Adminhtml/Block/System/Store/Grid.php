@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml store grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  * @deprecated after 1.13.1.0 use Mage_Adminhtml_Block_System_Store_Tree
  */
 class Mage_Adminhtml_Block_System_Store_Grid extends Mage_Adminhtml_Block_Widget_Grid
@@ -30,16 +22,22 @@ class Mage_Adminhtml_Block_System_Store_Grid extends Mage_Adminhtml_Block_Widget
         $this->setSaveParametersInSession(true);
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function _prepareCollection()
     {
         $collection = Mage::getModel('core/website')
             ->getCollection()
             ->joinGroupAndStore();
         $this->setCollection($collection);
-        parent::_prepareCollection();
-        return $this;
+        return parent::_prepareCollection();
     }
 
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('website_title', [
@@ -47,7 +45,7 @@ class Mage_Adminhtml_Block_System_Store_Grid extends Mage_Adminhtml_Block_Widget
             'align'         => 'left',
             'index'         => 'name',
             'filter_index'  => 'main_table.name',
-            'renderer'      => 'adminhtml/system_store_grid_render_website'
+            'renderer'      => 'adminhtml/system_store_grid_render_website',
         ]);
 
         $this->addColumn('group_title', [
@@ -55,7 +53,7 @@ class Mage_Adminhtml_Block_System_Store_Grid extends Mage_Adminhtml_Block_Widget
             'align'         => 'left',
             'index'         => 'group_title',
             'filter_index'  => 'group_table.name',
-            'renderer'      => 'adminhtml/system_store_grid_render_group'
+            'renderer'      => 'adminhtml/system_store_grid_render_group',
         ]);
 
         $this->addColumn('store_title', [
@@ -63,7 +61,7 @@ class Mage_Adminhtml_Block_System_Store_Grid extends Mage_Adminhtml_Block_Widget
             'align'         => 'left',
             'index'         => 'store_title',
             'filter_index'  => 'store_table.name',
-            'renderer'      => 'adminhtml/system_store_grid_render_store'
+            'renderer'      => 'adminhtml/system_store_grid_render_store',
         ]);
 
         return parent::_prepareColumns();

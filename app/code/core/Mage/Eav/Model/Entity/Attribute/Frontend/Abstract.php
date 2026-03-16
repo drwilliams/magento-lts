@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Eav
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Entity/Attribute/Model - attribute frontend abstract
  *
- * @category   Mage
  * @package    Mage_Eav
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage_Eav_Model_Entity_Attribute_Frontend_Interface
 {
@@ -32,8 +24,8 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
     /**
      * Set attribute instance
      *
-     * @param Mage_Eav_Model_Entity_Attribute_Abstract $attribute
-     * @return Mage_Eav_Model_Entity_Attribute_Frontend_Abstract
+     * @param  Mage_Eav_Model_Entity_Attribute_Abstract $attribute
+     * @return $this
      */
     public function setAttribute($attribute)
     {
@@ -62,7 +54,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
     }
 
     /**
-     * Retrieve lable
+     * Retrieve label
      *
      * @return string
      */
@@ -70,7 +62,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
     {
         $label = $this->getAttribute()->getFrontendLabel();
         if (($label === null) || $label == '') {
-            $label = $this->getAttribute()->getAttributeCode();
+            return $this->getAttribute()->getAttributeCode();
         }
 
         return $label;
@@ -79,7 +71,6 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
     /**
      * Retrieve attribute value
      *
-     * @param Varien_Object $object
      * @return mixed
      */
     public function getValue(Varien_Object $object)
@@ -98,6 +89,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
                     }
                 }
             }
+
             $value = $valueOption;
         } elseif ($this->getConfigField('input') == 'multiselect') {
             $value = $this->getOption($value);
@@ -127,7 +119,12 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
     public function getClass()
     {
         $out    = [];
-        $out[]  = $this->getAttribute()->getFrontendClass();
+
+        $frontendClass = $this->getAttribute()->getFrontendClass();
+        if ($frontendClass) {
+            $out[]  = $frontendClass;
+        }
+
         if ($this->getAttribute()->getIsRequired()) {
             $out[]  = 'required-entry';
         }
@@ -136,18 +133,20 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
         if ($inputRuleClass) {
             $out[] = $inputRuleClass;
         }
+
         if (!empty($out)) {
             $out = implode(' ', $out);
         } else {
             $out = '';
         }
+
         return $out;
     }
 
     /**
      * Return validate class by attribute input validation rule
      *
-     * @return string|false
+     * @return false|string
      */
     protected function _getInputValidateClass()
     {
@@ -171,17 +170,17 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
                     $class = 'validate-url';
                     break;
                 default:
-                    $class = false;
                     break;
             }
         }
+
         return $class;
     }
 
     /**
      * Reireive config field
      *
-     * @param string $fieldName
+     * @param  string $fieldName
      * @return mixed
      */
     public function getConfigField($fieldName)
@@ -202,8 +201,8 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
     /**
      * Retrieve option by option id
      *
-     * @param int $optionId
-     * @return mixed|boolean
+     * @param  int         $optionId
+     * @return bool|string
      */
     public function getOption($optionId)
     {
@@ -211,13 +210,14 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
         if ($source) {
             return $source->getOptionText($optionId);
         }
+
         return false;
     }
 
     /**
      * Retrieve Input Renderer Class
      *
-     * @return string|null
+     * @return null|string
      */
     public function getInputRendererClass()
     {
@@ -225,6 +225,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Frontend_Abstract implements Mage
         if ($className) {
             return Mage::getConfig()->getBlockClassName($className);
         }
+
         return null;
     }
 }

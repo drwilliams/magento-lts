@@ -1,25 +1,17 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Calendar block for page header
  * Prepares localization data for calendar
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Block_Html_Calendar extends Mage_Core_Block_Template
 {
@@ -35,18 +27,18 @@ class Mage_Core_Block_Html_Calendar extends Mage_Core_Block_Template
         $days = Zend_Locale_Data::getList($localeCode, 'days');
         $this->assign('days', [
             'wide'        => Mage::helper('core')->jsonEncode(array_values($days['format']['wide'])),
-            'abbreviated' => Mage::helper('core')->jsonEncode(array_values($days['format']['abbreviated']))
+            'abbreviated' => Mage::helper('core')->jsonEncode(array_values($days['format']['abbreviated'])),
         ]);
 
         // get months names
         $months = Zend_Locale_Data::getList($localeCode, 'months');
         $this->assign('months', [
             'wide'        => Mage::helper('core')->jsonEncode(array_values($months['format']['wide'])),
-            'abbreviated' => Mage::helper('core')->jsonEncode(array_values($months['format']['abbreviated']))
+            'abbreviated' => Mage::helper('core')->jsonEncode(array_values($months['format']['abbreviated'])),
         ]);
 
         // get "today" and "week" words
-        $this->assign('today', Mage::helper('core')->jsonEncode(Zend_Locale_Data::getContent($localeCode, 'relative', 0)));
+        $this->assign('today', Mage::helper('core')->jsonEncode(Zend_Locale_Data::getContent($localeCode, 'relative', '0')));
         $this->assign('week', Mage::helper('core')->jsonEncode(Zend_Locale_Data::getContent($localeCode, 'field', 'week')));
 
         // get "am" & "pm" words
@@ -54,8 +46,8 @@ class Mage_Core_Block_Html_Calendar extends Mage_Core_Block_Template
         $this->assign('pm', Mage::helper('core')->jsonEncode(Zend_Locale_Data::getContent($localeCode, 'pm')));
 
         // get first day of week and weekend days
-        $this->assign('firstDay', (int)Mage::getStoreConfig('general/locale/firstday'));
-        $this->assign('weekendDays', Mage::helper('core')->jsonEncode((string)Mage::getStoreConfig('general/locale/weekend')));
+        $this->assign('firstDay', Mage::getStoreConfigAsInt('general/locale/firstday'));
+        $this->assign('weekendDays', Mage::helper('core')->jsonEncode((string) Mage::getStoreConfig('general/locale/weekend')));
 
         // define default format and tooltip format
         $this->assign('defaultFormat', Mage::helper('core')->jsonEncode(Mage::app()->getLocale()->getDateStrFormat(Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM)));
@@ -86,7 +78,7 @@ class Mage_Core_Block_Html_Calendar extends Mage_Core_Block_Template
     /**
      * Getter for store timestamp based on store timezone settings
      *
-     * @param mixed $store
+     * @param  mixed $store
      * @return int
      */
     public function getStoreTimestamp($store = null)

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_ImportExport
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Export controller
  *
- * @category   Mage
  * @package    Mage_ImportExport
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_ImportExport_Adminhtml_ExportController extends Mage_Adminhtml_Controller_Action
 {
@@ -46,7 +38,7 @@ class Mage_ImportExport_Adminhtml_ExportController extends Mage_Adminhtml_Contro
     {
         $this->_title($this->__('Import/Export'))
             ->loadLayout()
-            ->_setActiveMenu('system/importexport');
+            ->_setActiveMenu('system/convert/export');
 
         return $this;
     }
@@ -70,7 +62,7 @@ class Mage_ImportExport_Adminhtml_ExportController extends Mage_Adminhtml_Contro
                 return $this->_prepareDownloadResponse(
                     $model->getFileName(),
                     $result,
-                    $model->getContentType()
+                    $model->getContentType(),
                 );
             } catch (Mage_Core_Exception $e) {
                 $this->_getSession()->addError($e->getMessage());
@@ -81,6 +73,7 @@ class Mage_ImportExport_Adminhtml_ExportController extends Mage_Adminhtml_Contro
         } else {
             $this->_getSession()->addError($this->__('No valid data sent'));
         }
+
         return $this->_redirect('*/*/index');
     }
 
@@ -113,8 +106,8 @@ class Mage_ImportExport_Adminhtml_ExportController extends Mage_Adminhtml_Contro
 
                 $export->filterAttributeCollection(
                     $attrFilterBlock->prepareCollection(
-                        $export->setData($data)->getEntityAttributeCollection()
-                    )
+                        $export->setData($data)->getEntityAttributeCollection(),
+                    ),
                 );
                 return $this->renderLayout();
             } catch (Exception $e) {
@@ -123,6 +116,7 @@ class Mage_ImportExport_Adminhtml_ExportController extends Mage_Adminhtml_Contro
         } else {
             $this->_getSession()->addError($this->__('No valid data sent'));
         }
+
         $this->_redirect('*/*/index');
     }
 }

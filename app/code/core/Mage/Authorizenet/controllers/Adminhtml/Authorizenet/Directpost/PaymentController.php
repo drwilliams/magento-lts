@@ -1,25 +1,17 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Authorizenet
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 require_once 'Mage/Adminhtml/controllers/Sales/Order/CreateController.php';
 /**
  * Admihtml DirtectPost Payment Controller
  *
- * @category   Mage
  * @package    Mage_Authorizenet
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController extends Mage_Adminhtml_Sales_Order_CreateController
 {
@@ -55,7 +47,6 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
 
     /**
      * Send request to authorize.net
-     *
      */
     public function placeAction()
     {
@@ -68,7 +59,7 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
         $orderData = $this->getRequest()->getPost('order');
         $sendConfirmationFlag = 0;
         if ($orderData) {
-            $sendConfirmationFlag = (!empty($orderData['send_confirmation'])) ? 1 : 0;
+            $sendConfirmationFlag = (empty($orderData['send_confirmation'])) ? 0 : 1;
         } else {
             $orderData = [];
         }
@@ -108,9 +99,10 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
                     $adminUrl = Mage::getSingleton('adminhtml/url');
                     if ($adminUrl->useSecretKey()) {
                         $requestToPaygate->setKey(
-                            $adminUrl->getSecretKey('authorizenet_directpost_payment', 'redirect')
+                            $adminUrl->getSecretKey('authorizenet_directpost_payment', 'redirect'),
                         );
                     }
+
                     $result['directpost'] = ['fields' => $requestToPaygate->getData()];
                 }
 
@@ -121,6 +113,7 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
                 if (!empty($message)) {
                     $this->_getSession()->addError($message);
                 }
+
                 $isError = true;
             } catch (Exception $e) {
                 $this->_getSession()->addException($e, $this->__('Order saving error: %s', $e->getMessage()));
@@ -136,7 +129,7 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
             $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
         } else {
             $result = [
-                'error_messages' => $this->__('Please, choose payment method')
+                'error_messages' => $this->__('Please, choose payment method'),
             ];
             $this->getResponse()->setBody(Mage::helper('core')->jsonEncode($result));
         }
@@ -144,7 +137,6 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
 
     /**
      * Retrieve params and put javascript into iframe
-     *
      */
     public function redirectAction()
     {
@@ -168,6 +160,7 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
                     $this->_getOrderCreateModel()->getSession()->unsOrderId();
                 }
             }
+
             //clear sessions
             $this->_getSession()->clear();
             $this->_getDirectPostSession()->removeCheckoutOrderIncrementId($redirectParams['x_invoice_num']);
@@ -188,7 +181,6 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
 
     /**
      * Return order quote by ajax
-     *
      */
     public function returnQuoteAction()
     {
@@ -199,14 +191,14 @@ class Mage_Authorizenet_Adminhtml_Authorizenet_Directpost_PaymentController exte
     /**
      * Return quote
      *
-     * @param bool $cancelOrder
+     * @param bool   $cancelOrder
      * @param string $errorMsg
      */
     protected function _returnQuote($cancelOrder = false, $errorMsg = '')
     {
         $incrementId = $this->_getDirectPostSession()->getLastOrderIncrementId();
-        if ($incrementId &&
-            $this->_getDirectPostSession()
+        if ($incrementId
+            && $this->_getDirectPostSession()
                 ->isCheckoutOrderIncrementIdExist($incrementId)
         ) {
             /** @var Mage_Sales_Model_Order $order */

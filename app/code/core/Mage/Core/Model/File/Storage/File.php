@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2016-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract model class
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Core_Model_Resource_File_Storage_File _getResource()
  * @method Mage_Core_Model_Resource_File_Storage_File getResource()
@@ -35,7 +27,7 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
     /**
      * Data at storage
      *
-     * @var array|null
+     * @var null|array
      */
     protected $_data = null;
 
@@ -108,9 +100,9 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
     /**
      * Collect files and directories from storage
      *
-     * @param  int $offset
-     * @param  int $count
-     * @param  string $type
+     * @param  int        $offset
+     * @param  int        $count
+     * @param  string     $type
      * @return array|bool
      */
     public function collectData($offset = 0, $count = 100, $type = 'files')
@@ -119,8 +111,8 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
             return false;
         }
 
-        $offset = ((int) $offset >= 0) ? (int) $offset : 0;
-        $count  = ((int) $count >= 1) ? (int) $count : 1;
+        $offset = max((int) $offset, 0);
+        $count  = max((int) $count, 1);
 
         if (is_null($this->_data)) {
             $this->_data = $this->getStorageData();
@@ -137,8 +129,8 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
     /**
      * Export directories list from storage
      *
-     * @param  int $offset
-     * @param  int $count
+     * @param  int        $offset
+     * @param  int        $count
      * @return array|bool
      */
     public function exportDirectories($offset = 0, $count = 100)
@@ -149,8 +141,8 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
     /**
      * Export files list in defined range
      *
-     * @param  int $offset
-     * @param  int $count
+     * @param  int        $offset
+     * @param  int        $count
      * @return array|bool
      */
     public function exportFiles($offset = 0, $count = 1)
@@ -179,7 +171,7 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
     /**
      * Import entities to storage
      *
-     * @param  array $data
+     * @param  array  $data
      * @param  string $callback
      * @return $this
      */
@@ -238,7 +230,7 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
      * Save file to storage
      *
      * @param  array|Mage_Core_Model_File_Storage_Database $file
-     * @param  bool $overwrite
+     * @param  bool                                        $overwrite
      * @return bool
      */
     public function saveFile($file, $overwrite = true)
@@ -263,7 +255,7 @@ class Mage_Core_Model_File_Storage_File extends Mage_Core_Model_File_Storage_Abs
     }
 
     /**
-     * @param string $filePath
+     * @param  string $filePath
      * @return bool
      */
     public function lockCreateFile($filePath)

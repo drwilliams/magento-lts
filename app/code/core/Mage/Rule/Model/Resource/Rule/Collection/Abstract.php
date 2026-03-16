@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Rule
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract Rule entity resource collection model
  *
- * @category   Mage
  * @package    Mage_Rule
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
@@ -74,7 +66,7 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
     /**
      * Init flag for adding rule website ids to collection result
      *
-     * @param bool|null $flag
+     * @param null|bool $flag
      *
      * @return Mage_Rule_Model_Resource_Rule_Collection_Abstract
      */
@@ -88,7 +80,7 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
     /**
      * Limit rules collection by specific websites
      *
-     * @param int|array|Mage_Core_Model_Website $websiteId
+     * @param array|int|Mage_Core_Model_Website $websiteId
      *
      * @return Mage_Rule_Model_Resource_Rule_Collection_Abstract
      */
@@ -106,9 +98,10 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
                 ->where('website.' . $entityInfo['entity_id_field'] . ' IN (?)', $websiteId);
             $this->getSelect()->exists(
                 $subSelect,
-                'main_table.' . $entityInfo['rule_id_field'] . ' = website.' . $entityInfo['rule_id_field']
+                'main_table.' . $entityInfo['rule_id_field'] . ' = website.' . $entityInfo['rule_id_field'],
             );
         }
+
         return $this;
     }
 
@@ -116,7 +109,7 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
      * Provide support for website id filter
      *
      * @param string $field
-     * @param mixed $condition
+     * @param mixed  $condition
      *
      * @return Mage_Rule_Model_Resource_Rule_Collection_Abstract
      */
@@ -140,9 +133,10 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
     public function addIsActiveFilter($isActive = 1)
     {
         if (!$this->getFlag('is_active_filter')) {
-            $this->addFieldToFilter('is_active', (int)$isActive ? 1 : 0);
+            $this->addFieldToFilter('is_active', (int) $isActive ? 1 : 0);
             $this->setFlag('is_active_filter', true);
         }
+
         return $this;
     }
 
@@ -162,19 +156,17 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
 
         throw Mage::exception(
             'Mage_Core',
-            Mage::helper('rule')->__('There is no information about associated entity type "%s".', $entityType)
+            Mage::helper('rule')->__('There is no information about associated entity type "%s".', $entityType),
         );
     }
 
     /**
      * Set environment for all rules in collection
      *
-     * @param Mage_Rule_Model_Environment|null $env
      * @return $this
      * @deprecated after 1.6.2.0
-     *
      */
-    public function setEnv(Mage_Rule_Model_Environment $env = null)
+    public function setEnv(?Mage_Rule_Model_Environment $env = null)
     {
         $this->_env = $env;
         return $this;
@@ -185,7 +177,6 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
      *
      * @return Mage_Rule_Model_Environment
      * @deprecated after 1.6.2.0
-     *
      */
     public function getEnv()
     {
@@ -195,9 +186,8 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
     /**
      * Set filter for the collection based on the environment
      *
-     * @deprecated after 1.6.2.0
-     *
      * @return Mage_Rule_Model_Resource_Rule_Collection_Abstract
+     * @deprecated after 1.6.2.0
      */
     public function setActiveFilter()
     {
@@ -207,9 +197,8 @@ abstract class Mage_Rule_Model_Resource_Rule_Collection_Abstract extends Mage_Co
     /**
      * Process the quote with all the rules in collection
      *
-     * @deprecated after 1.6.2.0
-     *
      * @return Mage_Rule_Model_Resource_Rule_Collection_Abstract
+     * @deprecated after 1.6.2.0
      */
     public function process()
     {

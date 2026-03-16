@@ -1,25 +1,17 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Usa
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2017-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * USPS shipping rates estimation
  *
  * @link       http://www.usps.com/webtools/htm/Development-Guide-v3-0b.htm
- * @category   Mage
  * @package    Mage_Usa
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carrier_Abstract implements Mage_Shipping_Model_Carrier_Interface
 {
@@ -27,15 +19,20 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
      * USPS containers
      */
     public const CONTAINER_VARIABLE           = 'VARIABLE';
+
     public const CONTAINER_FLAT_RATE_BOX      = 'FLAT RATE BOX';
+
     public const CONTAINER_FLAT_RATE_ENVELOPE = 'FLAT RATE ENVELOPE';
+
     public const CONTAINER_RECTANGULAR        = 'RECTANGULAR';
+
     public const CONTAINER_NONRECTANGULAR     = 'NONRECTANGULAR';
 
     /**
      * USPS size
      */
     public const SIZE_REGULAR = 'REGULAR';
+
     public const SIZE_LARGE   = 'LARGE';
 
     /**
@@ -75,21 +72,29 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Rate request data
      *
-     * @var Mage_Shipping_Model_Rate_Request|null
+     * @var null|Mage_Shipping_Model_Rate_Request
      */
     protected $_request = null;
 
     /**
      * Raw rate request data
      *
-     * @var Varien_Object|null
+     * @var null|Varien_Object
      */
     protected $_rawRequest = null;
+
+
+    /**
+     * Raw rate tracking request data
+     *
+     * @var null|Varien_Object
+     */
+    protected $_rawTrackRequest = null;
 
     /**
      * Rate result data
      *
-     * @var Mage_Shipping_Model_Rate_Result|null
+     * @var null|Mage_Shipping_Model_Rate_Result|Mage_Shipping_Model_Tracking_Result
      */
     protected $_result = null;
 
@@ -110,8 +115,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Collect and get rates
      *
-     * @param Mage_Shipping_Model_Rate_Request $request
-     * @return Mage_Shipping_Model_Rate_Result|bool|null
+     * @return null|bool|Mage_Shipping_Model_Rate_Result
      */
     public function collectRates(Mage_Shipping_Model_Rate_Request $request)
     {
@@ -131,7 +135,6 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Prepare and set request to this instance
      *
-     * @param Mage_Shipping_Model_Rate_Request $request
      * @return $this
      */
     public function setRequest(Mage_Shipping_Model_Rate_Request $request)
@@ -151,6 +154,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $userId = $this->getConfigData('userid');
         }
+
         $r->setUserId($userId);
 
         if ($request->getUspsContainer()) {
@@ -158,6 +162,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $container = $this->getConfigData('container');
         }
+
         $r->setContainer($container);
 
         if ($request->getUspsSize()) {
@@ -165,6 +170,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $size = $this->getConfigData('size');
         }
+
         $r->setSize($size);
 
         if ($request->getGirth()) {
@@ -172,6 +178,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $girth = $this->getConfigData('girth');
         }
+
         $r->setGirth($girth);
 
         if ($request->getHeight()) {
@@ -179,6 +186,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $height = $this->getConfigData('height');
         }
+
         $r->setHeight($height);
 
         if ($request->getLength()) {
@@ -186,6 +194,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $length = $this->getConfigData('length');
         }
+
         $r->setLength($length);
 
         if ($request->getWidth()) {
@@ -193,6 +202,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $width = $this->getConfigData('width');
         }
+
         $r->setWidth($width);
 
         if ($request->getUspsMachinable()) {
@@ -200,6 +210,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $machinable = $this->getConfigData('machinable');
         }
+
         $r->setMachinable($machinable);
 
         if ($request->getOrigPostcode()) {
@@ -207,7 +218,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $r->setOrigPostal(Mage::getStoreConfig(
                 Mage_Shipping_Model_Shipping::XML_PATH_STORE_ZIP,
-                $request->getStoreId()
+                $request->getStoreId(),
             ));
         }
 
@@ -216,7 +227,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         } else {
             $r->setOrigCountryId(Mage::getStoreConfig(
                 Mage_Shipping_Model_Shipping::XML_PATH_STORE_COUNTRY_ID,
-                $request->getStoreId()
+                $request->getStoreId(),
             ));
         }
 
@@ -256,7 +267,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Get result of request
      *
-     * @return Mage_Shipping_Model_Rate_Result|null
+     * @return null|Mage_Shipping_Model_Rate_Result
      */
     public function getResult()
     {
@@ -264,7 +275,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     }
 
     /**
-     * @inheritdoc
+     * @inheritDoc
      * Starting from 23.02.2018 USPS doesn't allow to create free shipping labels via their API.
      */
     public function isShippingLabelsAvailable()
@@ -285,7 +296,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Set free method request
      *
-     * @param  $freeMethod
+     * @param $freeMethod
      */
     protected function _setFreeMethodRequest($freeMethod)
     {
@@ -320,20 +331,23 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             $xml->addChild('Revision', '2');
 
             $package = $xml->addChild('Package');
-            $package->addAttribute('ID', 0);
+            $package->addAttribute('ID', '0');
             $service = $this->getCode('service_to_code', $r->getService());
             if (!$service) {
                 $service = $r->getService();
             }
+
             if ($r->getContainer() == 'FLAT RATE BOX' || $r->getContainer() == 'FLAT RATE ENVELOPE') {
                 $service = 'Priority';
             }
+
             $package->addChild('Service', $service);
 
             // no matter Letter, Flat or Parcel, use Parcel
             if ($r->getService() == 'FIRST CLASS' || $r->getService() == 'FIRST CLASS HFP COMMERCIAL') {
                 $package->addChild('FirstClassMailType', 'PARCEL');
             }
+
             if ($r->getService() == 'FIRST CLASS COMMERCIAL') {
                 $package->addChild('FirstClassMailType', 'PACKAGE SERVICE');
             }
@@ -354,6 +368,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     $package->addChild('Girth', $r->getGirth());
                 }
             }
+
             $package->addChild('Machinable', $r->getMachinable());
 
             $api = 'RateV4';
@@ -364,7 +379,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             $xml->addChild('Revision', '2');
 
             $package = $xml->addChild('Package');
-            $package->addAttribute('ID', 0);
+            $package->addAttribute('ID', '0');
             $package->addChild('Pounds', $r->getWeightPounds());
             $package->addChild('Ounces', $r->getWeightOunces());
             $package->addChild('MailType', 'All');
@@ -372,7 +387,10 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             $package->addChild('Country', $r->getDestCountryName());
             $package->addChild('Container', $r->getContainer());
             $package->addChild('Size', $r->getSize());
-            $width = $length = $height = $girth = '';
+            $width = '';
+            $length = '';
+            $height = '';
+            $girth = '';
             if ($r->getSize() == 'LARGE') {
                 $width = $r->getWidth();
                 $length = $r->getLength();
@@ -381,6 +399,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     $girth = $r->getGirth();
                 }
             }
+
             $package->addChild('Width', $width);
             $package->addChild('Length', $length);
             $package->addChild('Height', $height);
@@ -390,8 +409,10 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 //only 5 chars available
                 $package->addChild('OriginZip', substr($r->getOrigPostal(), 0, 5));
             }
+
             $api = 'IntlRateV2';
         }
+
         $request = $xml->asXML();
 
         $responseBody = $this->_getCachedQuotes($request);
@@ -402,6 +423,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 if (!$url) {
                     $url = $this->_defaultGatewayUrl;
                 }
+
                 $client = new Zend_Http_Client();
                 $client->setUri($url);
                 $client->setConfig(['maxredirects' => 0, 'timeout' => 30]);
@@ -416,8 +438,10 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 $debugData['result'] = ['error' => $e->getMessage(), 'code' => $e->getCode()];
                 $responseBody = '';
             }
+
             $this->_debug($debugData);
         }
+
         return $this->_parseXmlResponse($responseBody);
     }
 
@@ -425,23 +449,24 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
      * Parse calculated rates
      *
      * @link http://www.usps.com/webtools/htm/Rate-Calculators-v2-3.htm
-     * @param string $response
-     * @return Mage_Shipping_Model_Rate_Result
+     * @param  string                               $response
+     * @return Mage_Shipping_Model_Rate_Result|void
      */
     protected function _parseXmlResponse($response)
     {
         $r = $this->_rawRequest;
         $costArr = [];
         $priceArr = [];
-        if (strlen(trim($response)) > 0) {
-            if (strpos(trim($response), '<?xml') === 0) {
-                if (strpos($response, '<?xml version="1.0"?>') !== false) {
+        if (trim($response) !== '') {
+            if (str_starts_with(trim($response), '<?xml')) {
+                if (str_contains($response, '<?xml version="1.0"?>')) {
                     $response = str_replace(
                         '<?xml version="1.0"?>',
                         '<?xml version="1.0" encoding="ISO-8859-1"?>',
-                        $response
+                        $response,
                     );
                 }
+
                 $xml = simplexml_load_string($response);
 
                 if (is_object($xml)) {
@@ -453,39 +478,42 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                     if ($this->_isUSCountry($r->getDestCountryId())) {
                         if (is_object($xml->Package) && is_object($xml->Package->Postage)) {
                             foreach ($xml->Package->Postage as $postage) {
-                                $serviceName = $this->_filterServiceName((string)$postage->MailService);
-                                $_serviceCode = $this->getCode('method_to_code', $serviceName);
-                                $serviceCode = $_serviceCode ? $_serviceCode : (string)$postage->attributes()->CLASSID;
+                                $serviceName = $this->_filterServiceName((string) $postage->MailService);
+                                $serviceCodeMethod = $this->getCode('method_to_code', $serviceName);
+                                $serviceCode = $serviceCodeMethod ?: (string) $postage->attributes()->CLASSID;
                                 $serviceCodeToActualNameMap[$serviceCode] = $serviceName;
                                 if (in_array($serviceCode, $allowedMethods)) {
-                                    $costArr[$serviceCode] = (string)$postage->Rate;
+                                    $costArr[$serviceCode] = (string) $postage->Rate;
                                     $priceArr[$serviceCode] = $this->getMethodPrice(
-                                        (string)$postage->Rate,
-                                        $serviceCode
+                                        (float) $postage->Rate,
+                                        $serviceCode,
                                     );
                                 }
                             }
+
                             asort($priceArr);
                         }
-                    } else { // International Rates
-                        if (is_object($xml->Package) && is_object($xml->Package->Service)) {
-                            foreach ($xml->Package->Service as $service) {
-                                if ($service->ServiceErrors->count()) {
-                                    continue;
-                                }
-                                $serviceName = $this->_filterServiceName((string)$service->SvcDescription);
-                                $serviceCode = 'INT_' . (string)$service->attributes()->ID;
-                                $serviceCodeToActualNameMap[$serviceCode] = $serviceName;
-                                if (in_array($serviceCode, $allowedMethods)) {
-                                    $costArr[$serviceCode] = (string)$service->Postage;
-                                    $priceArr[$serviceCode] = $this->getMethodPrice(
-                                        (string)$service->Postage,
-                                        $serviceCode
-                                    );
-                                }
+                    } elseif (is_object($xml->Package) && is_object($xml->Package->Service)) {
+                        // International Rates
+                        foreach ($xml->Package->Service as $service) {
+                            // phpcs:ignore Ecg.Performance.Loop.ArraySize
+                            if ($service->ServiceErrors->count()) {
+                                continue;
                             }
-                            asort($priceArr);
+
+                            $serviceName = $this->_filterServiceName((string) $service->SvcDescription);
+                            $serviceCode = 'INT_' . $service->attributes()->ID;
+                            $serviceCodeToActualNameMap[$serviceCode] = $serviceName;
+                            if (in_array($serviceCode, $allowedMethods)) {
+                                $costArr[$serviceCode] = (string) $service->Postage;
+                                $priceArr[$serviceCode] = $this->getMethodPrice(
+                                    (float) $service->Postage,
+                                    $serviceCode,
+                                );
+                            }
                         }
+
+                        asort($priceArr);
                     }
                 }
 
@@ -513,11 +541,12 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             }
         }
     }
+
     /**
      * Get configuration data of carrier
      *
-     * @param string $type
-     * @param string $code
+     * @param  string     $type
+     * @param  string     $code
      * @return array|bool
      */
     public function getCode($type, $code = '')
@@ -527,7 +556,6 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 '0_FCLE' => Mage::helper('usa')->__('First-Class Mail Large Envelope'),
                 '0_FCL'  => Mage::helper('usa')->__('First-Class Mail Letter'),
                 '0_FCSL' => Mage::helper('usa')->__('First-Class Mail Stamped Letter'),
-                '0_FCP'  => Mage::helper('usa')->__('First-Class Package Service - Retail'),
                 '0_FCPC' => Mage::helper('usa')->__('First-Class Mail Postcards'),
                 '1'      => Mage::helper('usa')->__('Priority Mail'),
                 '2'      => Mage::helper('usa')->__('Priority Mail Express Hold For Pickup'),
@@ -570,7 +598,6 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 '57'     => Mage::helper('usa')->__('Priority Mail Express Sunday/Holiday Delivery Flat Rate Boxes'),
                 '58'     => Mage::helper('usa')->__('Priority Mail Regional Rate Box C'),
                 '59'     => Mage::helper('usa')->__('Priority Mail Regional Rate Box C Hold For Pickup'),
-                '61'     => Mage::helper('usa')->__('First-Class Package Service'),
                 '62'     => Mage::helper('usa')->__('Priority Mail Express Padded Flat Rate Envelope'),
                 '63'     => Mage::helper('usa')->__('Priority Mail Express Padded Flat Rate Envelope Hold For Pickup'),
                 '64'     => Mage::helper('usa')->__('Priority Mail Express Sunday/Holiday Delivery Padded Flat Rate Envelope'),
@@ -600,13 +627,13 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 'INT_24' => Mage::helper('usa')->__('Priority Mail International DVD Flat Rate priced box'),
                 'INT_25' => Mage::helper('usa')->__('Priority Mail International Large Video Flat Rate priced box'),
                 'INT_27' => Mage::helper('usa')->__('Priority Mail Express International Padded Flat Rate Envelope'),
+                '1058'   => Mage::helper('usa')->__('USPS Ground Advantage'),
             ],
 
             'service_to_code' => [
                 '0_FCLE' => 'First Class',
                 '0_FCL'  => 'First Class',
                 '0_FCSL' => 'First Class',
-                '0_FCP'  => 'First Class',
                 '0_FCPC' => 'First Class',
                 '1'      => 'Priority',
                 '2'      => 'Priority Express',
@@ -649,7 +676,6 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 '57'     => 'Priority Express',
                 '58'     => 'Priority',
                 '59'     => 'Priority',
-                '61'     => 'First Class',
                 '62'     => 'Priority Express',
                 '63'     => 'Priority Express',
                 '64'     => 'Priority Express',
@@ -679,126 +705,126 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 'INT_24' => 'Priority',
                 'INT_25' => 'Priority',
                 'INT_27' => 'Priority Express',
+                '1058'   => 'Ground Advantage',
             ],
 
-       // Added because USPS has different services but with same CLASSID value, which is "0"
+            // Added because USPS has different services but with same CLASSID value, which is "0"
             'method_to_code' => [
-               'First-Class Mail Large Envelope'      => '0_FCLE',
-               'First-Class Mail Letter'              => '0_FCL',
-               'First-Class Mail Stamped Letter'      => '0_FCSL',
-               'First-Class Mail Metered Letter'      => '72',
-               'First-Class Package Service - Retail' => '0_FCP',
+                'First-Class Mail Large Envelope'      => '0_FCLE',
+                'First-Class Mail Letter'              => '0_FCL',
+                'First-Class Mail Stamped Letter'      => '0_FCSL',
+                'First-Class Mail Metered Letter'      => '72',
             ],
 
             'first_class_mail_type' => [
-               'LETTER'      => Mage::helper('usa')->__('Letter'),
-               'FLAT'        => Mage::helper('usa')->__('Flat'),
-               'PARCEL'      => Mage::helper('usa')->__('Parcel'),
+                'LETTER'      => Mage::helper('usa')->__('Letter'),
+                'FLAT'        => Mage::helper('usa')->__('Flat'),
+                'PARCEL'      => Mage::helper('usa')->__('Parcel'),
             ],
 
             'container' => [
-               'VARIABLE'           => Mage::helper('usa')->__('Variable'),
-               'FLAT RATE ENVELOPE' => Mage::helper('usa')->__('Flat-Rate Envelope'),
-               'FLAT RATE BOX'      => Mage::helper('usa')->__('Flat-Rate Box'),
-               'RECTANGULAR'        => Mage::helper('usa')->__('Rectangular'),
-               'NONRECTANGULAR'     => Mage::helper('usa')->__('Non-rectangular'),
+                'VARIABLE'           => Mage::helper('usa')->__('Variable'),
+                'FLAT RATE ENVELOPE' => Mage::helper('usa')->__('Flat-Rate Envelope'),
+                'FLAT RATE BOX'      => Mage::helper('usa')->__('Flat-Rate Box'),
+                'RECTANGULAR'        => Mage::helper('usa')->__('Rectangular'),
+                'NONRECTANGULAR'     => Mage::helper('usa')->__('Non-rectangular'),
             ],
 
             'containers_filter' => [
-               [
-                   'containers' => ['VARIABLE'],
-                   'filters'    => [
-                       'within_us' => [
-                           'method' => [
-                               'Priority Mail Express Flat Rate Envelope',
-                               'Priority Mail Express Flat Rate Envelope Hold For Pickup',
-                               'Priority Mail Flat Rate Envelope',
-                               'Priority Mail Large Flat Rate Box',
-                               'Priority Mail Medium Flat Rate Box',
-                               'Priority Mail Small Flat Rate Box',
-                               'Priority Mail Express Hold For Pickup',
-                               'Priority Mail Express',
-                               'Priority Mail',
-                               'Priority Mail Hold For Pickup',
-                               'Priority Mail Large Flat Rate Box Hold For Pickup',
-                               'Priority Mail Medium Flat Rate Box Hold For Pickup',
-                               'Priority Mail Small Flat Rate Box Hold For Pickup',
-                               'Priority Mail Flat Rate Envelope Hold For Pickup',
-                               'Priority Mail Small Flat Rate Envelope',
-                               'Priority Mail Small Flat Rate Envelope Hold For Pickup',
-                               'First-Class Package Service Hold For Pickup',
-                               'Priority Mail Express Flat Rate Boxes',
-                               'Priority Mail Express Flat Rate Boxes Hold For Pickup',
-                               'Retail Ground',
-                               'Media Mail',
-                               'First-Class Mail Large Envelope',
-                               'Priority Mail Express Sunday/Holiday Delivery',
-                               'Priority Mail Express Sunday/Holiday Delivery Flat Rate Envelope',
-                               'Priority Mail Express Sunday/Holiday Delivery Flat Rate Boxes',
-                           ]
-                       ],
-                       'from_us' => [
-                           'method' => [
-                               'Priority Mail Express International Flat Rate Envelope',
-                               'Priority Mail International Flat Rate Envelope',
-                               'Priority Mail International Large Flat Rate Box',
-                               'Priority Mail International Medium Flat Rate Box',
-                               'Priority Mail International Small Flat Rate Box',
-                               'Priority Mail International Small Flat Rate Envelope',
-                               'Priority Mail Express International Flat Rate Boxes',
-                               'Global Express Guaranteed (GXG)',
-                               'USPS GXG Envelopes',
-                               'Priority Mail Express International',
-                               'Priority Mail International',
-                               'First-Class Mail International Letter',
-                               'First-Class Mail International Large Envelope',
-                               'First-Class Package International Service',
-                           ]
-                       ]
-                   ]
-               ],
-               [
-                   'containers' => ['FLAT RATE BOX'],
-                   'filters'    => [
-                       'within_us' => [
-                           'method' => [
-                               'Priority Mail Large Flat Rate Box',
-                               'Priority Mail Medium Flat Rate Box',
-                               'Priority Mail Small Flat Rate Box',
-                               'Priority Mail International Large Flat Rate Box',
-                               'Priority Mail International Medium Flat Rate Box',
-                               'Priority Mail International Small Flat Rate Box',
-                           ]
-                       ],
-                       'from_us' => [
-                           'method' => [
-                               'Priority Mail International Large Flat Rate Box',
-                               'Priority Mail International Medium Flat Rate Box',
-                               'Priority Mail International Small Flat Rate Box',
-                               'Priority Mail International DVD Flat Rate priced box',
-                               'Priority Mail International Large Video Flat Rate priced box'
-                           ]
-                       ]
-                   ]
-               ],
-               [
-                   'containers' => ['FLAT RATE ENVELOPE'],
-                   'filters'    => [
-                       'within_us' => [
-                           'method' => [
-                               'Priority Mail Express Flat Rate Envelope',
-                               'Priority Mail Express Flat Rate Envelope Hold For Pickup',
-                               'Priority Mail Flat Rate Envelope',
-                               'First-Class Mail Large Envelope',
-                               'Priority Mail Flat Rate Envelope Hold For Pickup',
-                               'Priority Mail Small Flat Rate Envelope',
-                               'Priority Mail Small Flat Rate Envelope Hold For Pickup',
-                               'Priority Mail Express Sunday/Holiday Delivery Flat Rate Envelope',
-                               'Priority Mail Express Padded Flat Rate Envelope'
-                           ]
-                       ],
-                       'from_us' => [
-                           'method' => [
+                [
+                    'containers' => ['VARIABLE'],
+                    'filters'    => [
+                        'within_us' => [
+                            'method' => [
+                                'Priority Mail Express Flat Rate Envelope',
+                                'Priority Mail Express Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Flat Rate Envelope',
+                                'Priority Mail Large Flat Rate Box',
+                                'Priority Mail Medium Flat Rate Box',
+                                'Priority Mail Small Flat Rate Box',
+                                'Priority Mail Express Hold For Pickup',
+                                'Priority Mail Express',
+                                'Priority Mail',
+                                'Priority Mail Hold For Pickup',
+                                'Priority Mail Large Flat Rate Box Hold For Pickup',
+                                'Priority Mail Medium Flat Rate Box Hold For Pickup',
+                                'Priority Mail Small Flat Rate Box Hold For Pickup',
+                                'Priority Mail Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Small Flat Rate Envelope',
+                                'Priority Mail Small Flat Rate Envelope Hold For Pickup',
+                                'First-Class Package Service Hold For Pickup',
+                                'Priority Mail Express Flat Rate Boxes',
+                                'Priority Mail Express Flat Rate Boxes Hold For Pickup',
+                                'Retail Ground',
+                                'Media Mail',
+                                'First-Class Mail Large Envelope',
+                                'Priority Mail Express Sunday/Holiday Delivery',
+                                'Priority Mail Express Sunday/Holiday Delivery Flat Rate Envelope',
+                                'Priority Mail Express Sunday/Holiday Delivery Flat Rate Boxes',
+                            ],
+                        ],
+                        'from_us' => [
+                            'method' => [
+                                'Priority Mail Express International Flat Rate Envelope',
+                                'Priority Mail International Flat Rate Envelope',
+                                'Priority Mail International Large Flat Rate Box',
+                                'Priority Mail International Medium Flat Rate Box',
+                                'Priority Mail International Small Flat Rate Box',
+                                'Priority Mail International Small Flat Rate Envelope',
+                                'Priority Mail Express International Flat Rate Boxes',
+                                'Global Express Guaranteed (GXG)',
+                                'USPS GXG Envelopes',
+                                'Priority Mail Express International',
+                                'Priority Mail International',
+                                'First-Class Mail International Letter',
+                                'First-Class Mail International Large Envelope',
+                                'First-Class Package International Service',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'containers' => ['FLAT RATE BOX'],
+                    'filters'    => [
+                        'within_us' => [
+                            'method' => [
+                                'Priority Mail Large Flat Rate Box',
+                                'Priority Mail Medium Flat Rate Box',
+                                'Priority Mail Small Flat Rate Box',
+                                'Priority Mail International Large Flat Rate Box',
+                                'Priority Mail International Medium Flat Rate Box',
+                                'Priority Mail International Small Flat Rate Box',
+                            ],
+                        ],
+                        'from_us' => [
+                            'method' => [
+                                'Priority Mail International Large Flat Rate Box',
+                                'Priority Mail International Medium Flat Rate Box',
+                                'Priority Mail International Small Flat Rate Box',
+                                'Priority Mail International DVD Flat Rate priced box',
+                                'Priority Mail International Large Video Flat Rate priced box',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'containers' => ['FLAT RATE ENVELOPE'],
+                    'filters'    => [
+                        'within_us' => [
+                            'method' => [
+                                'Priority Mail Express Flat Rate Envelope',
+                                'Priority Mail Express Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Flat Rate Envelope',
+                                'First-Class Mail Large Envelope',
+                                'Priority Mail Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Small Flat Rate Envelope',
+                                'Priority Mail Small Flat Rate Envelope Hold For Pickup',
+                                'Priority Mail Express Sunday/Holiday Delivery Flat Rate Envelope',
+                                'Priority Mail Express Padded Flat Rate Envelope',
+                            ],
+                        ],
+                        'from_us' => [
+                            'method' => [
                                 'Priority Mail Express International Flat Rate Envelope',
                                 'Priority Mail International Flat Rate Envelope',
                                 'First-Class Mail International Large Envelope',
@@ -808,86 +834,88 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                                 'Priority Mail International Window Flat Rate Envelope',
                                 'Priority Mail International Legal Flat Rate Envelope',
                                 'Priority Mail Express International Padded Flat Rate Envelope',
-                           ]
-                       ]
-                   ]
-               ],
-               [
-                   'containers' => ['RECTANGULAR'],
-                   'filters'    => [
-                       'within_us' => [
-                           'method' => [
-                               'Priority Mail Express',
-                               'Priority Mail',
-                               'Retail Ground',
-                               'Media Mail',
-                               'Library Mail',
-                               'First-Class Package Service'
-                           ]
-                       ],
-                       'from_us' => [
-                           'method' => [
-                               'USPS GXG Envelopes',
-                               'Priority Mail Express International',
-                               'Priority Mail International',
-                               'First-Class Package International Service',
-                           ]
-                       ]
-                   ]
-               ],
-               [
-                   'containers' => ['NONRECTANGULAR'],
-                   'filters'    => [
-                       'within_us' => [
-                           'method' => [
-                               'Priority Mail Express',
-                               'Priority Mail',
-                               'Retail Ground',
-                               'Media Mail',
-                               'Library Mail',
-                               'First-Class Package Service'
-                           ]
-                       ],
-                       'from_us' => [
-                           'method' => [
-                               'Global Express Guaranteed (GXG)',
-                               'Priority Mail Express International',
-                               'Priority Mail International',
-                               'First-Class Package International Service',
-                           ]
-                       ]
-                   ]
-               ],
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'containers' => ['RECTANGULAR'],
+                    'filters'    => [
+                        'within_us' => [
+                            'method' => [
+                                'Priority Mail Express',
+                                'Priority Mail',
+                                'Retail Ground',
+                                'Media Mail',
+                                'Library Mail',
+                                'First-Class Package Service',
+                            ],
+                        ],
+                        'from_us' => [
+                            'method' => [
+                                'USPS GXG Envelopes',
+                                'Priority Mail Express International',
+                                'Priority Mail International',
+                                'First-Class Package International Service',
+                            ],
+                        ],
+                    ],
+                ],
+                [
+                    'containers' => ['NONRECTANGULAR'],
+                    'filters'    => [
+                        'within_us' => [
+                            'method' => [
+                                'Priority Mail Express',
+                                'Priority Mail',
+                                'Retail Ground',
+                                'Media Mail',
+                                'Library Mail',
+                                'First-Class Package Service',
+                            ],
+                        ],
+                        'from_us' => [
+                            'method' => [
+                                'Global Express Guaranteed (GXG)',
+                                'Priority Mail Express International',
+                                'Priority Mail International',
+                                'First-Class Package International Service',
+                            ],
+                        ],
+                    ],
+                ],
             ],
             'size' => [
-               'REGULAR'     => Mage::helper('usa')->__('Regular'),
-               'LARGE'       => Mage::helper('usa')->__('Large'),
+                'REGULAR'     => Mage::helper('usa')->__('Regular'),
+                'LARGE'       => Mage::helper('usa')->__('Large'),
             ],
 
             'machinable' => [
-               'true'        => Mage::helper('usa')->__('Yes'),
-               'false'       => Mage::helper('usa')->__('No'),
+                'true'        => Mage::helper('usa')->__('Yes'),
+                'false'       => Mage::helper('usa')->__('No'),
             ],
 
             'delivery_confirmation_types' => [
-               'True' => Mage::helper('usa')->__('Not Required'),
-               'False'  => Mage::helper('usa')->__('Required'),
+                'True' => Mage::helper('usa')->__('Not Required'),
+                'False'  => Mage::helper('usa')->__('Required'),
             ],
         ];
-
         if (!isset($codes[$type])) {
             return false;
-        } elseif ($code === '') {
+        }
+
+        if ($code === '') {
             return $codes[$type];
         }
 
         return $codes[$type][$code] ?? false;
     }
+
     /**
      * Get tracking
      *
-     * @param mixed $trackingData
-     * @return Mage_Shipping_Model_Rate_Result|null
+     * @param  mixed                                $trackingData
+     * @return null|Mage_Shipping_Model_Rate_Result
      */
     public function getTracking($trackingData)
     {
@@ -905,7 +933,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Set tracking request
      *
-     * @return null
+     * @return void
      */
     protected function setTrackingRequest()
     {
@@ -942,6 +970,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 if (!$url) {
                     $url = $this->_defaultGatewayUrl;
                 }
+
                 $client = new Zend_Http_Client();
                 $client->setUri($url);
                 $client->setConfig(['maxredirects' => 0, 'timeout' => 30]);
@@ -959,35 +988,36 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             $this->_parseXmlTrackingResponse($tracking, $responseBody);
         }
     }
+
     /**
      * Parse xml tracking response
      *
-     * @param array $trackingValue
-     * @param string $response
-     * @return null
+     * @param  array  $trackingValue
+     * @param  string $response
+     * @return void
      */
     protected function _parseXmlTrackingResponse($trackingValue, $response)
     {
         $errorTitle = Mage::helper('usa')->__('Unable to retrieve tracking');
         $resultArr = [];
-        if (strlen(trim($response)) > 0) {
-            if (strpos(trim($response), '<?xml') === 0) {
+        if (trim($response) !== '') {
+            if (str_starts_with(trim($response), '<?xml')) {
                 $xml = simplexml_load_string($response);
                 if (is_object($xml)) {
-                    if (isset($xml->Number) && isset($xml->Description) && (string)$xml->Description != '') {
-                        $errorTitle = (string)$xml->Description;
+                    if (isset($xml->Number) && isset($xml->Description) && (string) $xml->Description != '') {
+                        $errorTitle = (string) $xml->Description;
                     } elseif (isset($xml->TrackInfo)
                           && isset($xml->TrackInfo->Error)
                           && isset($xml->TrackInfo->Error->Description)
-                          && (string)$xml->TrackInfo->Error->Description != ''
+                          && (string) $xml->TrackInfo->Error->Description != ''
                     ) {
-                        $errorTitle = (string)$xml->TrackInfo->Error->Description;
+                        $errorTitle = (string) $xml->TrackInfo->Error->Description;
                     } else {
                         $errorTitle = Mage::helper('usa')->__('Unknown error');
                     }
 
                     if (isset($xml->TrackInfo) && isset($xml->TrackInfo->TrackSummary)) {
-                        $resultArr['tracksummary'] = (string)$xml->TrackInfo->TrackSummary;
+                        $resultArr['tracksummary'] = (string) $xml->TrackInfo->TrackSummary;
                     }
                 }
             }
@@ -1035,9 +1065,11 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 }
             }
         }
+
         if (empty($statuses)) {
-            $statuses = Mage::helper('usa')->__('Empty response');
+            return Mage::helper('usa')->__('Empty response');
         }
+
         return $statuses;
     }
 
@@ -1053,6 +1085,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         foreach ($allowed as $k) {
             $arr[$k] = $this->getCode('method', $k);
         }
+
         return $arr;
     }
 
@@ -1060,241 +1093,237 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
      * Return USPS county name by country ISO 3166-1-alpha-2 code
      * Return false for unknown countries
      *
-     * @param string $countryId
-     * @return string|false
+     * @param  string       $countryId
+     * @return false|string
      */
     protected function _getCountryName($countryId)
     {
         $countries = [
-          'AD' => 'Andorra',
-          'AE' => 'United Arab Emirates',
-          'AF' => 'Afghanistan',
-          'AG' => 'Antigua and Barbuda',
-          'AI' => 'Anguilla',
-          'AL' => 'Albania',
-          'AM' => 'Armenia',
-          'AN' => 'Netherlands Antilles',
-          'AO' => 'Angola',
-          'AR' => 'Argentina',
-          'AT' => 'Austria',
-          'AU' => 'Australia',
-          'AW' => 'Aruba',
-          'AX' => 'Aland Island (Finland)',
-          'AZ' => 'Azerbaijan',
-          'BA' => 'Bosnia-Herzegovina',
-          'BB' => 'Barbados',
-          'BD' => 'Bangladesh',
-          'BE' => 'Belgium',
-          'BF' => 'Burkina Faso',
-          'BG' => 'Bulgaria',
-          'BH' => 'Bahrain',
-          'BI' => 'Burundi',
-          'BJ' => 'Benin',
-          'BM' => 'Bermuda',
-          'BN' => 'Brunei Darussalam',
-          'BO' => 'Bolivia',
-          'BR' => 'Brazil',
-          'BS' => 'Bahamas',
-          'BT' => 'Bhutan',
-          'BW' => 'Botswana',
-          'BY' => 'Belarus',
-          'BZ' => 'Belize',
-          'CA' => 'Canada',
-          'CC' => 'Cocos Island (Australia)',
-          'CD' => 'Congo, Democratic Republic of the',
-          'CF' => 'Central African Republic',
-          'CG' => 'Congo, Republic of the',
-          'CH' => 'Switzerland',
-          'CI' => 'Ivory Coast (Cote d Ivoire)',
-          'CK' => 'Cook Islands (New Zealand)',
-          'CL' => 'Chile',
-          'CM' => 'Cameroon',
-          'CN' => 'China',
-          'CO' => 'Colombia',
-          'CR' => 'Costa Rica',
-          'CU' => 'Cuba',
-          'CV' => 'Cape Verde',
-          'CX' => 'Christmas Island (Australia)',
-          'CY' => 'Cyprus',
-          'CZ' => 'Czech Republic',
-          'DE' => 'Germany',
-          'DJ' => 'Djibouti',
-          'DK' => 'Denmark',
-          'DM' => 'Dominica',
-          'DO' => 'Dominican Republic',
-          'DZ' => 'Algeria',
-          'EC' => 'Ecuador',
-          'EE' => 'Estonia',
-          'EG' => 'Egypt',
-          'ER' => 'Eritrea',
-          'ES' => 'Spain',
-          'ET' => 'Ethiopia',
-          'FI' => 'Finland',
-          'FJ' => 'Fiji',
-          'FK' => 'Falkland Islands',
-          'FM' => 'Micronesia, Federated States of',
-          'FO' => 'Faroe Islands',
-          'FR' => 'France',
-          'GA' => 'Gabon',
-          'GB' => 'Great Britain and Northern Ireland',
-          'GD' => 'Grenada',
-          'GE' => 'Georgia, Republic of',
-          'GF' => 'French Guiana',
-          'GH' => 'Ghana',
-          'GI' => 'Gibraltar',
-          'GL' => 'Greenland',
-          'GM' => 'Gambia',
-          'GN' => 'Guinea',
-          'GP' => 'Guadeloupe',
-          'GQ' => 'Equatorial Guinea',
-          'GR' => 'Greece',
-          'GS' => 'South Georgia (Falkland Islands)',
-          'GT' => 'Guatemala',
-          'GW' => 'Guinea-Bissau',
-          'GY' => 'Guyana',
-          'HK' => 'Hong Kong',
-          'HN' => 'Honduras',
-          'HR' => 'Croatia',
-          'HT' => 'Haiti',
-          'HU' => 'Hungary',
-          'ID' => 'Indonesia',
-          'IE' => 'Ireland',
-          'IL' => 'Israel',
-          'IN' => 'India',
-          'IQ' => 'Iraq',
-          'IR' => 'Iran',
-          'IS' => 'Iceland',
-          'IT' => 'Italy',
-          'JM' => 'Jamaica',
-          'JO' => 'Jordan',
-          'JP' => 'Japan',
-          'KE' => 'Kenya',
-          'KG' => 'Kyrgyzstan',
-          'KH' => 'Cambodia',
-          'KI' => 'Kiribati',
-          'KM' => 'Comoros',
-          'KN' => 'Saint Kitts (Saint Christopher and Nevis)',
-          'KP' => 'North Korea (Korea, Democratic People\'s Republic of)',
-          'KR' => 'South Korea (Korea, Republic of)',
-          'KW' => 'Kuwait',
-          'KY' => 'Cayman Islands',
-          'KZ' => 'Kazakhstan',
-          'LA' => 'Laos',
-          'LB' => 'Lebanon',
-          'LC' => 'Saint Lucia',
-          'LI' => 'Liechtenstein',
-          'LK' => 'Sri Lanka',
-          'LR' => 'Liberia',
-          'LS' => 'Lesotho',
-          'LT' => 'Lithuania',
-          'LU' => 'Luxembourg',
-          'LV' => 'Latvia',
-          'LY' => 'Libya',
-          'MA' => 'Morocco',
-          'MC' => 'Monaco (France)',
-          'MD' => 'Moldova',
-          'MG' => 'Madagascar',
-          'MK' => 'Macedonia, Republic of',
-          'ML' => 'Mali',
-          'MM' => 'Burma',
-          'MN' => 'Mongolia',
-          'MO' => 'Macao',
-          'MQ' => 'Martinique',
-          'MR' => 'Mauritania',
-          'MS' => 'Montserrat',
-          'MT' => 'Malta',
-          'MU' => 'Mauritius',
-          'MV' => 'Maldives',
-          'MW' => 'Malawi',
-          'MX' => 'Mexico',
-          'MY' => 'Malaysia',
-          'MZ' => 'Mozambique',
-          'NA' => 'Namibia',
-          'NC' => 'New Caledonia',
-          'NE' => 'Niger',
-          'NG' => 'Nigeria',
-          'NI' => 'Nicaragua',
-          'NL' => 'Netherlands',
-          'NO' => 'Norway',
-          'NP' => 'Nepal',
-          'NR' => 'Nauru',
-          'NZ' => 'New Zealand',
-          'OM' => 'Oman',
-          'PA' => 'Panama',
-          'PE' => 'Peru',
-          'PF' => 'French Polynesia',
-          'PG' => 'Papua New Guinea',
-          'PH' => 'Philippines',
-          'PK' => 'Pakistan',
-          'PL' => 'Poland',
-          'PM' => 'Saint Pierre and Miquelon',
-          'PN' => 'Pitcairn Island',
-          'PT' => 'Portugal',
-          'PY' => 'Paraguay',
-          'QA' => 'Qatar',
-          'RE' => 'Reunion',
-          'RO' => 'Romania',
-          'RS' => 'Serbia',
-          'RU' => 'Russia',
-          'RW' => 'Rwanda',
-          'SA' => 'Saudi Arabia',
-          'SB' => 'Solomon Islands',
-          'SC' => 'Seychelles',
-          'SD' => 'Sudan',
-          'SE' => 'Sweden',
-          'SG' => 'Singapore',
-          'SH' => 'Saint Helena',
-          'SI' => 'Slovenia',
-          'SK' => 'Slovak Republic',
-          'SL' => 'Sierra Leone',
-          'SM' => 'San Marino',
-          'SN' => 'Senegal',
-          'SO' => 'Somalia',
-          'SR' => 'Suriname',
-          'ST' => 'Sao Tome and Principe',
-          'SV' => 'El Salvador',
-          'SY' => 'Syrian Arab Republic',
-          'SZ' => 'Swaziland',
-          'TC' => 'Turks and Caicos Islands',
-          'TD' => 'Chad',
-          'TG' => 'Togo',
-          'TH' => 'Thailand',
-          'TJ' => 'Tajikistan',
-          'TK' => 'Tokelau (Union Group) (Western Samoa)',
-          'TL' => 'East Timor (Timor-Leste, Democratic Republic of)',
-          'TM' => 'Turkmenistan',
-          'TN' => 'Tunisia',
-          'TO' => 'Tonga',
-          'TR' => 'Turkey',
-          'TT' => 'Trinidad and Tobago',
-          'TV' => 'Tuvalu',
-          'TW' => 'Taiwan',
-          'TZ' => 'Tanzania',
-          'UA' => 'Ukraine',
-          'UG' => 'Uganda',
-          'UY' => 'Uruguay',
-          'UZ' => 'Uzbekistan',
-          'VA' => 'Vatican City',
-          'VC' => 'Saint Vincent and the Grenadines',
-          'VE' => 'Venezuela',
-          'VG' => 'British Virgin Islands',
-          'VN' => 'Vietnam',
-          'VU' => 'Vanuatu',
-          'WF' => 'Wallis and Futuna Islands',
-          'WS' => 'Western Samoa',
-          'YE' => 'Yemen',
-          'YT' => 'Mayotte (France)',
-          'ZA' => 'South Africa',
-          'ZM' => 'Zambia',
-          'ZW' => 'Zimbabwe',
-          'US' => 'United States',
+            'AD' => 'Andorra',
+            'AE' => 'United Arab Emirates',
+            'AF' => 'Afghanistan',
+            'AG' => 'Antigua and Barbuda',
+            'AI' => 'Anguilla',
+            'AL' => 'Albania',
+            'AM' => 'Armenia',
+            'AN' => 'Netherlands Antilles',
+            'AO' => 'Angola',
+            'AR' => 'Argentina',
+            'AT' => 'Austria',
+            'AU' => 'Australia',
+            'AW' => 'Aruba',
+            'AX' => 'Aland Island (Finland)',
+            'AZ' => 'Azerbaijan',
+            'BA' => 'Bosnia-Herzegovina',
+            'BB' => 'Barbados',
+            'BD' => 'Bangladesh',
+            'BE' => 'Belgium',
+            'BF' => 'Burkina Faso',
+            'BG' => 'Bulgaria',
+            'BH' => 'Bahrain',
+            'BI' => 'Burundi',
+            'BJ' => 'Benin',
+            'BM' => 'Bermuda',
+            'BN' => 'Brunei Darussalam',
+            'BO' => 'Bolivia',
+            'BR' => 'Brazil',
+            'BS' => 'Bahamas',
+            'BT' => 'Bhutan',
+            'BW' => 'Botswana',
+            'BY' => 'Belarus',
+            'BZ' => 'Belize',
+            'CA' => 'Canada',
+            'CC' => 'Cocos Island (Australia)',
+            'CD' => 'Congo, Democratic Republic of the',
+            'CF' => 'Central African Republic',
+            'CG' => 'Congo, Republic of the',
+            'CH' => 'Switzerland',
+            'CI' => 'Ivory Coast (Cote d Ivoire)',
+            'CK' => 'Cook Islands (New Zealand)',
+            'CL' => 'Chile',
+            'CM' => 'Cameroon',
+            'CN' => 'China',
+            'CO' => 'Colombia',
+            'CR' => 'Costa Rica',
+            'CU' => 'Cuba',
+            'CV' => 'Cape Verde',
+            'CX' => 'Christmas Island (Australia)',
+            'CY' => 'Cyprus',
+            'CZ' => 'Czech Republic',
+            'DE' => 'Germany',
+            'DJ' => 'Djibouti',
+            'DK' => 'Denmark',
+            'DM' => 'Dominica',
+            'DO' => 'Dominican Republic',
+            'DZ' => 'Algeria',
+            'EC' => 'Ecuador',
+            'EE' => 'Estonia',
+            'EG' => 'Egypt',
+            'ER' => 'Eritrea',
+            'ES' => 'Spain',
+            'ET' => 'Ethiopia',
+            'FI' => 'Finland',
+            'FJ' => 'Fiji',
+            'FK' => 'Falkland Islands',
+            'FM' => 'Micronesia, Federated States of',
+            'FO' => 'Faroe Islands',
+            'FR' => 'France',
+            'GA' => 'Gabon',
+            'GB' => 'Great Britain and Northern Ireland',
+            'GD' => 'Grenada',
+            'GE' => 'Georgia, Republic of',
+            'GF' => 'French Guiana',
+            'GH' => 'Ghana',
+            'GI' => 'Gibraltar',
+            'GL' => 'Greenland',
+            'GM' => 'Gambia',
+            'GN' => 'Guinea',
+            'GP' => 'Guadeloupe',
+            'GQ' => 'Equatorial Guinea',
+            'GR' => 'Greece',
+            'GS' => 'South Georgia (Falkland Islands)',
+            'GT' => 'Guatemala',
+            'GW' => 'Guinea-Bissau',
+            'GY' => 'Guyana',
+            'HK' => 'Hong Kong',
+            'HN' => 'Honduras',
+            'HR' => 'Croatia',
+            'HT' => 'Haiti',
+            'HU' => 'Hungary',
+            'ID' => 'Indonesia',
+            'IE' => 'Ireland',
+            'IL' => 'Israel',
+            'IN' => 'India',
+            'IQ' => 'Iraq',
+            'IR' => 'Iran',
+            'IS' => 'Iceland',
+            'IT' => 'Italy',
+            'JM' => 'Jamaica',
+            'JO' => 'Jordan',
+            'JP' => 'Japan',
+            'KE' => 'Kenya',
+            'KG' => 'Kyrgyzstan',
+            'KH' => 'Cambodia',
+            'KI' => 'Kiribati',
+            'KM' => 'Comoros',
+            'KN' => 'Saint Kitts (Saint Christopher and Nevis)',
+            'KP' => "North Korea (Korea, Democratic People's Republic of)",
+            'KR' => 'South Korea (Korea, Republic of)',
+            'KW' => 'Kuwait',
+            'KY' => 'Cayman Islands',
+            'KZ' => 'Kazakhstan',
+            'LA' => 'Laos',
+            'LB' => 'Lebanon',
+            'LC' => 'Saint Lucia',
+            'LI' => 'Liechtenstein',
+            'LK' => 'Sri Lanka',
+            'LR' => 'Liberia',
+            'LS' => 'Lesotho',
+            'LT' => 'Lithuania',
+            'LU' => 'Luxembourg',
+            'LV' => 'Latvia',
+            'LY' => 'Libya',
+            'MA' => 'Morocco',
+            'MC' => 'Monaco (France)',
+            'MD' => 'Moldova',
+            'MG' => 'Madagascar',
+            'MK' => 'Macedonia, Republic of',
+            'ML' => 'Mali',
+            'MM' => 'Burma',
+            'MN' => 'Mongolia',
+            'MO' => 'Macao',
+            'MQ' => 'Martinique',
+            'MR' => 'Mauritania',
+            'MS' => 'Montserrat',
+            'MT' => 'Malta',
+            'MU' => 'Mauritius',
+            'MV' => 'Maldives',
+            'MW' => 'Malawi',
+            'MX' => 'Mexico',
+            'MY' => 'Malaysia',
+            'MZ' => 'Mozambique',
+            'NA' => 'Namibia',
+            'NC' => 'New Caledonia',
+            'NE' => 'Niger',
+            'NG' => 'Nigeria',
+            'NI' => 'Nicaragua',
+            'NL' => 'Netherlands',
+            'NO' => 'Norway',
+            'NP' => 'Nepal',
+            'NR' => 'Nauru',
+            'NZ' => 'New Zealand',
+            'OM' => 'Oman',
+            'PA' => 'Panama',
+            'PE' => 'Peru',
+            'PF' => 'French Polynesia',
+            'PG' => 'Papua New Guinea',
+            'PH' => 'Philippines',
+            'PK' => 'Pakistan',
+            'PL' => 'Poland',
+            'PM' => 'Saint Pierre and Miquelon',
+            'PN' => 'Pitcairn Island',
+            'PT' => 'Portugal',
+            'PY' => 'Paraguay',
+            'QA' => 'Qatar',
+            'RE' => 'Reunion',
+            'RO' => 'Romania',
+            'RS' => 'Serbia',
+            'RU' => 'Russia',
+            'RW' => 'Rwanda',
+            'SA' => 'Saudi Arabia',
+            'SB' => 'Solomon Islands',
+            'SC' => 'Seychelles',
+            'SD' => 'Sudan',
+            'SE' => 'Sweden',
+            'SG' => 'Singapore',
+            'SH' => 'Saint Helena',
+            'SI' => 'Slovenia',
+            'SK' => 'Slovak Republic',
+            'SL' => 'Sierra Leone',
+            'SM' => 'San Marino',
+            'SN' => 'Senegal',
+            'SO' => 'Somalia',
+            'SR' => 'Suriname',
+            'ST' => 'Sao Tome and Principe',
+            'SV' => 'El Salvador',
+            'SY' => 'Syrian Arab Republic',
+            'SZ' => 'Swaziland',
+            'TC' => 'Turks and Caicos Islands',
+            'TD' => 'Chad',
+            'TG' => 'Togo',
+            'TH' => 'Thailand',
+            'TJ' => 'Tajikistan',
+            'TK' => 'Tokelau (Union Group) (Western Samoa)',
+            'TL' => 'East Timor (Timor-Leste, Democratic Republic of)',
+            'TM' => 'Turkmenistan',
+            'TN' => 'Tunisia',
+            'TO' => 'Tonga',
+            'TR' => 'Turkey',
+            'TT' => 'Trinidad and Tobago',
+            'TV' => 'Tuvalu',
+            'TW' => 'Taiwan',
+            'TZ' => 'Tanzania',
+            'UA' => 'Ukraine',
+            'UG' => 'Uganda',
+            'UY' => 'Uruguay',
+            'UZ' => 'Uzbekistan',
+            'VA' => 'Vatican City',
+            'VC' => 'Saint Vincent and the Grenadines',
+            'VE' => 'Venezuela',
+            'VG' => 'British Virgin Islands',
+            'VN' => 'Vietnam',
+            'VU' => 'Vanuatu',
+            'WF' => 'Wallis and Futuna Islands',
+            'WS' => 'Western Samoa',
+            'YE' => 'Yemen',
+            'YT' => 'Mayotte (France)',
+            'ZA' => 'South Africa',
+            'ZM' => 'Zambia',
+            'ZW' => 'Zimbabwe',
+            'US' => 'United States',
         ];
 
-        if (isset($countries[$countryId])) {
-            return $countries[$countryId];
-        }
-
-        return false;
+        return $countries[$countryId] ?? false;
     }
 
     /**
@@ -1305,14 +1334,13 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
      */
     protected function _filterServiceName($name)
     {
-        $name = (string)preg_replace(
+        $name = (string) preg_replace(
             ['~<[^/!][^>]+>.*</[^>]+>~sU', '~\<!--.*--\>~isU', '~<[^>]+>~is'],
             '',
-            html_entity_decode($name)
+            html_entity_decode($name),
         );
-        $name = str_replace('*', '', $name);
 
-        return $name;
+        return str_replace('*', '', $name);
     }
 
     /**
@@ -1320,9 +1348,8 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
      * As integration guide it is important to follow appropriate sequence for tags e.g.: <FromLastName /> must be
      * after <FromFirstName />
      *
-     * @param Varien_Object $request
      * @return string
-     * @deprecated This method should not be used anymore.
+     * @deprecated this method should not be used anymore
      * @see Mage_Usa_Model_Shipping_Carrier_Usps::_doShipmentRequest method doc block.
      */
     protected function _formUsExpressShipmentRequest(Varien_Object $request)
@@ -1330,16 +1357,16 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         $packageParams = $request->getPackageParams();
 
         $packageWeight = $request->getPackageWeight();
-        if ($packageParams->getWeightUnits() != Zend_Measure_Weight::OUNCE) {
+        if ($packageParams->getWeightUnits() != Mage_Core_Helper_Measure_Weight::OUNCE) {
             $packageWeight = round((float) Mage::helper('usa')->convertMeasureWeight(
                 $request->getPackageWeight(),
                 $packageParams->getWeightUnits(),
-                Zend_Measure_Weight::OUNCE
+                Mage_Core_Helper_Measure_Weight::OUNCE,
             ));
         }
 
-        list($fromZip5, $fromZip4) = $this->_parseZip($request->getShipperAddressPostalCode());
-        list($toZip5, $toZip4) = $this->_parseZip($request->getRecipientAddressPostalCode(), true);
+        [$fromZip5, $fromZip4] = $this->_parseZip($request->getShipperAddressPostalCode());
+        [$toZip5, $toZip4] = $this->_parseZip($request->getRecipientAddressPostalCode(), true);
 
         $rootNode = 'ExpressMailLabelRequest';
         // the wrap node needs for remove xml declaration above
@@ -1376,9 +1403,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         $xml->addChild('WaiverOfSignature', $packageParams->getDeliveryConfirmation());
         $xml->addChild('POZipCode');
         $xml->addChild('ImageType', 'PDF');
-
-        $xml = $xmlWrap->{$rootNode}->asXML();
-        return $xml;
+        return $xmlWrap->{$rootNode}->asXML();
     }
 
     /**
@@ -1386,63 +1411,45 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
      * As integration guide it is important to follow appropriate sequence for tags e.g.: <FromLastName /> must be
      * after <FromFirstName />
      *
-     * @param Varien_Object $request
      * @param string $serviceType
      *
-     * @throws Exception
-     *
      * @return string
+     * @throws Exception
      */
     protected function _formUsSignatureConfirmationShipmentRequest(Varien_Object $request, $serviceType)
     {
-        switch ($serviceType) {
-            case 'PRIORITY':
-            case 'Priority':
-                $serviceType = 'Priority';
-                break;
-            case 'FIRST CLASS':
-            case 'First Class':
-                $serviceType = 'First Class';
-                break;
-            case 'STANDARD':
-            case 'Standard Post':
-            case 'Retail Ground':
-                $serviceType = 'Retail Ground';
-                break;
-            case 'MEDIA':
-            case 'Media':
-                $serviceType = 'Media Mail';
-                break;
-            case 'LIBRARY':
-            case 'Library':
-                $serviceType = 'Library Mail';
-                break;
-            default:
-                throw new Exception(Mage::helper('usa')->__('Service type does not match'));
-        }
+        $serviceType = match ($serviceType) {
+            'PRIORITY', 'Priority' => 'Priority',
+            'FIRST CLASS', 'First Class' => 'First Class',
+            'STANDARD', 'Standard Post', 'Retail Ground' => 'Retail Ground',
+            'MEDIA', 'Media' => 'Media Mail',
+            'LIBRARY', 'Library' => 'Library Mail',
+            default => throw new Exception(Mage::helper('usa')->__('Service type does not match')),
+        };
         $packageParams = $request->getPackageParams();
         $packageWeight = $request->getPackageWeight();
-        if ($packageParams->getWeightUnits() != Zend_Measure_Weight::OUNCE) {
+        if ($packageParams->getWeightUnits() != Mage_Core_Helper_Measure_Weight::OUNCE) {
             $packageWeight = round((float) Mage::helper('usa')->convertMeasureWeight(
                 $request->getPackageWeight(),
                 $packageParams->getWeightUnits(),
-                Zend_Measure_Weight::OUNCE
+                Mage_Core_Helper_Measure_Weight::OUNCE,
             ));
         }
 
-        list($fromZip5, $fromZip4) = $this->_parseZip($request->getShipperAddressPostalCode());
-        list($toZip5, $toZip4) = $this->_parseZip($request->getRecipientAddressPostalCode(), true);
+        [$fromZip5, $fromZip4] = $this->_parseZip($request->getShipperAddressPostalCode());
+        [$toZip5, $toZip4] = $this->_parseZip($request->getRecipientAddressPostalCode(), true);
 
         if ($this->getConfigData('mode')) {
             $rootNode = 'SignatureConfirmationV3.0Request';
         } else {
             $rootNode = 'SigConfirmCertifyV3.0Request';
         }
+
         // the wrap node needs for remove xml declaration above
         $xmlWrap = new SimpleXMLElement('<?xml version = "1.0" encoding = "UTF-8"?><wrap/>');
         $xml = $xmlWrap->addChild($rootNode);
         $xml->addAttribute('USERID', $this->getConfigData('userid'));
-        $xml->addChild('Option', 1);
+        $xml->addChild('Option', '1');
         $xml->addChild('ImageParameters');
         $xml->addChild('FromName', $request->getShipperContactPersonName());
         $xml->addChild('FromFirm', $request->getShipperContactCompanyName());
@@ -1464,15 +1471,13 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         $xml->addChild('ServiceType', $serviceType);
         $xml->addChild('WaiverOfSignature', $packageParams->getDeliveryConfirmation());
         $xml->addChild('ImageType', 'PDF');
-
-        $xml = $xmlWrap->{$rootNode}->asXML();
-        return $xml;
+        return $xmlWrap->{$rootNode}->asXML();
     }
 
     /**
      * Convert decimal weight into pound-ounces format
      *
-     * @param float $weightInPounds
+     * @param  float $weightInPounds
      * @return array
      */
     protected function _convertPoundOunces($weightInPounds)
@@ -1488,9 +1493,8 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
      * As integration guide it is important to follow appropriate sequence for tags e.g.: <FromLastName /> must be
      * after <FromFirstName />
      *
-     * @param Varien_Object $request
      * @return string
-     * @deprecated Should not be used anymore.
+     * @deprecated should not be used anymore
      * @see Mage_Usa_Model_Shipping_Carrier_Usps::_doShipmentRequest doc block.
      */
     protected function _formIntlShipmentRequest(Varien_Object $request)
@@ -1501,60 +1505,51 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         $length = $packageParams->getLength();
         $girth = $packageParams->getGirth();
         $packageWeight = $request->getPackageWeight();
-        if ($packageParams->getWeightUnits() != Zend_Measure_Weight::POUND) {
+        if ($packageParams->getWeightUnits() != Mage_Core_Helper_Measure_Weight::POUND) {
             $packageWeight = Mage::helper('usa')->convertMeasureWeight(
                 $request->getPackageWeight(),
                 $packageParams->getWeightUnits(),
-                Zend_Measure_Weight::POUND
+                Mage_Core_Helper_Measure_Weight::POUND,
             );
         }
-        if ($packageParams->getDimensionUnits() != Zend_Measure_Length::INCH) {
+
+        if ($packageParams->getDimensionUnits() != Mage_Core_Helper_Measure_Length::INCH) {
             $length = round((float) Mage::helper('usa')->convertMeasureDimension(
                 $packageParams->getLength(),
                 $packageParams->getDimensionUnits(),
-                Zend_Measure_Length::INCH
+                Mage_Core_Helper_Measure_Length::INCH,
             ));
             $width = round((float) Mage::helper('usa')->convertMeasureDimension(
                 $packageParams->getWidth(),
                 $packageParams->getDimensionUnits(),
-                Zend_Measure_Length::INCH
+                Mage_Core_Helper_Measure_Length::INCH,
             ));
             $height = round((float) Mage::helper('usa')->convertMeasureDimension(
                 $packageParams->getHeight(),
                 $packageParams->getDimensionUnits(),
-                Zend_Measure_Length::INCH
+                Mage_Core_Helper_Measure_Length::INCH,
             ));
         }
-        if ($packageParams->getGirthDimensionUnits() != Zend_Measure_Length::INCH) {
+
+        if ($packageParams->getGirthDimensionUnits() != Mage_Core_Helper_Measure_Length::INCH) {
             $girth = round((float) Mage::helper('usa')->convertMeasureDimension(
                 $packageParams->getGirth(),
                 $packageParams->getGirthDimensionUnits(),
-                Zend_Measure_Length::INCH
+                Mage_Core_Helper_Measure_Length::INCH,
             ));
         }
 
         $container = $request->getPackagingType();
-        switch ($container) {
-            case 'VARIABLE':
-                $container = 'VARIABLE';
-                break;
-            case 'FLAT RATE ENVELOPE':
-                $container = 'FLATRATEENV';
-                break;
-            case 'FLAT RATE BOX':
-                $container = 'FLATRATEBOX';
-                break;
-            case 'RECTANGULAR':
-                $container = 'RECTANGULAR';
-                break;
-            case 'NONRECTANGULAR':
-                $container = 'NONRECTANGULAR';
-                break;
-            default:
-                $container = 'VARIABLE';
-        }
+        $container = match ($container) {
+            'VARIABLE' => 'VARIABLE',
+            'FLAT RATE ENVELOPE' => 'FLATRATEENV',
+            'FLAT RATE BOX' => 'FLATRATEBOX',
+            'RECTANGULAR' => 'RECTANGULAR',
+            'NONRECTANGULAR' => 'NONRECTANGULAR',
+            default => 'VARIABLE',
+        };
         $shippingMethod = $request->getShippingMethod();
-        list($fromZip5, $fromZip4) = $this->_parseZip($request->getShipperAddressPostalCode());
+        [$fromZip5, $fromZip4] = $this->_parseZip($request->getShipperAddressPostalCode());
 
         // the wrap node needs for remove xml declaration above
         $xmlWrap = new SimpleXMLElement('<?xml version = "1.0" encoding = "UTF-8"?><wrap/>');
@@ -1577,7 +1572,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         $xml->addAttribute('USERID', $this->getConfigData('userid'));
         $xml->addAttribute('PASSWORD', $this->getConfigData('password'));
         $xml->addChild('Option');
-        $xml->addChild('Revision', self::DEFAULT_REVISION);
+        $xml->addChild('Revision', (string) self::DEFAULT_REVISION);
         $xml->addChild('ImageParameters');
         $xml->addChild('FromFirstName', $request->getShipperContactPersonFirstName());
         $xml->addChild('FromLastName', $request->getShipperContactPersonLastName());
@@ -1597,8 +1592,10 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                                  . ' P'
                                  . $request->getPackageId();
             }
+
             $xml->addChild('FromCustomsReference', 'Order #' . $referenceData);
         }
+
         $xml->addChild('ToFirstName', $request->getRecipientContactPersonFirstName());
         $xml->addChild('ToLastName', $request->getRecipientContactPersonLastName());
         $xml->addChild('ToFirm', $request->getRecipientContactCompanyName());
@@ -1615,6 +1612,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         if ($method != 'FirstClass') {
             $xml->addChild('NonDeliveryOption', 'Return');
         }
+
         if ($method == 'FirstClass') {
             if (stripos($shippingMethod, 'Letter') !== false) {
                 $xml->addChild('FirstClassMailType', 'LETTER');
@@ -1624,9 +1622,11 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 $xml->addChild('FirstClassMailType', 'PARCEL');
             }
         }
+
         if ($method != 'FirstClass') {
             $xml->addChild('Container', $container);
         }
+
         $shippingContents = $xml->addChild('ShippingContents');
         $packageItems = $request->getPackageItems();
         // get countries of manufacture
@@ -1638,6 +1638,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
 
             $productIds[] = $item->getProductId();
         }
+
         $productCollection = Mage::getResourceModel('catalog/product_collection')
             ->addStoreFilter($request->getStoreId())
             ->addFieldToFilter('entity_id', ['in' => $productIds])
@@ -1646,51 +1647,56 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             $countriesOfManufacture[$product->getId()] = $product->getCountryOfManufacture();
         }
 
-        $packagePoundsWeight = $packageOuncesWeight = 0;
+        $packagePoundsWeight = 0;
+        $packageOuncesWeight = 0;
         // for ItemDetail
         foreach ($packageItems as $itemShipment) {
             $item = new Varien_Object();
             $item->setData($itemShipment);
 
             $itemWeight = $item->getWeight() * $item->getQty();
-            if ($packageParams->getWeightUnits() != Zend_Measure_Weight::POUND) {
+            if ($packageParams->getWeightUnits() != Mage_Core_Helper_Measure_Weight::POUND) {
                 $itemWeight = Mage::helper('usa')->convertMeasureWeight(
                     $itemWeight,
                     $packageParams->getWeightUnits(),
-                    Zend_Measure_Weight::POUND
+                    Mage_Core_Helper_Measure_Weight::POUND,
                 );
             }
+
             if (!empty($countriesOfManufacture[$item->getProductId()])) {
                 $countryOfManufacture = $this->_getCountryName(
-                    $countriesOfManufacture[$item->getProductId()]
+                    $countriesOfManufacture[$item->getProductId()],
                 );
             } else {
                 $countryOfManufacture = '';
             }
+
             $itemDetail = $shippingContents->addChild('ItemDetail');
             $itemDetail->addChild('Description', $item->getName());
             $ceiledQty = ceil($item->getQty());
             if ($ceiledQty < 1) {
                 $ceiledQty = 1;
             }
+
             $individualItemWeight = $itemWeight / $ceiledQty;
-            $itemDetail->addChild('Quantity', $ceiledQty);
-            $itemDetail->addChild('Value', $item->getCustomsValue() * $item->getQty());
-            list($individualPoundsWeight, $individualOuncesWeight) = $this->_convertPoundOunces($individualItemWeight);
+            $itemDetail->addChild('Quantity', (string) $ceiledQty);
+            $itemDetail->addChild('Value', (string) ($item->getCustomsValue() * $item->getQty()));
+            [$individualPoundsWeight, $individualOuncesWeight] = $this->_convertPoundOunces($individualItemWeight);
             $itemDetail->addChild('NetPounds', $individualPoundsWeight);
             $itemDetail->addChild('NetOunces', $individualOuncesWeight);
-            $itemDetail->addChild('HSTariffNumber', 0);
+            $itemDetail->addChild('HSTariffNumber', '0');
             $itemDetail->addChild('CountryOfOrigin', $countryOfManufacture);
 
-            list($itemPoundsWeight, $itemOuncesWeight) = $this->_convertPoundOunces($itemWeight);
+            [$itemPoundsWeight, $itemOuncesWeight] = $this->_convertPoundOunces($itemWeight);
             $packagePoundsWeight += $itemPoundsWeight;
             $packageOuncesWeight += $itemOuncesWeight;
         }
+
         $additionalPackagePoundsWeight = floor($packageOuncesWeight / self::OUNCES_POUND);
         $packagePoundsWeight += $additionalPackagePoundsWeight;
         $packageOuncesWeight -= $additionalPackagePoundsWeight * self::OUNCES_POUND;
         if ($packagePoundsWeight + $packageOuncesWeight / self::OUNCES_POUND < $packageWeight) {
-            list($packagePoundsWeight, $packageOuncesWeight) = $this->_convertPoundOunces($packageWeight);
+            [$packagePoundsWeight, $packageOuncesWeight] = $this->_convertPoundOunces($packageWeight);
         }
 
         $xml->addChild('GrossPounds', $packagePoundsWeight);
@@ -1708,10 +1714,12 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         if ($method == 'FirstClass') {
             $xml->addChild('Container', $container);
         }
+
         // set size
         if ($packageParams->getSize()) {
             $xml->addChild('Size', $packageParams->getSize());
         }
+
         // set dimensions
         $xml->addChild('Length', $length);
         $xml->addChild('Width', $width);
@@ -1720,14 +1728,12 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             $xml->addChild('Girth', $girth);
         }
 
-        $xml = $xmlWrap->{$rootNode}->asXML();
-        return $xml;
+        return $xmlWrap->{$rootNode}->asXML();
     }
 
     /**
      * Do shipment request to carrier web service, obtain Print Shipping Labels and process errors in response
      *
-     * @param Varien_Object $request
      * @return Varien_Object
      * @deprecated This method must not be used anymore. Starting from 23.02.2018 USPS eliminates API usage for
      * free shipping labels generating.
@@ -1765,11 +1771,13 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         if (!$url) {
             $url = $this->_defaultGatewayUrl;
         }
+
         $client = new Zend_Http_Client();
         $client->setUri($url);
         $client->setConfig(['maxredirects' => 0, 'timeout' => 30]);
         $client->setParameterGet('API', $api);
         $client->setParameterGet('XML', $requestXml);
+
         $response = $client->request()->getBody();
 
         $response = simplexml_load_string($response);
@@ -1777,7 +1785,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
             $debugData['result'] = [
                 'error' => $response->Description,
                 'code' => $response->Number,
-                'xml' => $response->asXML()
+                'xml' => $response->asXML(),
             ];
             $this->_debug($debugData);
             $result->setErrors($debugData['result']['error']);
@@ -1792,6 +1800,7 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 $labelContent = base64_decode((string) $response->LabelImage);
                 $trackingNumber = (string) $response->BarcodeNumber;
             }
+
             $result->setShippingLabelContent($labelContent);
             $result->setTrackingNumber($trackingNumber);
         }
@@ -1805,14 +1814,14 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Return container types of carrier
      *
-     * @param Varien_Object|null $params
      * @return array|bool
      */
-    public function getContainerTypes(Varien_Object $params = null)
+    public function getContainerTypes(?Varien_Object $params = null)
     {
         if (is_null($params)) {
             return $this->_getAllowedContainers();
         }
+
         return $this->_isUSCountry($params->getCountryRecipient()) ? [] : $this->_getAllowedContainers($params);
     }
 
@@ -1839,37 +1848,36 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     /**
      * Return delivery confirmation types of carrier
      *
-     * @param Varien_Object|null $params
      * @return array
      */
-    public function getDeliveryConfirmationTypes(Varien_Object $params = null)
+    public function getDeliveryConfirmationTypes(?Varien_Object $params = null)
     {
         if ($params == null) {
             return [];
         }
+
         $countryRecipient = $params->getCountryRecipient();
         if ($this->_isUSCountry($countryRecipient)) {
             return $this->getCode('delivery_confirmation_types');
-        } else {
-            return [];
         }
+
+        return [];
     }
 
     /**
      * Check whether girth is allowed for the USPS
      *
-     * @param null|string $countyDest
+     * @param  null|string $countyDest
      * @return bool
      */
     public function isGirthAllowed($countyDest = null)
     {
-        return $this->_isUSCountry($countyDest) ? false : true;
+        return !$this->_isUSCountry($countyDest);
     }
 
     /**
      * Return content types of package
      *
-     * @param Varien_Object $params
      * @return array
      */
     public function getContentTypes(Varien_Object $params)
@@ -1889,14 +1897,15 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
                 'OTHER' => Mage::helper('usa')->__('Other'),
             ];
         }
+
         return [];
     }
 
     /**
      * Parse zip from string to zip5-zip4
      *
-     * @param string $zipString
-     * @param bool $returnFull
+     * @param  string $zipString
+     * @param  bool   $returnFull
      * @return array
      */
     protected function _parseZip($zipString, $returnFull = false)
@@ -1907,13 +1916,16 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
         if (preg_match('/[\\d\\w]{5}\\-[\\d\\w]{4}/', $zipString) != 0) {
             $zip = explode('-', $zipString);
         }
-        for ($i = 0; $i < count($zip); ++$i) {
+
+        $zipCount = count($zip);
+        for ($i = 0; $i < $zipCount; ++$i) {
             if (strlen($zip[$i]) == 5) {
                 $zip5 = $zip[$i];
             } elseif (strlen($zip[$i]) == 4) {
                 $zip4 = $zip[$i];
             }
         }
+
         if (empty($zip5) && empty($zip4) && $returnFull) {
             $zip5 = $zipString;
         }
@@ -1947,8 +1959,8 @@ class Mage_Usa_Model_Shipping_Carrier_Usps extends Mage_Usa_Model_Shipping_Carri
     }
 
     /**
-      * @deprecated
-      */
+     * @deprecated
+     */
     protected function setTrackingReqeust()
     {
         $this->setTrackingRequest();

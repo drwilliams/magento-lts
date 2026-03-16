@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Google sitemap controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
 {
@@ -53,14 +45,14 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
     {
         // load layout, set active menu and breadcrumbs
         $this->loadLayout()
-            ->_setActiveMenu('catalog/system_sitemap')
+            ->_setActiveMenu('catalog/sitemap')
             ->_addBreadcrumb(
                 Mage::helper('catalog')->__('Catalog'),
-                Mage::helper('catalog')->__('Catalog')
+                Mage::helper('catalog')->__('Catalog'),
             )
             ->_addBreadcrumb(
                 Mage::helper('sitemap')->__('Google Sitemap'),
-                Mage::helper('sitemap')->__('Google Sitemap')
+                Mage::helper('sitemap')->__('Google Sitemap'),
             )
         ;
         return $this;
@@ -103,7 +95,7 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
             $model->load($id);
             if (!$model->getId()) {
                 Mage::getSingleton('adminhtml/session')->addError(
-                    Mage::helper('sitemap')->__('This sitemap no longer exists.')
+                    Mage::helper('sitemap')->__('This sitemap no longer exists.'),
                 );
                 $this->_redirect('*/*/');
                 return;
@@ -125,7 +117,7 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
         $this->_initAction()
             ->_addBreadcrumb(
                 $id ? Mage::helper('sitemap')->__('Edit Sitemap') : Mage::helper('sitemap')->__('New Sitemap'),
-                $id ? Mage::helper('sitemap')->__('Edit Sitemap') : Mage::helper('sitemap')->__('New Sitemap')
+                $id ? Mage::helper('sitemap')->__('Edit Sitemap') : Mage::helper('sitemap')->__('New Sitemap'),
             )
             ->_addContent($this->getLayout()->createBlock('adminhtml/sitemap_edit'))
             ->renderLayout();
@@ -151,14 +143,15 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                     Mage::getSingleton('adminhtml/session')->addError(
                         Mage::helper('sitemap')->__(
                             'Please enter a sitemap name with at most %s characters.',
-                            self::MAXIMUM_SITEMAP_NAME_LENGTH
-                        )
+                            self::MAXIMUM_SITEMAP_NAME_LENGTH,
+                        ),
                     );
                     $this->_redirect('*/*/edit', [
-                        'sitemap_id' => $this->getRequest()->getParam('sitemap_id')
+                        'sitemap_id' => $this->getRequest()->getParam('sitemap_id'),
                     ]);
                     return;
                 }
+
                 /** @var Mage_Core_Model_File_Validator_AvailablePath $validator */
                 $validator = Mage::getModel('core/file_validator_availablePath');
                 /** @var Mage_Adminhtml_Helper_Catalog $helper */
@@ -168,6 +161,7 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                     foreach ($validator->getMessages() as $message) {
                         Mage::getSingleton('adminhtml/session')->addError($message);
                     }
+
                     // save data in session
                     Mage::getSingleton('adminhtml/session')->setFormData($data);
                     // redirect to edit form
@@ -193,7 +187,7 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                 $model->save();
                 // display success message
                 Mage::getSingleton('adminhtml/session')->addSuccess(
-                    Mage::helper('sitemap')->__('The sitemap has been saved.')
+                    Mage::helper('sitemap')->__('The sitemap has been saved.'),
                 );
                 // clear previously saved data from session
                 Mage::getSingleton('adminhtml/session')->setFormData(false);
@@ -203,12 +197,14 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                     $this->_redirect('*/*/edit', ['sitemap_id' => $model->getId()]);
                     return;
                 }
+
                 // go to grid or forward to generate action
                 if ($this->getRequest()->getParam('generate')) {
                     $this->getRequest()->setParam('sitemap_id', $model->getId());
                     $this->_forward('generate');
                     return;
                 }
+
                 $this->_redirect('*/*/');
                 return;
             } catch (Exception $e) {
@@ -222,6 +218,7 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                 return;
             }
         }
+
         $this->_redirect('*/*/');
     }
 
@@ -244,10 +241,11 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                 if ($model->getSitemapFilename() && file_exists($model->getPreparedFilename())) {
                     unlink($model->getPreparedFilename());
                 }
+
                 $model->delete();
                 // display success message
                 Mage::getSingleton('adminhtml/session')->addSuccess(
-                    Mage::helper('sitemap')->__('The sitemap has been deleted.')
+                    Mage::helper('sitemap')->__('The sitemap has been deleted.'),
                 );
                 // go to grid
                 $this->_redirect('*/*/');
@@ -260,9 +258,10 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                 return;
             }
         }
+
         // display error message
         Mage::getSingleton('adminhtml/session')->addError(
-            Mage::helper('sitemap')->__('Unable to find a sitemap to delete.')
+            Mage::helper('sitemap')->__('Unable to find a sitemap to delete.'),
         );
         // go to grid
         $this->_redirect('*/*/');
@@ -284,19 +283,19 @@ class Mage_Adminhtml_SitemapController extends Mage_Adminhtml_Controller_Action
                 $sitemap->generateXml();
 
                 $this->_getSession()->addSuccess(
-                    Mage::helper('sitemap')->__('The sitemap "%s" has been generated.', $sitemap->getSitemapFilename())
+                    Mage::helper('sitemap')->__('The sitemap "%s" has been generated.', $sitemap->getSitemapFilename()),
                 );
             } catch (Mage_Core_Exception $e) {
                 $this->_getSession()->addError($e->getMessage());
             } catch (Exception $e) {
                 $this->_getSession()->addException(
                     $e,
-                    Mage::helper('sitemap')->__('Unable to generate the sitemap.')
+                    Mage::helper('sitemap')->__('Unable to generate the sitemap.'),
                 );
             }
         } else {
             $this->_getSession()->addError(
-                Mage::helper('sitemap')->__('Unable to find a sitemap to generate.')
+                Mage::helper('sitemap')->__('Unable to find a sitemap to generate.'),
             );
         }
 

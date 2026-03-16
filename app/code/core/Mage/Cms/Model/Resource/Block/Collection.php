@@ -1,30 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Cms
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * CMS block model
  *
- * @category   Mage
  * @package    Mage_Cms
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Cms_Model_Resource_Block_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
     /**
-     * Define resource model
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -45,8 +36,8 @@ class Mage_Cms_Model_Resource_Block_Collection extends Mage_Core_Model_Resource_
     /**
      * Add filter by store
      *
-     * @param int|Mage_Core_Model_Store $store
-     * @param bool $withAdmin
+     * @param  int|Mage_Core_Model_Store $store
+     * @param  bool                      $withAdmin
      * @return $this
      */
     public function addStoreFilter($store, $withAdmin = true)
@@ -92,7 +83,8 @@ class Mage_Cms_Model_Resource_Block_Collection extends Mage_Core_Model_Resource_
             $this->getSelect()->join(
                 ['store_table' => $this->getTable('cms/block_store')],
                 'main_table.block_id = store_table.block_id',
-                []
+                [],
+                // phpcs:ignore: Ecg.Sql.SlowQuery.SlowSql
             )->group('main_table.block_id');
 
             /*
@@ -100,6 +92,7 @@ class Mage_Cms_Model_Resource_Block_Collection extends Mage_Core_Model_Resource_
              */
             $this->_useAnalyticFunction = true;
         }
-        return parent::_renderFiltersBefore();
+
+        parent::_renderFiltersBefore();
     }
 }

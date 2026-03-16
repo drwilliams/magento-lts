@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Bundle
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2018-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Bundle Products Observer
  *
- * @category   Mage
  * @package    Mage_Bundle
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Bundle_Model_Observer
 {
     /**
      * Setting Bundle Items Data to product for father processing
      *
-     * @param Varien_Event_Observer $observer
+     * @param  Varien_Event_Observer $observer
      * @return $this
      */
     public function prepareProductSave($observer)
@@ -49,12 +41,13 @@ class Mage_Bundle_Model_Observer
                 foreach (array_keys($customOptions) as $key) {
                     $customOptions[$key]['is_delete'] = 1;
                 }
+
                 $product->setProductOptions($customOptions);
             }
         }
 
         $product->setCanSaveBundleSelections(
-            (bool)$request->getPost('affect_bundle_product_selections') && !$product->getCompositeReadonly()
+            (bool) $request->getPost('affect_bundle_product_selections') && !$product->getCompositeReadonly(),
         );
 
         return $this;
@@ -63,7 +56,7 @@ class Mage_Bundle_Model_Observer
     /**
      * Append bundles in upsell list for current product
      *
-     * @param Varien_Event_Observer $observer
+     * @param  Varien_Event_Observer $observer
      * @return $this
      */
     public function appendUpsellProducts($observer)
@@ -114,6 +107,7 @@ class Mage_Bundle_Model_Observer
         if (!is_null($limit)) {
             $bundleCollection->setPageSize($limit);
         }
+
         $bundleCollection->addFieldToFilter('entity_id', ['in' => $bundleIds])
             ->setFlag('do_not_use_category_id', true);
 
@@ -126,6 +120,7 @@ class Mage_Bundle_Model_Observer
             foreach ($bundleCollection as $item) {
                 $items[$item->getEntityId()] = $item;
             }
+
             $collection->setItems($items);
         }
 
@@ -135,7 +130,7 @@ class Mage_Bundle_Model_Observer
     /**
      * Append selection attributes to selection's order item
      *
-     * @param Varien_Event_Observer $observer
+     * @param  Varien_Event_Observer $observer
      * @return $this
      */
     public function appendBundleSelectionData($observer)
@@ -158,7 +153,7 @@ class Mage_Bundle_Model_Observer
      * Add price index data for catalog product collection
      * only for front end
      *
-     * @param Varien_Event_Observer $observer
+     * @param  Varien_Event_Observer $observer
      * @return $this
      */
     public function loadProductOptions($observer)
@@ -173,7 +168,7 @@ class Mage_Bundle_Model_Observer
     /**
      * duplicating bundle options and selections
      *
-     * @param Varien_Event_Observer $observer
+     * @param  Varien_Event_Observer $observer
      * @return $this
      */
     public function duplicateProduct($observer)
@@ -193,10 +188,11 @@ class Mage_Bundle_Model_Observer
         $productType = $product->getTypeInstance(true);
 
         $productType->setStoreFilter($product->getStoreId(), $product);
+
         $optionCollection = $productType->getOptionsCollection($product);
         $selectionCollection = $productType->getSelectionsCollection(
             $productType->getOptionsIds($product),
-            $product
+            $product,
         );
         $optionCollection->appendSelections($selectionCollection);
 
@@ -206,11 +202,11 @@ class Mage_Bundle_Model_Observer
         $i = 0;
         foreach ($optionCollection as $option) {
             $optionRawData[$i] = [
-                    'required' => $option->getData('required'),
-                    'position' => $option->getData('position'),
-                    'type' => $option->getData('type'),
-                    'title' => $option->getData('title') ? $option->getData('title') : $option->getData('default_title'),
-                    'delete' => ''
+                'required' => $option->getData('required'),
+                'position' => $option->getData('position'),
+                'type' => $option->getData('type'),
+                'title' => $option->getData('title') ? $option->getData('title') : $option->getData('default_title'),
+                'delete' => '',
             ];
             foreach ($option->getSelections() as $selection) {
                 $selectionRawData[$i][] = [
@@ -221,9 +217,10 @@ class Mage_Bundle_Model_Observer
                     'selection_price_value' => $selection->getSelectionPriceValue(),
                     'selection_qty' => $selection->getSelectionQty(),
                     'selection_can_change_qty' => $selection->getSelectionCanChangeQty(),
-                    'delete' => ''
+                    'delete' => '',
                 ];
             }
+
             $i++;
         }
 
@@ -235,7 +232,7 @@ class Mage_Bundle_Model_Observer
     /**
      * Setting attribute tab block for bundle
      *
-     * @param Varien_Event_Observer $observer
+     * @param  Varien_Event_Observer $observer
      * @return $this
      */
     public function setAttributeTabBlock($observer)
@@ -246,13 +243,13 @@ class Mage_Bundle_Model_Observer
             Mage::helper('adminhtml/catalog')
                 ->setAttributeTabBlock('bundle/adminhtml_catalog_product_edit_tab_attributes');
         }
+
         return $this;
     }
 
     /**
      * Initialize product options renderer with bundle specific params
      *
-     * @param Varien_Event_Observer $observer
      * @return $this
      */
     public function initOptionRenderer(Varien_Event_Observer $observer)
@@ -266,10 +263,8 @@ class Mage_Bundle_Model_Observer
     /**
      * Add price index to bundle product after load
      *
-     * @deprecated since 1.4.0.0
-     *
-     * @param Varien_Event_Observer $observer
      * @return $this
+     * @deprecated since 1.4.0.0
      */
     public function catalogProductLoadAfter(Varien_Event_Observer $observer)
     {
@@ -286,11 +281,9 @@ class Mage_Bundle_Model_Observer
     /**
      * CatalogIndex Indexer after plain reindex process
      *
+     * @return $this
      * @deprecated since 1.4.0.0
      * @see Mage_Bundle_Model_Resource_Indexer_Price
-     *
-     * @param Varien_Event_Observer $observer
-     * @return $this
      */
     public function catalogIndexPlainReindexAfter(Varien_Event_Observer $observer)
     {

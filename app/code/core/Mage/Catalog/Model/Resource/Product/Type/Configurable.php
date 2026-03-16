@@ -1,30 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Configurable product type resource model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Model_Resource_Db_Abstract
 {
     /**
-     * Init resource
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -34,8 +25,8 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
     /**
      * Save configurable product relations
      *
-     * @param Mage_Catalog_Model_Product $mainProduct the parent id
-     * @param array $productIds the children id array
+     * @param  Mage_Catalog_Model_Product $mainProduct the parent id
+     * @param  array                      $productIds  the children id array
      * @return $this
      */
     public function saveProducts($mainProduct, $productIds)
@@ -47,6 +38,7 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
         } else {
             $mainProductId = $mainProduct;
         }
+
         /** @var Mage_Catalog_Model_Product_Type_Configurable $productType */
         $productType = $mainProduct->getTypeInstance();
         $old = $productType->getUsedProductIds();
@@ -61,18 +53,20 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
         if (!empty($delete)) {
             $where = [
                 'parent_id = ?'     => $mainProductId,
-                'product_id IN(?)'  => $delete
+                'product_id IN(?)'  => $delete,
             ];
             $this->_getWriteAdapter()->delete($this->getMainTable(), $where);
         }
+
         if (!empty($insert)) {
             $data = [];
             foreach ($insert as $childId) {
                 $data[] = [
-                    'product_id' => (int)$childId,
-                    'parent_id'  => (int)$mainProductId
+                    'product_id' => (int) $childId,
+                    'parent_id'  => (int) $mainProductId,
                 ];
             }
+
             $this->_getWriteAdapter()->insertMultiple($this->getMainTable(), $data);
         }
 
@@ -89,8 +83,8 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
      *   group => array(ids)
      * )
      *
-     * @param int $parentId
-     * @param bool $required
+     * @param  int   $parentId
+     * @param  bool  $required
      * @return array
      */
     public function getChildrenIds($parentId, $required = true)
@@ -101,7 +95,7 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
             ->join(
                 ['e' => $this->getTable('catalog/product')],
                 'e.entity_id = l.product_id AND e.required_options = 0',
-                []
+                [],
             )
             ->where('parent_id = ?', $parentId);
 
@@ -116,7 +110,7 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
     /**
      * Retrieve parent ids array by requered child
      *
-     * @param int|array $childId
+     * @param  array|int $childId
      * @return array
      */
     public function getParentIdsByChild($childId)
@@ -136,8 +130,8 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
     /**
      * Collect product options with values according to the product instance and attributes, that were received
      *
-     * @param Mage_Catalog_Model_Product $product
-     * @param array $attributes
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  array                      $attributes
      * @return array
      */
     public function getConfigurableOptions($product, $attributes)
@@ -147,7 +141,7 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
             $select = $this->_getReadAdapter()->select()
                 ->from(
                     [
-                        'super_attribute'       => $this->getTable('catalog/product_super_attribute')
+                        'super_attribute'       => $this->getTable('catalog/product_super_attribute'),
                     ],
                     [
                         'sku'                   => 'entity.sku',
@@ -155,29 +149,29 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
                         'attribute_code'        => 'attribute.attribute_code',
                         'option_title'          => 'option_value.value',
                         'pricing_value'         => 'attribute_pricing.pricing_value',
-                        'pricing_is_percent'    => 'attribute_pricing.is_percent'
-                    ]
+                        'pricing_is_percent'    => 'attribute_pricing.is_percent',
+                    ],
                 )->joinInner(
                     [
-                        'product_link'          => $this->getTable('catalog/product_super_link')
+                        'product_link'          => $this->getTable('catalog/product_super_link'),
                     ],
                     'product_link.parent_id = super_attribute.product_id',
-                    []
+                    [],
                 )->joinInner(
                     [
-                        'attribute'             => $this->getTable('eav/attribute')
+                        'attribute'             => $this->getTable('eav/attribute'),
                     ],
                     'attribute.attribute_id = super_attribute.attribute_id',
-                    []
+                    [],
                 )->joinInner(
                     [
-                        'entity'                => $this->getTable('catalog/product')
+                        'entity'                => $this->getTable('catalog/product'),
                     ],
                     'entity.entity_id = product_link.product_id',
-                    []
+                    [],
                 )->joinInner(
                     [
-                        'entity_value'          => $superAttribute->getBackendTable()
+                        'entity_value'          => $superAttribute->getBackendTable(),
                     ],
                     implode(
                         ' AND ',
@@ -186,32 +180,33 @@ class Mage_Catalog_Model_Resource_Product_Type_Configurable extends Mage_Core_Mo
                                 ->quoteInto('entity_value.entity_type_id = ?', $product->getEntityTypeId()),
                             'entity_value.attribute_id = super_attribute.attribute_id',
                             'entity_value.store_id = 0',
-                            'entity_value.entity_id = product_link.product_id'
-                        ]
+                            'entity_value.entity_id = product_link.product_id',
+                        ],
                     ),
-                    []
+                    [],
                 )->joinLeft(
                     [
-                        'option_value'          => $this->getTable('eav/attribute_option_value')
+                        'option_value'          => $this->getTable('eav/attribute_option_value'),
                     ],
                     implode(' AND ', [
                         'option_value.option_id = entity_value.value',
                         'option_value.store_id = ' . Mage_Core_Model_App::ADMIN_STORE_ID,
                     ]),
-                    []
+                    [],
                 )->joinLeft(
                     [
-                        'attribute_pricing'     => $this->getTable('catalog/product_super_attribute_pricing')
+                        'attribute_pricing'     => $this->getTable('catalog/product_super_attribute_pricing'),
                     ],
                     implode(' AND ', [
                         'super_attribute.product_super_attribute_id = attribute_pricing.product_super_attribute_id',
-                        'entity_value.value = attribute_pricing.value_index'
+                        'entity_value.value = attribute_pricing.value_index',
                     ]),
-                    []
+                    [],
                 )->where('super_attribute.product_id = ?', $product->getId());
 
             $attributesOptionsData[$superAttribute->getAttributeId()] = $this->_getReadAdapter()->fetchAll($select);
         }
+
         return $attributesOptionsData;
     }
 }

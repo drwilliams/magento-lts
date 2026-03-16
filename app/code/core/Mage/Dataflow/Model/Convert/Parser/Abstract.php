@@ -1,45 +1,37 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Dataflow
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Convert parser abstract
  *
- * @category   Mage
  * @package    Mage_Dataflow
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Dataflow_Model_Convert_Parser_Abstract extends Mage_Dataflow_Model_Convert_Container_Abstract implements Mage_Dataflow_Model_Convert_Parser_Interface
 {
     /**
      * Dataflow batch model
      *
-     * @var Mage_Dataflow_Model_Batch|null
+     * @var null|Mage_Dataflow_Model_Batch
      */
     protected $_batch;
 
     /**
      * Dataflow batch export model
      *
-     * @var Mage_Dataflow_Model_Batch_Export|string|false|null
+     * @var null|false|Mage_Dataflow_Model_Batch_Export|string
      */
     protected $_batchExport;
 
     /**
      * Dataflow batch import model
      *
-     * @var Mage_Dataflow_Model_Batch_Import|string|false|null
+     * @var null|false|Mage_Dataflow_Model_Batch_Import|string
      */
     protected $_batchImport;
 
@@ -60,6 +52,7 @@ abstract class Mage_Dataflow_Model_Convert_Parser_Abstract extends Mage_Dataflow
         if (is_null($this->_batch)) {
             $this->_batch = Mage::getSingleton('dataflow/batch');
         }
+
         return $this->_batch;
     }
 
@@ -74,6 +67,7 @@ abstract class Mage_Dataflow_Model_Convert_Parser_Abstract extends Mage_Dataflow
             $object = Mage::getModel('dataflow/batch_export');
             $this->_batchExport = Varien_Object_Cache::singleton()->save($object);
         }
+
         return Varien_Object_Cache::singleton()->load($this->_batchExport);
     }
 
@@ -88,6 +82,7 @@ abstract class Mage_Dataflow_Model_Convert_Parser_Abstract extends Mage_Dataflow
             $object = Mage::getModel('dataflow/batch_import');
             $this->_batchImport = Varien_Object_Cache::singleton()->save($object);
         }
+
         return Varien_Object_Cache::singleton()->load($this->_batchImport);
     }
 

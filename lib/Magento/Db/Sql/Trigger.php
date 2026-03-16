@@ -1,42 +1,44 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Magento
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Magento_Db
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Magento_Db_Sql_Trigger
  *
- * @category   Magento
  * @package    Magento_Db
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Magento_Db_Sql_Trigger
 {
     public const NAME      = 'name';
+
     public const TARGET    = 'target';
+
     public const TIME      = 'time';
+
     public const EVENT     = 'event';
+
     public const SCOPE     = 'scope';
+
     public const BODY      = 'body';
 
     /**
      * SQL constants
      */
     public const SQL_TIME_BEFORE   = 'BEFORE';
+
     public const SQL_TIME_AFTER    = 'AFTER';
+
     public const SQL_EVENT_INSERT  = 'INSERT';
+
     public const SQL_EVENT_UPDATE  = 'UPDATE';
+
     public const SQL_EVENT_DELETE  = 'DELETE';
+
     public const SQL_FOR_EACH_ROW  = 'FOR EACH ROW';
 
     /**
@@ -53,7 +55,7 @@ class Magento_Db_Sql_Trigger
      */
     protected $_timeTypes = [
         self::SQL_TIME_AFTER,
-        self::SQL_TIME_BEFORE
+        self::SQL_TIME_BEFORE,
     ];
 
     /**
@@ -64,7 +66,7 @@ class Magento_Db_Sql_Trigger
     protected $_eventTypes = [
         self::SQL_EVENT_INSERT,
         self::SQL_EVENT_UPDATE,
-        self::SQL_EVENT_DELETE
+        self::SQL_EVENT_DELETE,
     ];
 
     /**
@@ -78,7 +80,7 @@ class Magento_Db_Sql_Trigger
         self::TIME      => self::SQL_TIME_AFTER,
         self::EVENT     => null,
         self::SCOPE     => self::SQL_FOR_EACH_ROW,
-        self::BODY      => []
+        self::BODY      => [],
     ];
 
     /**
@@ -102,14 +104,15 @@ class Magento_Db_Sql_Trigger
                 throw new Exception('Part [' . $part . '] should be set');
             }
         }
+
         return $this;
     }
 
     /**
      * Set trigger part
      *
-     * @param $part
-     * @param $value
+     * @param                           $part
+     * @param                           $value
      * @return Magento_Db_Sql_Trigger
      * @throws InvalidArgumentException
      */
@@ -120,14 +123,15 @@ class Magento_Db_Sql_Trigger
         } else {
             throw new InvalidArgumentException('Part [' . $part . '] can not be empty');
         }
+
         return $this;
     }
 
     /**
      * Set trigger part
      *
-     * @param $part
-     * @return string|array
+     * @param               $part
+     * @return array|string
      * @throws Exception
      */
     protected function _getPart($part)
@@ -136,14 +140,14 @@ class Magento_Db_Sql_Trigger
             return $this->_parts[$part];
         }
 
-        throw new Exception('Part [' . $part . '] does\'t exists');
+        throw new Exception('Part [' . $part . "] does't exists");
     }
 
     /**
      * Set body part to trigger
      *
-     * @param $part
-     * @param $value
+     * @param                           $part
+     * @param                           $value
      * @return Magento_Db_Sql_Trigger
      * @throws InvalidArgumentException
      */
@@ -154,13 +158,14 @@ class Magento_Db_Sql_Trigger
         } else {
             throw new InvalidArgumentException('Part [' . $part . '] can not be empty');
         }
+
         return $this;
     }
 
     /**
      * Set body part to trigger
      *
-     * @param string $part
+     * @param  string    $part
      * @return string
      * @throws Exception
      */
@@ -170,7 +175,7 @@ class Magento_Db_Sql_Trigger
             return $this->_parts[self::BODY][$part];
         }
 
-        throw new Exception('Part [' . $part . '] does\'t exists');
+        throw new Exception('Part [' . $part . "] does't exists");
     }
 
     /**
@@ -187,7 +192,7 @@ class Magento_Db_Sql_Trigger
 
     /**
      * Set trigger time {BEFORE/AFTER}
-     * @param $time
+     * @param                           $time
      * @return Magento_Db_Sql_Trigger
      * @throws InvalidArgumentException
      */
@@ -198,13 +203,14 @@ class Magento_Db_Sql_Trigger
         } else {
             throw new InvalidArgumentException('Unsupported time type!');
         }
+
         return $this;
     }
 
     /**
      * Set trigger event {INSERT/UPDATE/DELETE}
      *
-     * @param $event
+     * @param                           $event
      * @return Magento_Db_Sql_Trigger
      * @throws InvalidArgumentException
      */
@@ -215,13 +221,14 @@ class Magento_Db_Sql_Trigger
         } else {
             throw new InvalidArgumentException('Unsupported event type!');
         }
+
         return $this;
     }
 
     /**
      * Set trigger target, table name
      *
-     * @param $target
+     * @param                         $target
      * @return Magento_Db_Sql_Trigger
      */
     public function setTarget($target)
@@ -233,7 +240,7 @@ class Magento_Db_Sql_Trigger
     /**
      * Set trigger name
      *
-     * @param $name
+     * @param                         $name
      * @return Magento_Db_Sql_Trigger
      */
     public function setName($name)
@@ -253,13 +260,14 @@ class Magento_Db_Sql_Trigger
         if (empty($this->_parts[self::NAME])) {
             $this->_parts[self::NAME] = $this->_generateTriggerName();
         }
+
         return $this->_parts[self::NAME];
     }
 
     /**
      * Set trigger body
      *
-     * @param array|string $body
+     * @param  array|string           $body
      * @return Magento_Db_Sql_Trigger
      */
     public function setBody($body)
@@ -267,6 +275,7 @@ class Magento_Db_Sql_Trigger
         if (!is_array($body)) {
             $body = [$body];
         }
+
         $this->_setPart(self::BODY, $body);
         return $this;
     }
@@ -289,10 +298,10 @@ class Magento_Db_Sql_Trigger
     public function assemble()
     {
         $this->_validateIsComplete();
-        return "CREATE TRIGGER "
+        return 'CREATE TRIGGER '
             . $this->getName() . "\n"
-            . $this->_parts[self::TIME] . " " . $this->_parts[self::EVENT] . "\n"
-            . "ON " . $this->_parts[self::TARGET] . " " . $this->_parts[self::SCOPE] . "\n"
+            . $this->_parts[self::TIME] . ' ' . $this->_parts[self::EVENT] . "\n"
+            . 'ON ' . $this->_parts[self::TARGET] . ' ' . $this->_parts[self::SCOPE] . "\n"
             . "BEGIN\n"
             . implode("\n", $this->_parts[self::BODY]) . "\n"
             . "END;\n";

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Bundle
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml selection grid controller
  *
- * @category   Mage
  * @package    Mage_Bundle
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Bundle_Adminhtml_Bundle_SelectionController extends Mage_Adminhtml_Controller_Action
 {
@@ -28,6 +20,9 @@ class Mage_Bundle_Adminhtml_Bundle_SelectionController extends Mage_Adminhtml_Co
      */
     public const ADMIN_RESOURCE = 'catalog/products';
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->setUsedModuleName('Mage_Bundle');
@@ -43,7 +38,7 @@ class Mage_Bundle_Adminhtml_Bundle_SelectionController extends Mage_Adminhtml_Co
                 ->createBlock('bundle/adminhtml_catalog_product_edit_tab_bundle_option_search')
                 ->setIndex($this->getRequest()->getParam('index'))
                 ->setFirstShow(true)
-                ->toHtml()
+                ->toHtml(),
         );
     }
 
@@ -56,10 +51,10 @@ class Mage_Bundle_Adminhtml_Bundle_SelectionController extends Mage_Adminhtml_Co
             $this->getLayout()
                 ->createBlock(
                     'bundle/adminhtml_catalog_product_edit_tab_bundle_option_search_grid',
-                    'adminhtml.catalog.product.edit.tab.bundle.option.search.grid'
+                    'adminhtml.catalog.product.edit.tab.bundle.option.search.grid',
                 )
                 ->setIndex($this->getRequest()->getParam('index'))
-                ->toHtml()
+                ->toHtml(),
         );
     }
 }

@@ -1,23 +1,15 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Index
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
- * @category   Mage
  * @package    Mage_Index
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Index_Block_Adminhtml_Process_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
@@ -35,7 +27,7 @@ class Mage_Index_Block_Adminhtml_Process_Edit extends Mage_Adminhtml_Block_Widge
         $this->_updateButton('save', 'label', Mage::helper('cms')->__('Save Process'));
         $this->_addButton('reindex', [
             'label'     => Mage::helper('index')->__('Reindex Data'),
-            'onclick'   => Mage::helper('core/js')->getSetLocationJs($this->getRunUrl())
+            'onclick'   => Mage::helper('core/js')->getSetLocationJs($this->getRunUrl()),
         ]);
         $this->_removeButton('reset');
         $this->_removeButton('delete');
@@ -59,7 +51,7 @@ class Mage_Index_Block_Adminhtml_Process_Edit extends Mage_Adminhtml_Block_Widge
     public function getRunUrl()
     {
         return $this->getUrl('adminhtml/process/reindexProcess', [
-            'process' => Mage::registry('current_index_process')->getId()
+            'process' => Mage::registry('current_index_process')->getId(),
         ]);
     }
 
@@ -74,6 +66,7 @@ class Mage_Index_Block_Adminhtml_Process_Edit extends Mage_Adminhtml_Block_Widge
         if ($process && $process->getId()) {
             return Mage::helper('index')->__("'%s' Index Process Information", $process->getIndexer()->getName());
         }
+
         return '';
     }
 }

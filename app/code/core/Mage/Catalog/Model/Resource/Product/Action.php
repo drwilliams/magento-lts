@@ -1,30 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog Product Mass processing resource model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Resource_Product_Action extends Mage_Catalog_Model_Resource_Abstract
 {
     /**
-     * Intialize connection
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -32,16 +23,16 @@ class Mage_Catalog_Model_Resource_Product_Action extends Mage_Catalog_Model_Reso
         $this->setType(Mage_Catalog_Model_Product::ENTITY)
             ->setConnection(
                 $resource->getConnection('catalog_read'),
-                $resource->getConnection('catalog_write')
+                $resource->getConnection('catalog_write'),
             );
     }
 
     /**
      * Update attribute values for entity list per store
      *
-     * @param array $entityIds
-     * @param array $attrData
-     * @param int $storeId
+     * @param  array $entityIds
+     * @param  array $attrData
+     * @param  int   $storeId
      * @return $this
      */
     public function updateAttributes($entityIds, $attrData, $storeId)
@@ -72,14 +63,36 @@ class Mage_Catalog_Model_Resource_Product_Action extends Mage_Catalog_Model_Reso
                         $this->_processAttributeValues();
                     }
                 }
+
                 $this->_processAttributeValues();
             }
+
+            $this->_updateUpdatedAt($entityIds);
             $this->_getWriteAdapter()->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $this->_getWriteAdapter()->rollBack();
-            throw $e;
+            throw $exception;
         }
 
         return $this;
+    }
+
+    /**
+     * Update the "updated_at" field for all entity_ids passed
+     *
+     * @throws Zend_Db_Adapter_Exception
+     */
+    protected function _updateUpdatedAt(array $entityIds): void
+    {
+        $updatedAt = Varien_Date::now();
+        $catalogProductTable = $this->getTable('catalog/product');
+        $adapter = $this->_getWriteAdapter();
+
+        $entityIdsChunks = array_chunk($entityIds, 1000);
+        foreach ($entityIdsChunks as $entityIdsChunk) {
+            $adapter->update($catalogProductTable, [
+                'updated_at' => $updatedAt,
+            ], $adapter->quoteInto('entity_id IN (?)', $entityIdsChunk));
+        }
     }
 }

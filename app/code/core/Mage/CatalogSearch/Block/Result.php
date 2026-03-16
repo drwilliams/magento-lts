@@ -1,22 +1,15 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogSearch
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product search result block
  *
- * @category   Mage
  * @package    Mage_CatalogSearch
  * @module     Catalog
  *
@@ -27,7 +20,7 @@ class Mage_CatalogSearch_Block_Result extends Mage_Core_Block_Template
     /**
      * Catalog Product collection
      *
-     * @var Mage_CatalogSearch_Model_Resource_Fulltext_Collection|Mage_Eav_Model_Entity_Collection_Abstract|null
+     * @var null|Mage_CatalogSearch_Model_Resource_Fulltext_Collection|Mage_Eav_Model_Entity_Collection_Abstract
      */
     protected $_productCollection;
 
@@ -62,10 +55,10 @@ class Mage_CatalogSearch_Block_Result extends Mage_Core_Block_Template
             $breadcrumbs->addCrumb('home', [
                 'label' => $this->__('Home'),
                 'title' => $this->__('Go to Home Page'),
-                'link'  => Mage::getBaseUrl()
+                'link'  => Mage::getBaseUrl(),
             ])->addCrumb('search', [
                 'label' => $title,
-                'title' => $title
+                'title' => $title,
             ]);
         }
 
@@ -93,7 +86,9 @@ class Mage_CatalogSearch_Block_Result extends Mage_Core_Block_Template
      */
     public function getListBlock()
     {
-        return $this->getChild('search_result_list');
+        /** @var Mage_Catalog_Block_Product_List $child */
+        $child = $this->getChild('search_result_list');
+        return $child;
     }
 
     /**
@@ -109,7 +104,7 @@ class Mage_CatalogSearch_Block_Result extends Mage_Core_Block_Template
         $availableOrders = $category->getAvailableSortByOptions();
         unset($availableOrders['position']);
         $availableOrders = array_merge([
-            'relevance' => $this->__('Relevance')
+            'relevance' => $this->__('Relevance'),
         ], $availableOrders);
 
         $this->getListBlock()
@@ -172,6 +167,7 @@ class Mage_CatalogSearch_Block_Result extends Mage_Core_Block_Template
      * Retrieve search result count
      *
      * @return string
+     * @throws Zend_Db_Select_Exception
      */
     public function getResultCount()
     {
@@ -180,6 +176,7 @@ class Mage_CatalogSearch_Block_Result extends Mage_Core_Block_Template
             $this->_getQuery()->setNumResults($size);
             $this->setResultCount($size);
         }
+
         return $this->getData('result_count');
     }
 
@@ -193,9 +190,10 @@ class Mage_CatalogSearch_Block_Result extends Mage_Core_Block_Template
         if (Mage::helper('catalogsearch')->isMinQueryLength()) {
             return Mage::helper('catalogsearch')->__(
                 'Minimum Search query length is %s',
-                $this->_getQuery()->getMinQueryLength()
+                $this->_getQuery()->getMinQueryLength(),
             );
         }
+
         return $this->_getData('no_result_text');
     }
 

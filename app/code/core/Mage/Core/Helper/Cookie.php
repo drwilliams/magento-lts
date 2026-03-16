@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Core Cookie helper
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Helper_Cookie extends Mage_Core_Helper_Abstract
 {
@@ -68,7 +60,6 @@ class Mage_Core_Helper_Cookie extends Mage_Core_Helper_Abstract
     /**
      * Initializes store, cookie and website objects.
      *
-     * @param array $data
      * @throws InvalidArgumentException
      */
     public function __construct(array $data = [])
@@ -100,8 +91,8 @@ class Mage_Core_Helper_Cookie extends Mage_Core_Helper_Abstract
     public function isUserNotAllowSaveCookie()
     {
         $acceptedSaveCookiesWebsites = $this->_getAcceptedSaveCookiesWebsites();
-        return $this->_currentStore->getConfig(self::XML_PATH_COOKIE_RESTRICTION) &&
-            empty($acceptedSaveCookiesWebsites[$this->_website->getId()]);
+        return $this->_currentStore->getConfig(self::XML_PATH_COOKIE_RESTRICTION)
+            && empty($acceptedSaveCookiesWebsites[$this->_website->getId()]);
     }
 
     /**
@@ -124,7 +115,7 @@ class Mage_Core_Helper_Cookie extends Mage_Core_Helper_Abstract
     protected function _getAcceptedSaveCookiesWebsites()
     {
         $serializedList = $this->_cookieModel->get(self::IS_USER_ALLOWED_SAVE_COOKIE);
-        $unSerializedList = json_decode($serializedList, true);
+        $unSerializedList = $serializedList ? json_decode($serializedList, true) : null;
         return is_array($unSerializedList) ? $unSerializedList : [];
     }
 
@@ -135,7 +126,7 @@ class Mage_Core_Helper_Cookie extends Mage_Core_Helper_Abstract
      */
     public function getCookieRestrictionLifetime()
     {
-        return (int)$this->_currentStore->getConfig(self::XML_PATH_COOKIE_RESTRICTION_LIFETIME);
+        return (int) $this->_currentStore->getConfig(self::XML_PATH_COOKIE_RESTRICTION_LIFETIME);
     }
 
     /**

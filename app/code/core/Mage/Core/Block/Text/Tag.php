@@ -1,33 +1,28 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Base html block
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method string getTagContents()
- * @method $this setTagContents(string $value)
  * @method getTagName()
  * @method array getTagParams()
+ * @method $this setTagContents(string $value)
  * @method $this setTagParams(array $value)
  */
 class Mage_Core_Block_Text_Tag extends Mage_Core_Block_Text
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         parent::_construct();
@@ -35,8 +30,8 @@ class Mage_Core_Block_Text_Tag extends Mage_Core_Block_Text
     }
 
     /**
-     * @param string|array $param
-     * @param string|null $value
+     * @param  array|string $param
+     * @param  null|string  $value
      * @return $this
      */
     public function setTagParam($param, $value = null)
@@ -50,11 +45,12 @@ class Mage_Core_Block_Text_Tag extends Mage_Core_Block_Text
             $params[$param] = $value;
             $this->setTagParams($params);
         }
+
         return $this;
     }
 
     /**
-     * @param string $text
+     * @param  string $text
      * @return $this
      */
     public function setContents($text)

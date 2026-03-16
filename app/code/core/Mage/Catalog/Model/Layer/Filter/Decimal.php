@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog Layer Decimal Attribute Filter Model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method $this setRange(int $value)
  */
@@ -29,13 +21,12 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
     /**
      * Resource instance
      *
-     * @var Mage_Catalog_Model_Resource_Layer_Filter_Decimal|null
+     * @var null|Mage_Catalog_Model_Resource_Layer_Filter_Decimal
      */
     protected $_resource;
 
     /**
      * Initialize filter and define request variable
-     *
      */
     public function __construct()
     {
@@ -53,15 +44,16 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
         if (is_null($this->_resource)) {
             $this->_resource = Mage::getResourceModel('catalog/layer_filter_decimal');
         }
+
         return $this->_resource;
     }
 
     /**
      * Apply decimal range filter to product collection
      *
-     * @param Zend_Controller_Request_Abstract $request
-     * @param Mage_Catalog_Block_Layer_Filter_Decimal $filterBlock
+     * @param  Mage_Catalog_Block_Layer_Filter_Decimal $filterBlock
      * @return $this
+     * @throws Mage_Core_Model_Store_Exception
      */
     public function apply(Zend_Controller_Request_Abstract $request, $filterBlock)
     {
@@ -80,13 +72,13 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
             return $this;
         }
 
-        list($index, $range) = $filter;
-        if ((int)$index && (int)$range) {
-            $this->setRange((int)$range);
+        [$index, $range] = $filter;
+        if ((int) $index && (int) $range) {
+            $this->setRange((int) $range);
 
-            $this->_getResource()->applyFilterToCollection($this, $range, $index);
+            $this->_getResource()->applyFilterToCollection($this, (float) $range, $index);
             $this->getLayer()->getState()->addFilter(
-                $this->_createItem($this->_renderItemLabel($range, $index), $filter)
+                $this->_createItem($this->_renderItemLabel((int) $range, (float) $index), $filter),
             );
 
             $this->_items = [];
@@ -109,9 +101,12 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
     /**
      * Prepare text of item label
      *
-     * @param   int $range
-     * @param   float $value
-     * @return  string
+     * @param  int                                $range
+     * @param  float                              $value
+     * @return string
+     * @throws Mage_Core_Exception
+     * @throws Mage_Core_Model_Store_Exception
+     * @throws Zend_Controller_Response_Exception
      */
     protected function _renderItemLabel($range, $value)
     {
@@ -129,10 +124,11 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
     {
         $max = $this->getData('max_value');
         if (is_null($max)) {
-            list($min, $max) = $this->_getResource()->getMinMax($this);
+            [$min, $max] = $this->_getResource()->getMinMax($this);
             $this->setData('max_value', $max);
             $this->setData('min_value', $min);
         }
+
         return $max;
     }
 
@@ -145,10 +141,11 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
     {
         $min = $this->getData('min_value');
         if (is_null($min)) {
-            list($min, $max) = $this->_getResource()->getMinMax($this);
+            [$min, $max] = $this->_getResource()->getMinMax($this);
             $this->setData('max_value', $max);
             $this->setData('min_value', $min);
         }
+
         return $min;
     }
 
@@ -164,10 +161,11 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
             $maxValue = $this->getMaxValue();
             $index = 1;
             do {
-                $range = pow(10, (strlen(floor($maxValue)) - $index));
+                $range = 10 ** (strlen((string) floor($maxValue)) - $index);
                 $items = $this->getRangeItemCounts($range);
                 $index++;
             } while ($range > self::MIN_RANGE_POWER && count($items) < 2);
+
             $this->setData('range', $range);
         }
 
@@ -177,7 +175,7 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
     /**
      * Retrieve information about products count in range
      *
-     * @param int $range
+     * @param  int   $range
      * @return array
      */
     public function getRangeItemCounts($range)
@@ -188,6 +186,7 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
             $items = $this->_getResource()->getCount($this, $range);
             $this->setData($rangeKey, $items);
         }
+
         return $items;
     }
 
@@ -195,6 +194,7 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
      * Retrieve data for build decimal filter items
      *
      * @return array
+     * @throws Mage_Core_Model_Store_Exception
      */
     protected function _getItemsData()
     {
@@ -214,6 +214,7 @@ class Mage_Catalog_Model_Layer_Filter_Decimal extends Mage_Catalog_Model_Layer_F
                 ];
             }
         }
+
         return $data;
     }
 }

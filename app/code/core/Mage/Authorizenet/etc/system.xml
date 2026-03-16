@@ -1,17 +1,10 @@
 <?xml version="1.0"?>
 <!--
 /**
- * OpenMage
- *
- * This source file is subject to the Academic Free License (AFL 3.0)
- * that is bundled with this package in the file LICENSE_AFL.txt.
- * It is also available at https://opensource.org/license/afl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Academic Free License (AFL 3.0)
  * @package    Mage_Authorizenet
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/afl-3.0.php Academic Free License (AFL 3.0)
  */
 -->
 <config>
@@ -42,6 +35,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </payment_action>
                         <title translate="label">
                             <label>Title</label>
@@ -49,6 +43,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>1</show_in_store>
+                            <depends><active>1</active></depends>
                         </title>
                         <login translate="label">
                             <label>API Login ID</label>
@@ -58,6 +53,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </login>
                         <trans_key translate="label">
                             <label>Transaction Key</label>
@@ -67,6 +63,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </trans_key>
                         <signature_key translate="label">
                             <label>Signature Key</label>
@@ -76,6 +73,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </signature_key>
                         <trans_md5 translate="label">
                             <label>Merchant MD5</label>
@@ -85,6 +83,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </trans_md5>
                         <order_status translate="label">
                             <label>New Order Status</label>
@@ -94,6 +93,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </order_status>
                         <test translate="label">
                             <label>Test Mode</label>
@@ -103,6 +103,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </test>
                         <cgi_url translate="label">
                             <label>Gateway URL</label>
@@ -110,6 +111,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </cgi_url>
                         <currency translate="label">
                             <label>Accepted Currency</label>
@@ -119,6 +121,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </currency>
                         <debug translate="label">
                             <label>Debug</label>
@@ -128,6 +131,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </debug>
                         <email_customer translate="label">
                             <label>Email Customer</label>
@@ -137,6 +141,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </email_customer>
                         <merchant_email translate="label">
                             <label>Merchant's Email</label>
@@ -145,6 +150,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </merchant_email>
                         <cctypes translate="label">
                             <label>Credit Card Types</label>
@@ -154,6 +160,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </cctypes>
                         <useccv translate="label">
                             <label>Credit Card Verification</label>
@@ -163,6 +170,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </useccv>
                         <allowspecific translate="label">
                             <label>Payment from Applicable Countries</label>
@@ -172,6 +180,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </allowspecific>
                         <specificcountry translate="label">
                             <label>Payment from Specific Countries</label>
@@ -181,6 +190,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </specificcountry>
                         <min_order_total translate="label">
                             <label>Minimum Order Total</label>
@@ -188,6 +198,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </min_order_total>
                         <max_order_total translate="label">
                             <label>Maximum Order Total</label>
@@ -195,6 +206,7 @@
                             <show_in_default>1</show_in_default>
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
+                            <depends><active>1</active></depends>
                         </max_order_total>
                         <sort_order translate="label">
                             <label>Sort Order</label>
@@ -203,6 +215,7 @@
                             <show_in_website>1</show_in_website>
                             <show_in_store>0</show_in_store>
                             <frontend_class>validate-number</frontend_class>
+                            <depends><active>1</active></depends>
                         </sort_order>
                     </fields>
                 </authorizenet_directpost>

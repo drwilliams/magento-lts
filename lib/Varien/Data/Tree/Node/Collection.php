@@ -1,34 +1,26 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Data
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Tree node collection
  *
- * @category   Varien
  * @package    Varien_Data
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate, Countable
 {
     /**
      * @var Varien_Data_Tree_Node[]
      */
-    private $_nodes;
+    private $_nodes = [];
 
     /**
-     * @var Varien_Data_Tree
+     * @var Varien_Data_Tree_Node
      */
     private $_container;
 
@@ -38,7 +30,6 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
      */
     public function __construct($container)
     {
-        $this->_nodes = [];
         $this->_container = $container;
     }
 
@@ -51,8 +42,8 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
     }
 
     /**
-    * Implementation of IteratorAggregate::getIterator()
-    */
+     * Implementation of IteratorAggregate::getIterator()
+     */
     public function getIterator(): \Traversable
     {
         return new ArrayIterator($this->_nodes);
@@ -70,7 +61,7 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
 
     /**
      * Implementation of ArrayAccess:offsetGet()
-     * @param string $key
+     * @param  string                      $key
      * @return mixed|Varien_Data_Tree_Node
      */
     #[\ReturnTypeWillChange]
@@ -91,7 +82,6 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
     /**
      * Implementation of ArrayAccess:offsetExists()
      * @param string $key
-     * @return bool
      */
     public function offsetExists($key): bool
     {
@@ -100,7 +90,6 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
 
     /**
      * Adds a node to this node
-     * @param Varien_Data_Tree_Node $node
      * @return Varien_Data_Tree_Node
      */
     public function add(Varien_Data_Tree_Node $node)
@@ -118,7 +107,7 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
     }
 
     /**
-     * @param Varien_Data_Tree_Node $node
+     * @param  Varien_Data_Tree_Node $node
      * @return $this
      */
     public function delete($node)
@@ -127,13 +116,12 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
         if (isset($this->_nodes[$id])) {
             unset($this->_nodes[$id]);
         }
+
         return $this;
     }
 
     /**
      * Implementation of Countable:count()
-     *
-     * @return int
      */
     public function count(): int
     {
@@ -141,22 +129,19 @@ class Varien_Data_Tree_Node_Collection implements ArrayAccess, IteratorAggregate
     }
 
     /**
-     * @return Varien_Data_Tree_Node|null
+     * @return null|Varien_Data_Tree_Node
      */
     public function lastNode()
     {
-        return !empty($this->_nodes) ? $this->_nodes[count($this->_nodes) - 1] : null;
+        return empty($this->_nodes) ? null : $this->_nodes[count($this->_nodes) - 1];
     }
 
     /**
-     * @param $nodeId
-     * @return Varien_Data_Tree_Node|null
+     * @param                             $nodeId
+     * @return null|Varien_Data_Tree_Node
      */
     public function searchById($nodeId)
     {
-        if (isset($this->_nodes[$nodeId])) {
-            return $this->_nodes[$nodeId];
-        }
-        return null;
+        return $this->_nodes[$nodeId] ?? null;
     }
 }

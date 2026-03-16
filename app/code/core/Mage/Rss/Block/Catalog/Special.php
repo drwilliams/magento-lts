@@ -1,37 +1,29 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Rss
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Review form block
  *
- * @category   Mage
  * @package    Mage_Rss
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
 {
     /**
-     * Zend_Date object for date comparsions
+     * Zend_Date object for date comparisons
      *
-     * @var Zend_Date|null
+     * @var null|Zend_Date
      */
     protected static $_currentDate = null;
 
     /**
-     * @throws Mage_Core_Model_Store_Exception
      * @throws Exception
+     * @throws Mage_Core_Model_Store_Exception
      */
     protected function _construct()
     {
@@ -44,8 +36,8 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
 
     /**
      * @return string
-     * @throws Mage_Core_Model_Store_Exception
      * @throws Exception
+     * @throws Mage_Core_Model_Store_Exception
      */
     protected function _toHtml()
     {
@@ -60,7 +52,7 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
 
         $fields = [
             'final_price',
-            'price'
+            'price',
         ];
         $specials = $product->setStoreId($storeId)->getResourceCollection()
             ->addPriceDataFieldFilter('%s < %s', $fields)
@@ -69,9 +61,9 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
                 [
                     'name', 'short_description', 'description', 'price', 'thumbnail',
                     'special_price', 'special_to_date',
-                    'msrp_enabled', 'msrp_display_actual_price_type', 'msrp'
+                    'msrp_enabled', 'msrp_display_actual_price_type', 'msrp',
                 ],
-                'left'
+                'left',
             )
             ->addAttributeToSort('name', 'asc')
         ;
@@ -82,10 +74,10 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
 
         $rssObj = Mage::getModel('rss/rss');
         $data = ['title' => $title,
-                'description' => $title,
-                'link'        => $newurl,
-                'charset'     => 'UTF-8',
-                'language'    => $lang
+            'description' => $title,
+            'link'        => $newurl,
+            'charset'     => 'UTF-8',
+            'language'    => $lang,
         ];
         $rssObj->_addHeader($data);
 
@@ -99,7 +91,7 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
         Mage::getSingleton('core/resource_iterator')->walk(
             $specials->getSelect(),
             [[$this, 'addSpecialXmlCallback']],
-            ['rssObj' => $rssObj, 'results' => &$results]
+            ['rssObj' => $rssObj, 'results' => &$results],
         );
 
         if (count($results)) {
@@ -120,8 +112,8 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
                     $outputHelper->productAttribute(
                         $product,
                         $product->getDescription(),
-                        'description'
-                    )
+                        'description',
+                    ),
                 );
 
                 // add price data if needed
@@ -134,11 +126,12 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
                         if ($result['use_special']) {
                             $special = '<br />' . Mage::helper('catalog')->__('Special Expires On: %s', $this->formatDate($result['special_to_date'], Mage_Core_Model_Locale::FORMAT_TYPE_MEDIUM));
                         }
+
                         $html .= sprintf(
                             '<p>%s %s%s</p>',
                             Mage::helper('catalog')->__('Price: %s', Mage::helper('core')->currency($result['price'])),
                             Mage::helper('catalog')->__('Special Price: %s', Mage::helper('core')->currency($result['final_price'])),
-                            $special
+                            $special,
                         );
                     }
                 }
@@ -148,17 +141,18 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
                 $rssObj->_addEntry([
                     'title'       => $product->getName(),
                     'link'        => $product->getProductUrl(),
-                    'description' => $html
+                    'description' => $html,
                 ]);
             }
         }
+
         return $rssObj->createRssXml();
     }
 
     /**
      * Preparing data and adding to rss object
      *
-     * @param array $args
+     * @param  array               $args
      * @throws Zend_Date_Exception
      */
     public function addSpecialXmlCallback($args)
@@ -194,12 +188,12 @@ class Mage_Rss_Block_Catalog_Special extends Mage_Rss_Block_Catalog_Abstract
     /**
      * Function for comparing two items in collection
      *
-     * @param Varien_Object $a
-     * @param Varien_Object $b
+     * @param  Varien_Object $a
+     * @param  Varien_Object $b
      * @return int
      */
     public function sortByStartDate($a, $b)
     {
-        return $a['start_date'] > $b['start_date'] ? -1 : ($a['start_date'] < $b['start_date'] ? 1 : 0);
+        return $b['start_date'] <=> $a['start_date'];
     }
 }

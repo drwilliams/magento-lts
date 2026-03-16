@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Oauth
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * oAuth authorize controller
  *
- * @category   Mage
  * @package    Mage_Oauth
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Oauth_AuthorizeController extends Mage_Core_Controller_Front_Action
 {
@@ -32,7 +24,7 @@ class Mage_Oauth_AuthorizeController extends Mage_Core_Controller_Front_Action
     /**
      * Init authorize page
      *
-     * @param bool $simple      Is simple page?
+     * @param  bool  $simple Is simple page?
      * @return $this
      */
     protected function _initForm($simple = false)
@@ -84,7 +76,7 @@ class Mage_Oauth_AuthorizeController extends Mage_Core_Controller_Front_Action
     /**
      * Init confirm page
      *
-     * @param bool $simple      Is simple page?
+     * @param  bool  $simple Is simple page?
      * @return $this
      */
     protected function _initConfirmPage($simple = false)
@@ -116,10 +108,10 @@ class Mage_Oauth_AuthorizeController extends Mage_Core_Controller_Front_Action
             if (($callback = $helper->getFullCallbackUrl($token))) { //false in case of OOB
                 $this->_redirectUrl($callback . ($simple ? '&simple=1' : ''));
                 return $this;
-            } else {
-                $block->setVerifier($token->getVerifier());
-                $session->addSuccess($this->__('Authorization confirmed.'));
             }
+
+            $block->setVerifier($token->getVerifier());
+            $session->addSuccess($this->__('Authorization confirmed.'));
         } catch (Mage_Core_Exception $e) {
             $session->addError($e->getMessage());
         } catch (Mage_Oauth_Exception $e) {
@@ -137,7 +129,7 @@ class Mage_Oauth_AuthorizeController extends Mage_Core_Controller_Front_Action
     /**
      * Init reject page
      *
-     * @param bool $simple      Is simple page?
+     * @param  bool  $simple Is simple page?
      * @return $this
      */
     protected function _initRejectPage($simple = false)
@@ -161,9 +153,9 @@ class Mage_Oauth_AuthorizeController extends Mage_Core_Controller_Front_Action
             if (($callback = $helper->getFullCallbackUrl($token, true))) {
                 $this->_redirectUrl($callback . ($simple ? '&simple=1' : ''));
                 return $this;
-            } else {
-                $session->addNotice($this->__('The application access request is rejected.'));
             }
+
+            $session->addNotice($this->__('The application access request is rejected.'));
         } catch (Mage_Core_Exception $e) {
             $session->addError($e->getMessage());
         } catch (Exception $e) {

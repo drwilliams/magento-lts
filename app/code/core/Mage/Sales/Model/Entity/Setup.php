@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
 {
@@ -258,7 +250,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'entity_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_attribute_backend_parent'
+                        'backend' => 'sales_entity/order_attribute_backend_parent',
                     ],
                     'store_id'  => ['type' => 'static'],
                     'store_name' => ['type' => 'varchar'],
@@ -411,7 +403,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_attribute_backend_child'
+                        'backend' => 'sales_entity/order_attribute_backend_child',
                     ],
 
                     'quote_item_id'     => ['type' => 'int'],
@@ -472,7 +464,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_attribute_backend_child'
+                        'backend' => 'sales_entity/order_attribute_backend_child',
                     ],
                     'quote_payment_id'      => ['type' => 'int'],
                     'method'                => [],
@@ -535,7 +527,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_attribute_backend_child'
+                        'backend' => 'sales_entity/order_attribute_backend_child',
                     ],
                     'status'    => ['type' => 'varchar'],
                     'comment'   => ['type' => 'text'],
@@ -552,7 +544,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'entity_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_invoice_attribute_backend_parent'
+                        'backend' => 'sales_entity/order_invoice_attribute_backend_parent',
                     ],
 
                     'state'    => ['type' => 'int'],
@@ -561,7 +553,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
 
                     'order_id'              => [
                         'type' => 'int',
-                        'backend' => 'sales_entity/order_invoice_attribute_backend_order'
+                        'backend' => 'sales_entity/order_invoice_attribute_backend_order',
                     ],
 
                     'billing_address_id'    => ['type' => 'int'],
@@ -601,7 +593,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id'     => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_invoice_attribute_backend_child'
+                        'backend' => 'sales_entity/order_invoice_attribute_backend_child',
                     ],
                     'order_item_id' => ['type' => 'int'],
                     'product_id'    => ['type' => 'int'],
@@ -630,7 +622,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_invoice_attribute_backend_child'
+                        'backend' => 'sales_entity/order_invoice_attribute_backend_child',
                     ],
                     'comment' => ['type' => 'text'],
                     'is_customer_notified' => ['type' => 'int'],
@@ -647,7 +639,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'entity_id'     => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_shipment_attribute_backend_parent'
+                        'backend' => 'sales_entity/order_shipment_attribute_backend_parent',
                     ],
 
                     'customer_id'   => ['type' => 'int'],
@@ -669,7 +661,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id'     => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_shipment_attribute_backend_child'
+                        'backend' => 'sales_entity/order_shipment_attribute_backend_child',
                     ],
                     'order_item_id' => ['type' => 'int'],
                     'product_id'    => ['type' => 'int'],
@@ -691,7 +683,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_shipment_attribute_backend_child'
+                        'backend' => 'sales_entity/order_shipment_attribute_backend_child',
                     ],
                     'comment' => ['type' => 'text'],
                     'is_customer_notified' => ['type' => 'int'],
@@ -704,7 +696,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id'     => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_shipment_attribute_backend_child'
+                        'backend' => 'sales_entity/order_shipment_attribute_backend_child',
                     ],
                     'order_id'      => ['type' => 'int'],
                     'number'        => ['type' => 'text'],
@@ -726,7 +718,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'entity_id'     => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_creditmemo_attribute_backend_parent'
+                        'backend' => 'sales_entity/order_creditmemo_attribute_backend_parent',
                     ],
                     'state'         => ['type' => 'int'],
                     'invoice_id'    => ['type' => 'int'],
@@ -774,7 +766,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id'     => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_creditmemo_attribute_backend_child'
+                        'backend' => 'sales_entity/order_creditmemo_attribute_backend_child',
                     ],
                     'order_item_id' => ['type' => 'int'],
                     'product_id'    => ['type' => 'int'],
@@ -803,7 +795,7 @@ class Mage_Sales_Model_Entity_Setup extends Mage_Eav_Model_Entity_Setup
                 'attributes' => [
                     'parent_id' => [
                         'type' => 'static',
-                        'backend' => 'sales_entity/order_creditmemo_attribute_backend_child'
+                        'backend' => 'sales_entity/order_creditmemo_attribute_backend_child',
                     ],
                     'comment' => ['type' => 'text'],
                     'is_customer_notified' => ['type' => 'int'],

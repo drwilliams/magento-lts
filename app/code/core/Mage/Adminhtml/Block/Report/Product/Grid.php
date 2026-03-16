@@ -1,24 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml products report grid block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
+ *
+ * @method Mage_Reports_Model_Resource_Report_Collection getCollection()
  */
 class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -27,7 +21,6 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
         parent::__construct();
         $this->setId('productsReportGrid');
         $this->setDefaultSort('entity_id');
-        $this->setDefaultDir('desc');
     }
 
     /**
@@ -36,6 +29,7 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
      */
     protected function _prepareCollection()
     {
+        /** @var Mage_Reports_Model_Resource_Product_Collection $collection */
         $collection = Mage::getResourceModel('reports/product_collection');
         $collection->getEntity()->setStore(0);
 
@@ -63,14 +57,13 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
     {
         $this->addColumn('entity_id', [
             'header'    => Mage::helper('reports')->__('ID'),
-            'width'     => '50px',
             'index'     => 'entity_id',
-            'total'     => 'Total'
+            'total'     => 'Total',
         ]);
 
         $this->addColumn('name', [
             'header'    => Mage::helper('reports')->__('Name'),
-            'index'     => 'name'
+            'index'     => 'name',
         ]);
 
         $this->addColumn('viewed', [
@@ -78,7 +71,7 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
             'width'     => '50px',
             'align'     => 'right',
             'index'     => 'viewed',
-            'total'     => 'sum'
+            'total'     => 'sum',
         ]);
 
         $this->addColumn('added', [
@@ -86,7 +79,7 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
             'width'     => '50px',
             'align'     => 'right',
             'index'     => 'added',
-            'total'     => 'sum'
+            'total'     => 'sum',
         ]);
 
         $this->addColumn('purchased', [
@@ -94,7 +87,7 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
             'width'     => '50px',
             'align'     => 'right',
             'index'     => 'purchased',
-            'total'     => 'sum'
+            'total'     => 'sum',
         ]);
 
         $this->addColumn('fulfilled', [
@@ -102,7 +95,7 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
             'width'     => '50px',
             'align'     => 'right',
             'index'     => 'fulfilled',
-            'total'     => 'sum'
+            'total'     => 'sum',
         ]);
 
         $this->addColumn('revenue', [
@@ -110,7 +103,7 @@ class Mage_Adminhtml_Block_Report_Product_Grid extends Mage_Adminhtml_Block_Widg
             'width'     => '50px',
             'align'     => 'right',
             'index'     => 'revenue',
-            'total'     => 'sum'
+            'total'     => 'sum',
         ]);
 
         $this->setCountTotals(true);

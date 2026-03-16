@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Config edit page
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_System_Config_Edit extends Mage_Adminhtml_Block_Widget
 {
@@ -35,13 +27,14 @@ class Mage_Adminhtml_Block_System_Config_Edit extends Mage_Adminhtml_Block_Widge
         parent::__construct();
         $this->setTemplate('system/config/edit.phtml');
 
+        /** @var string $sectionCode */
         $sectionCode = $this->getRequest()->getParam('section');
         $sections = Mage::getSingleton('adminhtml/config')->getSections();
 
         $this->_section = $sections->$sectionCode;
 
-        $this->setTitle((string)$this->_section->label);
-        $this->setHeaderCss((string)$this->_section->header_css);
+        $this->setTitle((string) $this->_section->label);
+        $this->setHeaderCss((string) $this->_section->header_css);
     }
 
     /**
@@ -55,8 +48,8 @@ class Mage_Adminhtml_Block_System_Config_Edit extends Mage_Adminhtml_Block_Widge
                 ->setData([
                     'label'     => Mage::helper('adminhtml')->__('Save Config'),
                     'onclick'   => 'configForm.submit()',
-                    'class' => 'save',
-                ])
+                    'class'     => 'save',
+                ]),
         );
         return parent::_prepareLayout();
     }
@@ -82,14 +75,15 @@ class Mage_Adminhtml_Block_System_Config_Edit extends Mage_Adminhtml_Block_Widge
      */
     public function initForm()
     {
-        $blockName = (string)$this->_section->frontend_model;
+        $blockName = (string) $this->_section->frontend_model;
         if (empty($blockName)) {
             $blockName = self::DEFAULT_SECTION_BLOCK;
         }
+
         $this->setChild(
             'form',
             $this->getLayout()->createBlock($blockName)
-                ->initForm()
+                ->initForm(),
         );
         return $this;
     }

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Oauth
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * OAuth Consumer Edit Block
  *
- * @category   Mage
  * @package    Mage_Oauth
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Oauth_Block_Adminhtml_Oauth_Consumer_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
@@ -39,6 +31,7 @@ class Mage_Oauth_Block_Adminhtml_Oauth_Consumer_Edit extends Mage_Adminhtml_Bloc
         if ($this->_model === null) {
             $this->_model = Mage::registry('current_consumer');
         }
+
         return $this->_model;
     }
 
@@ -55,18 +48,18 @@ class Mage_Oauth_Block_Adminhtml_Oauth_Consumer_Edit extends Mage_Adminhtml_Bloc
         $this->_addButton('save_and_continue', [
             'label'     => Mage::helper('oauth')->__('Save and Continue Edit'),
             'onclick'   => 'saveAndContinueEdit()',
-            'class' => 'save'
+            'class'     => 'save continue',
         ], 100);
 
-        $this->_formScripts[] = "function saveAndContinueEdit()" .
-        "{editForm.submit($('edit_form').action + 'back/edit/')}";
+        $this->_formScripts[] = 'function saveAndContinueEdit()'
+        . "{editForm.submit($('edit_form').action + 'back/edit/')}";
 
         $this->_updateButton('save', 'label', $this->__('Save'));
         $this->_updateButton('save', 'id', 'save_button');
         $this->_updateButton('delete', 'label', $this->__('Delete'));
-        $this->_updateButton('delete', 'onclick', 'if(confirm(\'' . Mage::helper('core')->jsQuoteEscape(
-            Mage::helper('adminhtml')->__('Are you sure you want to do this?')
-        ) . '\')) editForm.submit(\'' . $this->getUrl('*/*/delete') . '\'); return false;');
+        $this->_updateButton('delete', 'onclick', "if(confirm('" . Mage::helper('core')->jsQuoteEscape(
+            Mage::helper('adminhtml')->__('Are you sure you want to do this?'),
+        ) . "')) editForm.submit('" . $this->getUrl('*/*/delete') . "'); return false;");
 
         /** @var Mage_Admin_Model_Session $session */
         $session = Mage::getSingleton('admin/session');
@@ -85,6 +78,7 @@ class Mage_Oauth_Block_Adminhtml_Oauth_Consumer_Edit extends Mage_Adminhtml_Bloc
         if ($this->getModel()->getId()) {
             return $this->__('Edit Consumer');
         }
+
         return $this->__('New Consumer');
     }
 }

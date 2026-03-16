@@ -8,6 +8,7 @@
  * @category    Mage
  * @package     Mage_Adminhtml
  * @copyright   Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
+ * @copyright   Copyright (c) 2022-2023 The OpenMage Contributors (https://www.openmage.org)
  * @license     https://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -160,7 +161,6 @@ GiftOptionsPopup.prototype = {
         var element = Event.element(event).id;
         var itemId = element.sub('gift_options_link_','');
 
-        toggleSelectsUnderBlock(this.giftOptionsWindowMask, false);
         this.giftOptionsWindowMask = $('gift_options_window_mask');
         this.giftOptionsWindow = $('gift_options_configure');
         this.giftOptionsWindow.select('select').each(function(el){
@@ -201,7 +201,6 @@ GiftOptionsPopup.prototype = {
     },
 
     closeWindow : function() {
-        toggleSelectsUnderBlock(this.giftOptionsWindowMask, true);
         this.giftOptionsWindowMask.style.display = 'none';
         this.giftOptionsWindow.style.display = 'none';
     }

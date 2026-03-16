@@ -1,48 +1,41 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Validator for check is uploaded file is image
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Model_File_Validator_Image
 {
-    public const NAME = "isImage";
+    public const NAME = 'isImage';
 
     protected $_allowedImageTypes = [
+        IMAGETYPE_WEBP,
         IMAGETYPE_JPEG,
         IMAGETYPE_GIF,
         IMAGETYPE_JPEG2000,
         IMAGETYPE_PNG,
         IMAGETYPE_ICO,
         IMAGETYPE_TIFF_II,
-        IMAGETYPE_TIFF_MM
+        IMAGETYPE_TIFF_MM,
     ];
 
     /**
      * Setter for allowed image types
      *
-     * @param array $imageFileExtensions
      * @return $this
      */
     public function setAllowedImageTypes(array $imageFileExtensions = [])
     {
         $map = [
+            'webp' => [IMAGETYPE_WEBP],
             'tif' => [IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM],
             'tiff' => [IMAGETYPE_TIFF_II, IMAGETYPE_TIFF_MM],
             'jpg' => [IMAGETYPE_JPEG, IMAGETYPE_JPEG2000],
@@ -51,7 +44,7 @@ class Mage_Core_Model_File_Validator_Image
             'gif' => [IMAGETYPE_GIF],
             'png' => [IMAGETYPE_PNG],
             'ico' => [IMAGETYPE_ICO],
-            'apng' => [IMAGETYPE_PNG]
+            'apng' => [IMAGETYPE_PNG],
         ];
 
         $this->_allowedImageTypes = [];
@@ -71,14 +64,17 @@ class Mage_Core_Model_File_Validator_Image
      * Validation callback for checking if file is image
      * Destroy malicious code in image by reprocessing
      *
-     * @param  string $filePath Path to temporary uploaded file
-     * @return null
+     * @param  string              $filePath Path to temporary uploaded file
      * @throws Mage_Core_Exception
      */
     public function validate($filePath)
     {
-        list($imageWidth, $imageHeight, $fileType) = getimagesize($filePath);
+        [$imageWidth, $imageHeight, $fileType] = getimagesize($filePath);
         if ($fileType) {
+            if ($fileType === IMAGETYPE_ICO) {
+                return null;
+            }
+
             if ($this->isImageType($fileType)) {
                 // Config 'general/reprocess_images/active' is deprecated, replacement is the following:
                 $imageQuality = Mage::getStoreConfig('admin/security/reprocess_image_quality');
@@ -90,9 +86,11 @@ class Mage_Core_Model_File_Validator_Image
                         ? 85
                         : (Mage::getStoreConfigFlag('general/reprocess_images/active') ? 85 : 0);
                 }
+
                 if ($imageQuality === 0) {
                     return null;
                 }
+
                 //replace tmp image with re-sampled copy to exclude images with malicious data
                 $image = imagecreatefromstring(file_get_contents($filePath));
                 if ($image !== false) {
@@ -114,13 +112,18 @@ class Mage_Core_Model_File_Validator_Image
                                     }
                                 }
                             }
+
                             if (!imageistruecolor($image)) {
                                 imagetruecolortopalette($img, false, imagecolorstotal($image));
                             }
+
                             imagegif($img, $filePath);
                             break;
                         case IMAGETYPE_JPEG:
                             imagejpeg($img, $filePath, $imageQuality);
+                            break;
+                        case IMAGETYPE_WEBP:
+                            imagewebp($img, $filePath, $imageQuality);
                             break;
                         case IMAGETYPE_PNG:
                             imagepng($img, $filePath);
@@ -132,17 +135,18 @@ class Mage_Core_Model_File_Validator_Image
                     imagedestroy($img);
                     imagedestroy($image);
                     return null;
-                } else {
-                    throw Mage::exception('Mage_Core', Mage::helper('core')->__('Invalid image.'));
                 }
+
+                throw Mage::exception('Mage_Core', Mage::helper('core')->__('Invalid image.'));
             }
         }
+
         throw Mage::exception('Mage_Core', Mage::helper('core')->__('Invalid MIME type.'));
     }
 
     /**
      * Returns is image by image type
-     * @param int $nImageType
+     * @param  int  $nImageType
      * @return bool
      */
     protected function isImageType($nImageType)

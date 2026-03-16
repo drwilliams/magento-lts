@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog layered navigation view block
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
 {
@@ -58,7 +50,7 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
     protected $_decimalFilterBlockName;
 
     /**
-     * Internal constructor
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -82,9 +74,8 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
     /**
      * Get attribute filter block name
      *
-     * @deprecated after 1.4.1.0
-     *
      * @return string
+     * @deprecated after 1.4.1.0
      */
     protected function _getAttributeFilterBlockName()
     {
@@ -95,6 +86,7 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
      * Prepare child blocks
      *
      * @inheritDoc
+     * @throws Mage_Core_Exception
      */
     protected function _prepareLayout()
     {
@@ -123,7 +115,7 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
                 $this->getLayout()->createBlock($filterBlockName)
                     ->setLayer($this->getLayer())
                     ->setAttributeModel($attribute)
-                ->init()
+                ->init(),
             );
         }
 
@@ -146,6 +138,7 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
      * Get all fiterable attributes of current category
      *
      * @return array
+     * @throws Mage_Core_Exception
      */
     protected function _getFilterableAttributes()
     {
@@ -172,6 +165,7 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
      * Get all layer filters
      *
      * @return array
+     * @throws Mage_Core_Exception
      */
     public function getFilters()
     {
@@ -195,13 +189,16 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
      */
     protected function _getCategoryFilter()
     {
-        return $this->getChild('category_filter');
+        /** @var Mage_Catalog_Block_Layer_Filter_Category $child */
+        $child = $this->getChild('category_filter');
+        return $child;
     }
 
     /**
      * Check availability display layer options
      *
      * @return bool
+     * @throws Mage_Core_Exception
      */
     public function canShowOptions()
     {
@@ -218,6 +215,7 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
      * Check availability display layer block
      *
      * @return bool
+     * @throws Mage_Core_Exception
      */
     public function canShowBlock()
     {
@@ -231,7 +229,9 @@ class Mage_Catalog_Block_Layer_View extends Mage_Core_Block_Template
      */
     protected function _getPriceFilter()
     {
-        return $this->getChild('_price_filter');
+        /** @var Mage_Catalog_Block_Layer_Filter_Price $child */
+        $child = $this->getChild('_price_filter');
+        return $child;
     }
 
     /**

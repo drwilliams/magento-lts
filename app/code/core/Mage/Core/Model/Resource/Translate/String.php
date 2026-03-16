@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * String translate resource model
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource_Db_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('core/translate', 'key_id');
@@ -41,17 +36,17 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
             $object->setData($result);
             $this->_afterLoad($object);
             return $result;
-        } else {
-            return parent::load($object, $value, $field);
         }
+
+        return parent::load($object, $value, $field);
     }
 
     /**
      * Retrieve select for load
      *
-     * @param String $field
-     * @param String $value
-     * @param Mage_Core_Model_Abstract $object
+     * @param  String                   $field
+     * @param  String                   $value
+     * @param  Mage_Core_Model_Abstract $object
      * @return Varien_Db_Select
      */
     protected function _getLoadSelect($field, $value, $object)
@@ -67,7 +62,7 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
      * @param Mage_Core_Model_Translate_String $object
      * @inheritDoc
      */
-    public function _afterLoad(Mage_Core_Model_Abstract $object)
+    protected function _afterLoad(Mage_Core_Model_Abstract $object)
     {
         $adapter = $this->_getReadAdapter();
         $select = $adapter->select()
@@ -92,7 +87,7 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
 
         $bind = [
             'string'   => $object->getString(),
-            'store_id' => Mage_Core_Model_App::ADMIN_STORE_ID
+            'store_id' => Mage_Core_Model_App::ADMIN_STORE_ID,
         ];
 
         $object->setId($adapter->fetchOne($select, $bind));
@@ -118,21 +113,21 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
                 if (is_null($translate) || $translate == '') {
                     $where = [
                         'store_id = ?'    => $storeId,
-                        'string = ?'      => $object->getString()
-                     ];
+                        'string = ?'      => $object->getString(),
+                    ];
                     $adapter->delete($this->getMainTable(), $where);
                 } else {
                     $data = [
-                       'store_id'  => $storeId,
-                       'string'    => $object->getString(),
-                       'translate' => $translate,
+                        'store_id'  => $storeId,
+                        'string'    => $object->getString(),
+                        'translate' => $translate,
                     ];
 
                     if (isset($stores[$storeId])) {
                         $adapter->update(
                             $this->getMainTable(),
                             $data,
-                            ['key_id = ?' => $stores[$storeId]]
+                            ['key_id = ?' => $stores[$storeId]],
                         );
                     } else {
                         $adapter->insert($this->getMainTable(), $data);
@@ -140,15 +135,16 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
                 }
             }
         }
+
         return parent::_afterSave($object);
     }
 
     /**
      * Delete translates
      *
-     * @param string $string
-     * @param string $locale
-     * @param int|null $storeId
+     * @param  string   $string
+     * @param  string   $locale
+     * @param  null|int $storeId
      * @return $this
      */
     public function deleteTranslate($string, $locale = null, $storeId = null)
@@ -159,7 +155,7 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
 
         $where = [
             'locale = ?' => $locale,
-            'string = ?' => $string
+            'string = ?' => $string,
         ];
 
         if ($storeId === false) {
@@ -176,10 +172,10 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
     /**
      * Save translation
      *
-     * @param String $string
-     * @param String $translate
-     * @param String $locale
-     * @param int|null $storeId
+     * @param  String   $string
+     * @param  String   $translate
+     * @param  String   $locale
+     * @param  null|int $storeId
      * @return $this
      */
     public function saveTranslate($string, $translate, $locale = null, $storeId = null)
@@ -210,9 +206,10 @@ class Mage_Core_Model_Resource_Translate_String extends Mage_Core_Model_Resource
 
         if ($row = $write->fetchRow($select, $bind)) {
             $original = $string;
-            if (strpos($original, '::') !== false) {
-                list($scope, $original) = explode('::', $original);
+            if (str_contains($original, '::')) {
+                [$scope, $original] = explode('::', $original);
             }
+
             if ($original == $translate) {
                 $write->delete($table, ['key_id=?' => $row['key_id']]);
             } elseif ($row['translate'] != $translate) {

@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Store group resource model
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Model_Resource_Store_Group extends Mage_Core_Model_Resource_Db_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('core/store_group', 'group_id');
@@ -45,8 +40,8 @@ class Mage_Core_Model_Resource_Store_Group extends Mage_Core_Model_Resource_Db_A
     /**
      * Update default store group for website
      *
-     * @param int $websiteId
-     * @param int $groupId
+     * @param  int   $websiteId
+     * @param  int   $groupId
      * @return $this
      */
     protected function _updateWebsiteDefaultGroup($websiteId, $groupId)
@@ -61,13 +56,13 @@ class Mage_Core_Model_Resource_Store_Group extends Mage_Core_Model_Resource_Db_A
             $where = ['website_id = ?' => $websiteId];
             $this->_getWriteAdapter()->update($this->getTable('core/website'), $bind, $where);
         }
+
         return $this;
     }
 
     /**
      * Change store group website
      *
-     * @param Mage_Core_Model_Abstract|Mage_Core_Model_Store_Group $model
      * @return $this
      */
     protected function _changeWebsite(Mage_Core_Model_Abstract $model)
@@ -84,14 +79,15 @@ class Mage_Core_Model_Resource_Store_Group extends Mage_Core_Model_Resource_Db_A
                 $this->_getWriteAdapter()->update($this->getTable('core/website'), $bind, $where);
             }
         }
+
         return $this;
     }
 
     /**
      * Update website for stores that assigned to store group
      *
-     * @param int $groupId
-     * @param int $websiteId
+     * @param  int   $groupId
+     * @param  int   $websiteId
      * @return $this
      */
     protected function _updateStoreWebsite($groupId, $websiteId)
@@ -105,8 +101,8 @@ class Mage_Core_Model_Resource_Store_Group extends Mage_Core_Model_Resource_Db_A
     /**
      * Save default store for store group
      *
-     * @param int $groupId
-     * @param int $storeId
+     * @param  int   $groupId
+     * @param  int   $storeId
      * @return $this
      */
     protected function _saveDefaultStore($groupId, $storeId)

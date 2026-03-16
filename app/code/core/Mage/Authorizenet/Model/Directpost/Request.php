@@ -1,24 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Authorizenet
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+
+use Carbon\Carbon;
 
 /**
  * Authorize.net request model for DirectPost model.
  *
- * @category   Mage
  * @package    Mage_Authorizenet
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
 {
@@ -46,7 +40,7 @@ class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
      * Set merchant transaction key.
      * Needed to generate MD5 sign.
      *
-     * @param string $transKey
+     * @param  string $transKey
      * @return $this
      */
     protected function _setTransactionKey($transKey)
@@ -58,30 +52,29 @@ class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
     /**
      * Generates the MD5 fingerprint for request.
      *
-     * @param string $merchantApiLoginId
-     * @param string $merchantTransactionKey
-     * @param string $amount
-     * @param string $fpSequence An invoice number or random number.
-     * @param string $fpTimestamp
-     * @return string The fingerprint.
+     * @param  string $merchantApiLoginId
+     * @param  string $merchantTransactionKey
+     * @param  string $amount
+     * @param  string $fpSequence             an invoice number or random number
+     * @param  string $fpTimestamp
+     * @return string the fingerprint
      */
     public function generateRequestSign($merchantApiLoginId, $merchantTransactionKey, $amount, $currencyCode, $fpSequence, $fpTimestamp)
     {
         return hash_hmac(
-            "md5",
-            $merchantApiLoginId . '^' .
-            $fpSequence . '^' .
-            $fpTimestamp . '^' .
-            $amount . '^' .
-            $currencyCode,
-            $merchantTransactionKey
+            'md5',
+            $merchantApiLoginId . '^'
+            . $fpSequence . '^'
+            . $fpTimestamp . '^'
+            . $amount . '^'
+            . $currencyCode,
+            $merchantTransactionKey,
         );
     }
 
     /**
      * Set paygate data to request.
      *
-     * @param Mage_Authorizenet_Model_Directpost $paymentMethod
      * @return $this
      */
     public function setConstantData(Mage_Authorizenet_Model_Directpost $paymentMethod)
@@ -105,8 +98,6 @@ class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
     /**
      * Set entity data to request
      *
-     * @param Mage_Sales_Model_Order $order
-     * @param Mage_Authorizenet_Model_Directpost $paymentMethod
      * @return $this
      */
     public function setDataFromOrder(Mage_Sales_Model_Order $order, Mage_Authorizenet_Model_Directpost $paymentMethod)
@@ -166,7 +157,7 @@ class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
      */
     public function signRequestData()
     {
-        $fpTimestamp = time();
+        $fpTimestamp = (string) Carbon::now()->getTimestamp();
         $signatureKey = $this->_getSignatureKey();
         if (!empty($signatureKey)) {
             $hash = $this->_generateSha2RequestSign(
@@ -175,7 +166,7 @@ class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
                 $this->getXAmount(),
                 $this->getXCurrencyCode(),
                 $this->getXFpSequence(),
-                $fpTimestamp
+                $fpTimestamp,
             );
         } else {
             $hash = $this->generateRequestSign(
@@ -184,9 +175,10 @@ class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
                 $this->getXAmount(),
                 $this->getXCurrencyCode(),
                 $this->getXFpSequence(),
-                $fpTimestamp
+                $fpTimestamp,
             );
         }
+
         $this->setXFpTimestamp($fpTimestamp);
         $this->setXFpHash($hash);
         return $this;
@@ -195,13 +187,13 @@ class Mage_Authorizenet_Model_Directpost_Request extends Varien_Object
     /**
      * Generates the SHA2 fingerprint for request.
      *
-     * @param string $merchantApiLoginId
-     * @param string $merchantSignatureKey
-     * @param string $amount
-     * @param string $currencyCode
-     * @param string $fpSequence An invoice number or random number.
-     * @param string $fpTimestamp
-     * @return string The fingerprint.
+     * @param  string $merchantApiLoginId
+     * @param  string $merchantSignatureKey
+     * @param  string $amount
+     * @param  string $currencyCode
+     * @param  string $fpSequence           an invoice number or random number
+     * @param  string $fpTimestamp
+     * @return string the fingerprint
      */
     protected function _generateSha2RequestSign(
         $merchantApiLoginId,

@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -18,23 +12,20 @@
  * Collects only items segregated by isNominal property
  * Aggregates row totals per item
  *
- * @category   Mage
  * @package    Mage_Checkout
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Quote_Address_Total_Nominal extends Mage_Sales_Model_Quote_Address_Total_Abstract
 {
     /**
      * Invoke collector for nominal items
      *
-     * @param Mage_Sales_Model_Quote_Address $address
      * @return Mage_Sales_Model_Quote_Address_Total_Nominal
      */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
         $collector = Mage::getSingleton(
             'sales/quote_address_total_nominal_collector',
-            ['store' => $address->getQuote()->getStore()]
+            ['store' => $address->getQuote()->getStore()],
         );
 
         // invoke nominal totals
@@ -56,7 +47,8 @@ class Mage_Sales_Model_Quote_Address_Total_Nominal extends Mage_Sales_Model_Quot
                 } else {
                     $isCompounded = false;
                 }
-                if ((float)$itemRowTotal > 0 && $label = $model->getLabel()) {
+
+                if ((float) $itemRowTotal > 0 && $label = $model->getLabel()) {
                     $totalDetails[] = new Varien_Object([
                         'label'  => $label,
                         'amount' => $itemRowTotal,
@@ -64,6 +56,7 @@ class Mage_Sales_Model_Quote_Address_Total_Nominal extends Mage_Sales_Model_Quot
                     ]);
                 }
             }
+
             $item->setNominalRowTotal($rowTotal);
             $item->setBaseNominalRowTotal($baseRowTotal);
             $item->setNominalTotalDetails($totalDetails);
@@ -75,7 +68,6 @@ class Mage_Sales_Model_Quote_Address_Total_Nominal extends Mage_Sales_Model_Quot
     /**
      * Fetch collected nominal items
      *
-     * @param Mage_Sales_Model_Quote_Address $address
      * @return $this
      */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
@@ -89,6 +81,7 @@ class Mage_Sales_Model_Quote_Address_Total_Nominal extends Mage_Sales_Model_Quot
                 'area'    => 'footer',
             ]);
         }
+
         return $this;
     }
 }

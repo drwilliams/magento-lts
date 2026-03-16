@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogSearch
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Fulltext Collection
  *
- * @category   Mage
  * @package    Mage_CatalogSearch
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
@@ -30,7 +22,7 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
     /**
      * Found data
      *
-     * @var array|null
+     * @var null|array
      */
     protected $_foundData = null;
 
@@ -68,7 +60,7 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
     /**
      * Add search query filter
      *
-     * @param string $query
+     * @param  string $query
      * @return $this
      */
     public function addSearchFilter($query)
@@ -117,6 +109,7 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
         } else {
             $this->getSelect()->where('FALSE');
         }
+
         $this->_isSearchFiltersApplied = true;
 
         return $this;
@@ -135,9 +128,11 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
             $preparedResult->prepareResult();
             $this->_foundData = $preparedResult->getResource()->getFoundData();
         }
+
         if (isset($this->_orders[self::RELEVANCE_ORDER_NAME])) {
             $this->_resortFoundDataByRelevance();
         }
+
         return array_keys($this->_foundData);
     }
 
@@ -153,24 +148,28 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
             foreach ($this->_foundData as $id => $relevance) {
                 $this->_foundData[$id] = $relevance . '_' . $id;
             }
+
             natsort($this->_foundData);
             if ($this->_relevanceSortOrder == SORT_DESC) {
                 $this->_foundData = array_reverse($this->_foundData);
             }
+
             foreach ($this->_foundData as $dataString) {
-                list($relevance, $id) = explode('_', $dataString);
+                [$relevance, $id] = explode('_', $dataString);
                 $data[$id] = $relevance;
             }
+
             $this->_foundData = $data;
         }
+
         return $this;
     }
 
     /**
      * Set Order field
      *
-     * @param string $attribute
-     * @param string $dir
+     * @param  string $attribute
+     * @param  string $dir
      * @return $this
      */
     public function setOrder($attribute, $dir = 'desc')
@@ -181,6 +180,7 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
         } else {
             parent::setOrder($attribute, $dir);
         }
+
         return $this;
     }
 
@@ -202,10 +202,10 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
             new Zend_Db_Expr(
                 $resourceHelper->getFieldOrderExpression(
                     'e.' . $this->getResource()->getIdFieldName(),
-                    $foundIds
+                    $foundIds,
                 )
-                . ' ' . Zend_Db_Select::SQL_ASC
-            )
+                . ' ' . Zend_Db_Select::SQL_ASC,
+            ),
         );
 
         return $this;
@@ -224,7 +224,7 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
     /**
      * Render sql select orders
      *
-     * @return  Varien_Data_Collection_Db
+     * @return Varien_Data_Collection_Db
      */
     protected function _renderOrders()
     {
@@ -236,8 +236,10 @@ class Mage_CatalogSearch_Model_Resource_Fulltext_Collection extends Mage_Catalog
                     $this->addAttributeToSort($attribute, $direction);
                 }
             }
+
             $this->_isOrdersRendered = true;
         }
+
         return $this;
     }
 }

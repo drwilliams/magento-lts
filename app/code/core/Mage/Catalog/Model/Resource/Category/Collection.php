@@ -1,27 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Category resource collection
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method Mage_Catalog_Model_Category getFirstItem()
- * @method Mage_Catalog_Model_Category getItemById(int $value)
+ * @method Mage_Catalog_Model_Category   getFirstItem()
+ * @method Mage_Catalog_Model_Category   getItemById(string $value)
  * @method Mage_Catalog_Model_Category[] getItems()
  */
 class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model_Resource_Collection_Abstract
@@ -46,7 +38,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Store id, that we should count products on
      *
-     * @var int|null
+     * @var null|int
      */
     protected $_productStoreId;
 
@@ -82,17 +74,15 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
      * Initialize factory
      *
      * @param Mage_Core_Model_Resource_Abstract $resource
-     * @param array $args
      */
     public function __construct($resource = null, array $args = [])
     {
         parent::__construct($resource);
-        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('catalog/factory');
+        $this->_factory = empty($args['factory']) ? Mage::getSingleton('catalog/factory') : $args['factory'];
     }
 
     /**
-     * Init collection and determine table names
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -105,7 +95,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Add Id filter
      *
-     * @param int|string|array $categoryIds
+     * @param  array|int|string $categoryIds
      * @return $this
      */
     public function addIdFilter($categoryIds)
@@ -126,6 +116,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
                 $condition = ['in' => $ids];
             }
         }
+
         $this->addFieldToFilter('entity_id', $condition);
         return $this;
     }
@@ -133,7 +124,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Set flag for loading product count
      *
-     * @param bool $flag
+     * @param  bool  $flag
      * @return $this
      */
     public function setLoadProductCount($flag)
@@ -151,7 +142,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     {
         Mage::dispatchEvent(
             $this->_eventPrefix . '_load_before',
-            [$this->_eventObject => $this]
+            [$this->_eventObject => $this],
         );
         return parent::_beforeLoad();
     }
@@ -165,7 +156,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     {
         Mage::dispatchEvent(
             $this->_eventPrefix . '_load_after',
-            [$this->_eventObject => $this]
+            [$this->_eventObject => $this],
         );
 
         return parent::_afterLoad();
@@ -174,7 +165,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Set id of the store that we should count products on
      *
-     * @param int $storeId
+     * @param  int   $storeId
      * @return $this
      */
     public function setProductStoreId($storeId)
@@ -193,14 +184,15 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
         if (is_null($this->_productStoreId)) {
             $this->_productStoreId = Mage_Catalog_Model_Abstract::DEFAULT_STORE_ID;
         }
+
         return $this->_productStoreId;
     }
 
     /**
      * Load collection
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
+     * @param  bool  $printQuery
+     * @param  bool  $logQuery
      * @return $this
      */
     public function load($printQuery = false, $logQuery = false)
@@ -225,7 +217,6 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
 
     /**
      * Load categories product count
-     *
      */
     protected function _loadProductCount()
     {
@@ -235,9 +226,9 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Load product count for specified items
      *
-     * @param array $items
-     * @param bool $countRegular get product count for regular (non-anchor) categories
-     * @param bool $countAnchor get product count for anchor categories
+     * @param  array $items
+     * @param  bool  $countRegular get product count for regular (non-anchor) categories
+     * @param  bool  $countAnchor  get product count for anchor categories
      * @return $this
      */
     public function loadProductCount($items, $countRegular = true, $countAnchor = true)
@@ -261,7 +252,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
                 $select = $this->_conn->select();
                 $select->from(
                     ['main_table' => $this->_productTable],
-                    ['category_id', new Zend_Db_Expr('COUNT(main_table.product_id)')]
+                    ['category_id', new Zend_Db_Expr('COUNT(main_table.product_id)')],
                 )
                     ->where($this->_conn->quoteInto('main_table.category_id IN(?)', $regularIds))
                     ->group('main_table.category_id');
@@ -269,10 +260,11 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
                     $select->join(
                         ['w' => $this->_productWebsiteTable],
                         'main_table.product_id = w.product_id',
-                        []
+                        [],
                     )
                     ->where('w.website_id = ?', $websiteId);
                 }
+
                 $counts = $this->_conn->fetchPairs($select);
                 foreach ($regular as $item) {
                     if (isset($counts[$item->getId()])) {
@@ -290,17 +282,17 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
                 if ($allChildren = $item->getAllChildren()) {
                     $bind = [
                         'entity_id' => $item->getId(),
-                        'c_path'    => $item->getPath() . '/%'
+                        'c_path'    => $item->getPath() . '/%',
                     ];
                     $select = $this->_conn->select();
                     $select->from(
                         ['main_table' => $this->_productTable],
-                        new Zend_Db_Expr('COUNT(DISTINCT main_table.product_id)')
+                        new Zend_Db_Expr('COUNT(DISTINCT main_table.product_id)'),
                     )
                         ->joinInner(
                             ['e' => $this->getTable('catalog/category')],
                             'main_table.category_id=e.entity_id',
-                            []
+                            [],
                         )
                         ->where('e.entity_id = :entity_id')
                         ->orWhere('e.path LIKE :c_path');
@@ -308,23 +300,25 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
                         $select->join(
                             ['w' => $this->_productWebsiteTable],
                             'main_table.product_id = w.product_id',
-                            []
+                            [],
                         )
                         ->where('w.website_id = ?', $websiteId);
                     }
+
                     $item->setProductCount((int) $this->_conn->fetchOne($select, $bind));
                 } else {
                     $item->setProductCount(0);
                 }
             }
         }
+
         return $this;
     }
 
     /**
      * Add category path filter
      *
-     * @param string $regexp
+     * @param  string $regexp
      * @return $this
      */
     public function addPathFilter($regexp)
@@ -353,13 +347,13 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
      */
     protected function _getCurrentStoreId()
     {
-        return (int)Mage::app()->getStore()->getId();
+        return (int) Mage::app()->getStore()->getId();
     }
 
     /**
      * Add filter by path to collection
      *
-     * @param string $parent
+     * @param  string $parent
      * @return $this
      */
     public function addParentPathFilter($parent)
@@ -389,7 +383,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
         $this->addAttributeToFilter('is_active', 1);
         Mage::dispatchEvent(
             $this->_eventPrefix . '_add_is_active_filter',
-            [$this->_eventObject => $this]
+            [$this->_eventObject => $this],
         );
         return $this;
     }
@@ -419,7 +413,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Add category path filter
      *
-     * @param array|string $paths
+     * @param  array|string $paths
      * @return $this
      */
     public function addPathsFilter($paths)
@@ -427,20 +421,23 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
         if (!is_array($paths)) {
             $paths = [$paths];
         }
+
         $cond   = [];
         foreach ($paths as $path) {
             $cond[] = $this->getResource()->getReadConnection()->quoteInto('e.path LIKE ?', "$path%");
         }
+
         if ($cond) {
             $this->getSelect()->where(implode(' OR ', $cond));
         }
+
         return $this;
     }
 
     /**
      * Add category level filter
      *
-     * @param int|string $level
+     * @param  int|string $level
      * @return $this
      */
     public function addLevelFilter($level)
@@ -464,7 +461,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Add order field
      *
-     * @param string $field
+     * @param  string $field
      * @return $this
      */
     public function addOrderField($field)
@@ -476,7 +473,7 @@ class Mage_Catalog_Model_Resource_Category_Collection extends Mage_Catalog_Model
     /**
      * Set disable flat flag
      *
-     * @param bool $flag
+     * @param  bool  $flag
      * @return $this
      */
     public function setDisableFlat($flag)

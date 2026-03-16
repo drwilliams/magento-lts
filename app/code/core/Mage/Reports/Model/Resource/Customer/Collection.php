@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Customers Report collection
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Model_Resource_Customer_Collection
 {
@@ -84,6 +76,7 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
                 $item->remove();
             }
         }
+
         return $this;
     }
 
@@ -101,8 +94,8 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
     /**
      * Order for each customer
      *
-     * @param string $from
-     * @param string $to
+     * @param  string $from
+     * @param  string $to
      * @return $this
      */
     public function joinOrders($from = '', $to = '')
@@ -116,8 +109,8 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
         $this->getSelect()
             ->joinLeft(
                 ['orders' => $this->getTable('sales/order')],
-                "orders.customer_id = e.entity_id" . $dateFilter,
-                []
+                'orders.customer_id = e.entity_id' . $dateFilter,
+                [],
             );
 
         return $this;
@@ -131,9 +124,9 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
     public function addOrdersCount()
     {
         $this->getSelect()
-            ->columns(["orders_count" => "COUNT(orders.entity_id)"])
+            ->columns(['orders_count' => 'COUNT(orders.entity_id)'])
             ->where('orders.state <> ?', Mage_Sales_Model_Order::STATE_CANCELED)
-            ->group("e.entity_id");
+            ->group('e.entity_id');
 
         return $this;
     }
@@ -142,7 +135,7 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
      * Order summary info for each customer
      * such as orders_count, orders_avg_amount, orders_total_amount
      *
-     * @param int $storeId
+     * @param  int   $storeId
      * @return $this
      */
     public function addSumAvgTotals($storeId = 0)
@@ -159,8 +152,8 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
             : "orders.base_subtotal - {$baseSubtotalCanceled} - {$baseSubtotalRefunded}";
 
         $this->getSelect()
-            ->columns(["orders_avg_amount" => "AVG({$expr})"])
-            ->columns(["orders_sum_amount" => "SUM({$expr})"]);
+            ->columns(['orders_avg_amount' => "AVG({$expr})"])
+            ->columns(['orders_sum_amount' => "SUM({$expr})"]);
 
         return $this;
     }
@@ -168,7 +161,7 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
     /**
      * Order by total amount
      *
-     * @param string $dir
+     * @param  string $dir
      * @return $this
      */
     public function orderByTotalAmount($dir = self::SORT_ORDER_DESC)
@@ -181,13 +174,13 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
     /**
      * Add order statistics
      *
-     * @param int|bool $isFilter
+     * @param  bool|int $isFilter
      * @return $this
      */
     public function addOrdersStatistics($isFilter = false)
     {
         $this->_addOrderStatistics          = true;
-        $this->_addOrderStatisticsIsFilter  = (bool)$isFilter;
+        $this->_addOrderStatisticsIsFilter  = (bool) $isFilter;
         return $this;
     }
 
@@ -205,16 +198,16 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
             $baseSubtotalRefunded   = $adapter->getIfNullSql('orders.base_subtotal_refunded', 0);
             $baseSubtotalCanceled   = $adapter->getIfNullSql('orders.base_subtotal_canceled', 0);
 
-            $totalExpr = (!$this->_addOrderStatisticsIsFilter)
-                ? "(orders.base_subtotal - {$baseSubtotalCanceled} - {$baseSubtotalRefunded}) * orders.base_to_global_rate"
-                : "orders.base_subtotal - {$baseSubtotalCanceled} - {$baseSubtotalRefunded}";
+            $totalExpr = ($this->_addOrderStatisticsIsFilter)
+                ? "orders.base_subtotal - {$baseSubtotalCanceled} - {$baseSubtotalRefunded}"
+                : "(orders.base_subtotal - {$baseSubtotalCanceled} - {$baseSubtotalRefunded}) * orders.base_to_global_rate";
 
             $select = $this->getConnection()->select();
             $select->from(['orders' => $this->getTable('sales/order')], [
                 'orders_avg_amount' => "AVG({$totalExpr})",
                 'orders_sum_amount' => "SUM({$totalExpr})",
                 'orders_count' => 'COUNT(orders.entity_id)',
-                'customer_id'
+                'customer_id',
             ])->where('orders.state <> ?', Mage_Sales_Model_Order::STATE_CANCELED)
               ->where('orders.customer_id IN(?)', $customerIds)
               ->group('orders.customer_id');
@@ -249,7 +242,7 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
     /**
      * Order by customer registration
      *
-     * @param string $dir
+     * @param  string $dir
      * @return $this
      */
     public function orderByCustomerRegistration($dir = self::SORT_ORDER_DESC)
@@ -272,7 +265,7 @@ class Mage_Reports_Model_Resource_Customer_Collection extends Mage_Customer_Mode
         $countSelect->reset(Zend_Db_Select::COLUMNS);
         $countSelect->reset(Zend_Db_Select::GROUP);
         $countSelect->reset(Zend_Db_Select::HAVING);
-        $countSelect->columns("count(DISTINCT e.entity_id)");
+        $countSelect->columns('count(DISTINCT e.entity_id)');
 
         return $countSelect;
     }

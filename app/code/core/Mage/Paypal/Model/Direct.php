@@ -1,46 +1,50 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Paypal
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- *
  * PayPal Direct Module
  *
- * @category   Mage
  * @package    Mage_Paypal
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
 {
     protected $_code  = Mage_Paypal_Model_Config::METHOD_WPP_DIRECT;
+
     protected $_infoBlockType = 'paypal/payment_info';
 
     /**
      * Availability options
      */
     protected $_isGateway               = true;
+
     protected $_canAuthorize            = true;
+
     protected $_canCapture              = true;
+
     protected $_canCapturePartial       = true;
+
     protected $_canRefund               = true;
+
     protected $_canRefundInvoicePartial = true;
+
     protected $_canVoid                 = true;
+
     protected $_canUseInternal          = true;
+
     protected $_canUseCheckout          = true;
+
     protected $_canUseForMultishipping  = true;
+
     protected $_canSaveCc = false;
+
     protected $_canFetchTransactionInfo = true;
+
     protected $_canReviewPayment        = true;
 
     /**
@@ -53,18 +57,21 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Website Payments Pro instance type
      *
-     * @var string $_proType
+     * @var string
      */
     protected $_proType = 'paypal/pro';
 
     public function __construct($params = [])
     {
         $proInstance = array_shift($params);
-        if ($proInstance && ($proInstance instanceof Mage_Paypal_Model_Pro)) {
+        if ($proInstance instanceof Mage_Paypal_Model_Pro) {
             $this->_pro = $proInstance;
         } else {
-            $this->_pro = Mage::getModel($this->_proType);
+            /** @var Mage_Paypal_Model_Pro $model */
+            $model = Mage::getModel($this->_proType);
+            $this->_pro = $model;
         }
+
         $this->_pro->setMethod($this->_code);
     }
 
@@ -72,7 +79,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
      * Store setter
      * Also updates store ID in config object
      *
-     * @param Mage_Core_Model_Store|int $store
+     * @param  int|Mage_Core_Model_Store $store
      * @return $this
      */
     public function setStore($store)
@@ -81,6 +88,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
         if ($store === null) {
             $store = Mage::app()->getStore()->getId();
         }
+
         $this->_pro->getConfig()->setStoreId(is_object($store) ? $store->getId() : $store);
         return $this;
     }
@@ -88,7 +96,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Whether method is available for specified currency
      *
-     * @param string $currencyCode
+     * @param  string $currencyCode
      * @return bool
      */
     public function canUseForCurrency($currencyCode)
@@ -99,8 +107,8 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Payment action getter compatible with payment model
      *
-     * @see Mage_Sales_Model_Payment::place()
      * @return string
+     * @see Mage_Sales_Model_Payment::place()
      */
     public function getConfigPaymentAction()
     {
@@ -122,12 +130,13 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
         } elseif ($country == 'CA') {
             $ccTypes = array_intersect(['MC', 'VI'], $ccTypes);
         }
+
         return implode(',', $ccTypes);
     }
 
     /**
      * Check whether payment method can be used
-     * @param Mage_Sales_Model_Quote|null $quote
+     * @param  null|Mage_Sales_Model_Quote $quote
      * @return bool
      */
     public function isAvailable($quote = null)
@@ -135,33 +144,29 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
         if (parent::isAvailable($quote) && $this->_pro->getConfig()->isMethodAvailable()) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Custom getter for payment configuration
      *
-     * @param string $field
-     * @param int $storeId
+     * @param  string $field
+     * @param  int    $storeId
      * @return mixed
      */
     public function getConfigData($field, $storeId = null)
     {
-        $value = null;
-        switch ($field) {
-            case 'cctypes':
-                $value = $this->getAllowedCcTypes();
-                break;
-            default:
-                $value = $this->_pro->getConfig()->$field;
-        }
-        return $value;
+        return match ($field) {
+            'cctypes' => $this->getAllowedCcTypes(),
+            default => $this->_pro->getConfig()->$field,
+        };
     }
 
     /**
      * Authorize payment
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return $this
      */
     public function authorize(Varien_Object $payment, $amount)
@@ -172,7 +177,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Void payment
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return $this
      */
     public function void(Varien_Object $payment)
@@ -184,7 +189,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Capture payment
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return $this
      */
     public function capture(Varien_Object $payment, $amount)
@@ -192,13 +197,14 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
         if ($this->_pro->capture($payment, $amount) === false) {
             $this->_placeOrder($payment, $amount);
         }
+
         return $this;
     }
 
     /**
      * Refund capture
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return $this
      */
     public function refund(Varien_Object $payment, $amount)
@@ -210,7 +216,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Cancel payment
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return $this
      */
     public function cancel(Varien_Object $payment)
@@ -223,7 +229,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Whether payment can be reviewed
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return bool
      */
     public function canReviewPayment(Mage_Payment_Model_Info $payment)
@@ -234,7 +240,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Attempt to accept a pending payment
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return bool
      */
     public function acceptPayment(Mage_Payment_Model_Info $payment)
@@ -246,7 +252,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Attempt to deny a pending payment
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
+     * @param  Mage_Sales_Model_Order_Payment $payment
      * @return bool
      */
     public function denyPayment(Mage_Payment_Model_Info $payment)
@@ -266,14 +272,14 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
         if (!$validator->getCustomApiEndpointUrl()) {
             $validator->setCustomApiEndpointUrl($this->_pro->getConfig()->centinelDefaultApiUrl);
         }
+
         return $validator;
     }
 
     /**
      * Fetch transaction details info
      *
-     * @param Mage_Payment_Model_Info $payment
-     * @param string $transactionId
+     * @param  string $transactionId
      * @return array
      */
     public function fetchTransactionInfo(Mage_Payment_Model_Info $payment, $transactionId)
@@ -284,8 +290,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Place an order with authorization or capture action
      *
-     * @param Mage_Sales_Model_Order_Payment $payment
-     * @param float $amount
+     * @param  float $amount
      * @return $this
      */
     protected function _placeOrder(Mage_Sales_Model_Order_Payment $payment, $amount)
@@ -302,7 +307,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
             ->setCreditCardType($payment->getCcType())
             ->setCreditCardNumber($payment->getCcNumber())
             ->setCreditCardExpirationDate(
-                $this->_getFormattedCcExpirationDate($payment->getCcExpMonth(), $payment->getCcExpYear())
+                $this->_getFormattedCcExpirationDate($payment->getCcExpMonth(), $payment->getCcExpYear()),
             )
             ->setCreditCardCvv2($payment->getCcCid())
             ->setMaestroSoloIssueNumber($payment->getCcSsIssue())
@@ -310,9 +315,10 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
         if ($payment->getCcSsStartMonth() && $payment->getCcSsStartYear()) {
             $year = sprintf('%02d', substr($payment->getCcSsStartYear(), -2, 2));
             $api->setMaestroSoloIssueDate(
-                $this->_getFormattedCcExpirationDate($payment->getCcSsStartMonth(), $year)
+                $this->_getFormattedCcExpirationDate($payment->getCcSsStartMonth(), $year),
             );
         }
+
         if ($this->getIsCentinelValidationEnabled()) {
             $this->getCentinelValidator()->exportCmpiData($api);
         }
@@ -336,10 +342,11 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
 
         try {
             $api->callGetTransactionDetails();
-        } catch (Mage_Core_Exception $e) {
-            // if we recieve errors, but DoDirectPayment response is Success, then set Pending status for transaction
+        } catch (Mage_Core_Exception) {
+            // if we receive errors, but DoDirectPayment response is Success, then set Pending status for transaction
             $payment->setIsTransactionPending(true);
         }
+
         $this->_importResultToPayment($api, $payment);
         return $this;
     }
@@ -348,8 +355,8 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
      * Format credit card expiration date based on month and year values
      * Format: mmyyyy
      *
-     * @param string|int $month
-     * @param string|int $year
+     * @param  int|string $month
+     * @param  int|string $year
      * @return string
      */
     protected function _getFormattedCcExpirationDate($month, $year)
@@ -360,7 +367,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Import direct payment results to payment
      *
-     * @param Mage_Paypal_Model_Api_Nvp $api
+     * @param Mage_Paypal_Model_Api_Nvp      $api
      * @param Mage_Sales_Model_Order_Payment $payment
      */
     protected function _importResultToPayment($api, $payment)
@@ -372,8 +379,7 @@ class Mage_Paypal_Model_Direct extends Mage_Payment_Model_Method_Cc
     /**
      * Check void availability
      *
-     * @param   Varien_Object $payment
-     * @return  bool
+     * @return bool
      */
     public function canVoid(Varien_Object $payment)
     {

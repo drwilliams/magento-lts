@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Widget
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Widget Instance Settings tab block
  *
- * @category   Mage
  * @package    Mage_Widget
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage_Adminhtml_Block_Widget_Form implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         parent::_construct();
@@ -55,7 +50,7 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage
      */
     public function canShowTab()
     {
-        return !(bool)$this->getWidgetInstance()->isCompleteToCreate();
+        return !(bool) $this->getWidgetInstance()->isCompleteToCreate();
     }
 
     /**
@@ -89,12 +84,12 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage
         $form = new Varien_Data_Form([
             'id' => 'edit_form',
             'action' => $this->getData('action'),
-            'method' => 'post'
+            'method' => 'post',
         ]);
 
         $fieldset = $form->addFieldset(
             'base_fieldset',
-            ['legend' => Mage::helper('widget')->__('Settings')]
+            ['legend' => Mage::helper('widget')->__('Settings')],
         );
 
         $this->_addElementTypes($fieldset);
@@ -104,7 +99,7 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage
             'label'    => Mage::helper('widget')->__('Type'),
             'title'    => Mage::helper('widget')->__('Type'),
             'required' => true,
-            'values'   => $this->getTypesOptionsArray()
+            'values'   => $this->getTypesOptionsArray(),
         ]);
 
         $fieldset->addField('package_theme', 'select', [
@@ -112,14 +107,14 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage
             'label'    => Mage::helper('widget')->__('Design Package/Theme'),
             'title'    => Mage::helper('widget')->__('Design Package/Theme'),
             'required' => true,
-            'values'   => $this->getPackegeThemeOptionsArray()
+            'values'   => $this->getPackegeThemeOptionsArray(),
         ]);
         $continueButton = $this->getLayout()
             ->createBlock('adminhtml/widget_button')
             ->setData([
                 'label'     => Mage::helper('widget')->__('Continue'),
                 'onclick'   => "setSettings('" . $this->getContinueUrl() . "', 'type', 'package_theme')",
-                'class'     => 'save'
+                'class'     => 'save',
             ]);
         $fieldset->addField('continue_button', 'note', [
             'text' => $continueButton->toHtml(),
@@ -141,7 +136,7 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage
             '_current'  => true,
             'type'      => '{{type}}',
             'package'   => '{{package}}',
-            'theme'     => '{{theme}}'
+            'theme'     => '{{theme}}',
         ]);
     }
 
@@ -155,7 +150,7 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage
         $widgets = $this->getWidgetInstance()->getWidgetsOptionArray();
         array_unshift($widgets, [
             'value' => '',
-            'label' => Mage::helper('widget')->__('-- Please Select --')
+            'label' => Mage::helper('widget')->__('-- Please Select --'),
         ]);
         return $widgets;
     }
@@ -163,8 +158,8 @@ class Mage_Widget_Block_Adminhtml_Widget_Instance_Edit_Tab_Settings extends Mage
     /**
      * User-defined widgets sorting by Name
      *
-     * @param array $a
-     * @param array $b
+     * @param  array      $a
+     * @param  array      $b
      * @return int<-1, 1>
      */
     protected function _sortWidgets($a, $b)

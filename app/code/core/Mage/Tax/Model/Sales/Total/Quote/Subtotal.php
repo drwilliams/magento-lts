@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Tax
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Calculate items and address amounts including/excluding tax
  *
- * @category   Mage
  * @package    Mage_Tax
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_Address_Total_Abstract
 {
@@ -39,7 +31,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
     /**
      * Tax helper instance
      *
-     * @var Mage_Tax_Helper_Data|null
+     * @var null|Mage_Tax_Helper_Data
      */
     protected $_helper = null;
 
@@ -82,7 +74,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
     /**
      * Request which can be used for tax rate calculation
      *
-     * @var Varien_Object|null
+     * @var null|Varien_Object
      */
     protected $_storeTaxRequest = null;
 
@@ -116,9 +108,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
      * and subtotal including/excluding tax.
      * Determine discount price if needed
      *
-     * @param Mage_Sales_Model_Quote_Address $address
-     *
-     * @return  Mage_Tax_Model_Sales_Total_Quote_Subtotal
+     * @return Mage_Tax_Model_Sales_Total_Quote_Subtotal
      */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
@@ -154,6 +144,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     }
                 }
             }
+
             $classIds = array_unique($classIds);
             $storeRequest->setProductClassId($classIds);
             $addressRequest->setProductClassId($classIds);
@@ -168,16 +159,20 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             if ($item->getParentItem()) {
                 continue;
             }
+
             if ($item->getHasChildren() && $item->isChildrenCalculated()) {
                 foreach ($item->getChildren() as $child) {
                     $this->_processItem($child, $addressRequest);
                 }
+
                 $this->_recalculateParent($item);
             } else {
                 $this->_processItem($item, $addressRequest);
             }
+
             $this->_addSubtotalAmount($address, $item);
         }
+
         $address->setRoundingDeltas($this->_roundingDeltas);
         return $this;
     }
@@ -186,7 +181,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
      * Calculate item price and row total with configured rounding level
      *
      * @param Mage_Sales_Model_Quote_Item_Abstract $item
-     * @param Varien_Object $taxRequest
+     * @param Varien_Object                        $taxRequest
      *
      * @return $this
      */
@@ -205,6 +200,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             default:
                 break;
         }
+
         return $this;
     }
 
@@ -212,7 +208,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
      * Calculate item price and row total including/excluding tax based on unit price rounding level
      *
      * @param Mage_Sales_Model_Quote_Item_Abstract $item
-     * @param Varien_Object $request
+     * @param Varien_Object                        $request
      *
      * @return $this
      */
@@ -221,11 +217,14 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
         $request->setProductClassId($item->getProduct()->getTaxClassId());
         $rate = $this->_calculator->getRate($request);
         $qty = $item->getTotalQty();
-
-        $price = $taxPrice = $this->_calculator->round($item->getCalculationPriceOriginal());
-        $basePrice = $baseTaxPrice = $this->_calculator->round($item->getBaseCalculationPriceOriginal());
-        $subtotal = $taxSubtotal = $this->_calculator->round($item->getRowTotal());
-        $baseSubtotal = $baseTaxSubtotal = $this->_calculator->round($item->getBaseRowTotal());
+        $price = $this->_calculator->round($item->getCalculationPriceOriginal());
+        $taxPrice = $price;
+        $basePrice = $this->_calculator->round($item->getBaseCalculationPriceOriginal());
+        $baseTaxPrice = $basePrice;
+        $subtotal = $this->_calculator->round($item->getRowTotal());
+        $taxSubtotal = $subtotal;
+        $baseSubtotal = $this->_calculator->round($item->getBaseRowTotal());
+        $baseTaxSubtotal = $baseSubtotal;
 
         // if we have a custom price, determine if tax should be based on the original price
         $taxOnOrigPrice = !$this->_helper->applyTaxOnCustomPrice($this->_store) && $item->hasCustomPrice();
@@ -245,14 +244,15 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     $taxable        = $price;
                     $baseTaxable    = $basePrice;
                 }
+
                 $tax             = $this->_calculator->calcTaxAmount($taxable, $rate, true);
                 $baseTax         = $this->_calculator->calcTaxAmount($baseTaxable, $rate, true);
                 $taxPrice        = $price;
                 $baseTaxPrice    = $basePrice;
                 $taxSubtotal     = $subtotal;
                 $baseTaxSubtotal = $baseSubtotal;
-                $price = $price - $tax;
-                $basePrice = $basePrice - $baseTax;
+                $price -= $tax;
+                $basePrice -= $baseTax;
                 $subtotal = $price * $qty;
                 $baseSubtotal = $basePrice * $qty;
                 $isPriceInclTax  = true;
@@ -276,6 +276,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     $taxable      = $taxPrice;
                     $baseTaxable  = $baseTaxPrice;
                 }
+
                 // determine the customer's tax amount
                 $tax             = $this->_calculator->calcTaxAmount($taxable, $rate, true, true);
                 $baseTax         = $this->_calculator->calcTaxAmount($baseTaxable, $rate, true, true);
@@ -301,6 +302,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                 $taxable = $price;
                 $baseTaxable = $basePrice;
             }
+
             $appliedRates = $this->_calculator->getAppliedRates($request);
             $taxes = [];
             $baseTaxes = [];
@@ -309,6 +311,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                 $taxes[] = $this->_calculator->calcTaxAmount($taxable, $taxRate, false);
                 $baseTaxes[] = $this->_calculator->calcTaxAmount($baseTaxable, $taxRate, false);
             }
+
             $tax             = array_sum($taxes);
             $baseTax         = array_sum($baseTaxes);
             $taxPrice        = $price + $tax;
@@ -326,6 +329,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             $item->setCustomPrice($price);
             $item->setBaseCustomPrice($basePrice);
         }
+
         $item->setPrice($basePrice);
         $item->setBasePrice($basePrice);
         $item->setRowTotal($subtotal);
@@ -341,6 +345,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             $item->setDiscountCalculationPrice($taxPrice);
             $item->setBaseDiscountCalculationPrice($baseTaxPrice);
         }
+
         return $this;
     }
 
@@ -348,7 +353,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
      * Calculate item price and row total including/excluding tax based on row total price rounding level
      *
      * @param Mage_Sales_Model_Quote_Item_Abstract $item
-     * @param Varien_Object $request
+     * @param Varien_Object                        $request
      *
      * @return $this
      */
@@ -357,11 +362,14 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
         $request->setProductClassId($item->getProduct()->getTaxClassId());
         $rate = $this->_calculator->getRate($request);
         $qty = $item->getTotalQty();
-
-        $price = $taxPrice = $this->_calculator->round($item->getCalculationPriceOriginal());
-        $basePrice = $baseTaxPrice = $this->_calculator->round($item->getBaseCalculationPriceOriginal());
-        $subtotal = $taxSubtotal = $this->_calculator->round($item->getRowTotal());
-        $baseSubtotal = $baseTaxSubtotal = $this->_calculator->round($item->getBaseRowTotal());
+        $price = $this->_calculator->round($item->getCalculationPriceOriginal());
+        $taxPrice = $price;
+        $basePrice = $this->_calculator->round($item->getBaseCalculationPriceOriginal());
+        $baseTaxPrice = $basePrice;
+        $subtotal = $this->_calculator->round($item->getRowTotal());
+        $taxSubtotal = $subtotal;
+        $baseSubtotal = $this->_calculator->round($item->getBaseRowTotal());
+        $baseTaxSubtotal = $baseSubtotal;
 
         // if we have a custom price, determine if tax should be based on the original price
         $taxOnOrigPrice = !$this->_helper->applyTaxOnCustomPrice($this->_store) && $item->hasCustomPrice();
@@ -381,6 +389,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     $taxable        = $taxSubtotal;
                     $baseTaxable    = $baseTaxSubtotal;
                 }
+
                 $rowTax          = $this->_calculator->calcTaxAmount($taxable, $rate, true, true);
                 $baseRowTax      = $this->_calculator->calcTaxAmount($baseTaxable, $rate, true, true);
                 $taxPrice        = $price;
@@ -412,6 +421,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     $taxable      = $taxPrice;
                     $baseTaxable  = $baseTaxPrice;
                 }
+
                 // determine the customer's tax amount
                 $tax             = $this->_calculator->calcTaxAmount($taxable, $rate, true, true);
                 $baseTax         = $this->_calculator->calcTaxAmount($baseTaxable, $rate, true, true);
@@ -450,6 +460,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                 $rowTaxes[] = $this->_calculator->calcTaxAmount($taxable, $taxRate, false, true);
                 $baseRowTaxes[] = $this->_calculator->calcTaxAmount($baseTaxable, $taxRate, false, true);
             }
+
             $rowTax          = array_sum($rowTaxes);
             $baseRowTax      = array_sum($baseRowTaxes);
             $taxSubtotal     = $subtotal + $rowTax;
@@ -467,6 +478,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             $item->setCustomPrice($price);
             $item->setBaseCustomPrice($basePrice);
         }
+
         $item->setPrice($basePrice);
         $item->setBasePrice($basePrice);
         $item->setRowTotal($subtotal);
@@ -493,7 +505,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
      * Calculate item price and row total including/excluding tax based on total price rounding level
      *
      * @param Mage_Sales_Model_Quote_Item_Abstract $item
-     * @param Varien_Object $request
+     * @param Varien_Object                        $request
      *
      * @return $this
      */
@@ -503,11 +515,14 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
         $request->setProductClassId($item->getProduct()->getTaxClassId());
         $rate = $calc->getRate($request);
         $qty = $item->getTotalQty();
-
-        $price = $taxPrice = $this->_calculator->round($item->getCalculationPriceOriginal());
-        $basePrice = $baseTaxPrice = $this->_calculator->round($item->getBaseCalculationPriceOriginal());
-        $subtotal = $taxSubtotal = $this->_calculator->round($item->getRowTotal());
-        $baseSubtotal = $baseTaxSubtotal = $this->_calculator->round($item->getBaseRowTotal());
+        $price = $this->_calculator->round($item->getCalculationPriceOriginal());
+        $taxPrice = $price;
+        $basePrice = $this->_calculator->round($item->getBaseCalculationPriceOriginal());
+        $baseTaxPrice = $basePrice;
+        $subtotal = $this->_calculator->round($item->getRowTotal());
+        $taxSubtotal = $subtotal;
+        $baseSubtotal = $this->_calculator->round($item->getBaseRowTotal());
+        $baseTaxSubtotal = $baseSubtotal;
 
         // if we have a custom price, determine if tax should be based on the original price
         $taxOnOrigPrice = !$this->_helper->applyTaxOnCustomPrice($this->_store) && $item->hasCustomPrice();
@@ -527,6 +542,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     $taxable = $subtotal;
                     $baseTaxable = $baseSubtotal;
                 }
+
                 $rowTaxExact     = $calc->calcTaxAmount($taxable, $rate, true, false);
                 $rowTax          = $this->_deltaRound($rowTaxExact, $rate, true);
                 $baseRowTaxExact = $calc->calcTaxAmount($baseTaxable, $rate, true, false);
@@ -537,8 +553,8 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                 $taxSubtotal = $subtotal;
                 $baseTaxSubtotal = $baseSubtotal;
 
-                $subtotal          = $subtotal - $rowTax;
-                $baseSubtotal      = $baseSubtotal - $baseRowTax;
+                $subtotal -= $rowTax;
+                $baseSubtotal -= $baseRowTax;
 
                 $price = $calc->round($subtotal / $qty);
                 $basePrice = $calc->round($baseSubtotal / $qty);
@@ -565,6 +581,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     $taxable      = $taxPrice;
                     $baseTaxable  = $baseTaxPrice;
                 }
+
                 // determine the customer's tax amount based on the taxable price
                 $tax             = $this->_calculator->calcTaxAmount($taxable, $rate, true, true);
                 $baseTax         = $this->_calculator->calcTaxAmount($baseTaxable, $rate, true, true);
@@ -576,10 +593,10 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                 $baseTaxable    *= $qty;
                 $taxSubtotal     = $taxPrice * $qty;
                 $baseTaxSubtotal = $baseTaxPrice * $qty;
-                $rowTax =
-                    $this->_deltaRound($calc->calcTaxAmount($taxable, $rate, true, false), $rate, true);
-                $baseRowTax =
-                    $this->_deltaRound($calc->calcTaxAmount($baseTaxable, $rate, true, false), $rate, true, 'base');
+                $rowTax
+                    = $this->_deltaRound($calc->calcTaxAmount($taxable, $rate, true, false), $rate, true);
+                $baseRowTax
+                    = $this->_deltaRound($calc->calcTaxAmount($baseTaxable, $rate, true, false), $rate, true, 'base');
                 $subtotal = $taxSubtotal - $rowTax;
                 $baseSubtotal = $baseTaxSubtotal - $baseRowTax;
                 $isPriceInclTax  = true;
@@ -596,6 +613,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                 $taxable = $subtotal;
                 $baseTaxable = $baseSubtotal;
             }
+
             $appliedRates = $this->_calculator->getAppliedRates($request);
             $rowTaxes = [];
             $baseRowTaxes = [];
@@ -607,7 +625,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
                     $calc->calcTaxAmount($baseTaxable, $taxRate, false, false),
                     $taxId,
                     false,
-                    'base'
+                    'base',
                 );
             }
 
@@ -630,6 +648,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
         } else {
             $item->setConvertedPrice($price);
         }
+
         $item->setPrice($basePrice);
         $item->setBasePrice($basePrice);
         $item->setRowTotal($subtotal);
@@ -648,6 +667,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             $item->setDiscountCalculationPrice($subtotal / $qty);
             $item->setBaseDiscountCalculationPrice($baseSubtotal / $qty);
         }
+
         return $this;
     }
 
@@ -694,9 +714,9 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
     /**
      * Round price based on previous rounding operation delta
      *
-     * @param float $price
-     * @param string $rate
-     * @param bool $direction
+     * @param float  $price
+     * @param float  $rate
+     * @param bool   $direction
      * @param string $type
      *
      * @return float
@@ -704,23 +724,22 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
     protected function _deltaRound($price, $rate, $direction, $type = 'regular')
     {
         if ($price) {
-            $rate = (string)$rate;
-            $type = $type . $direction;
+            $rate = (string) $rate;
+            $type .= $direction;
             // initialize the delta to a small number to avoid non-deterministic behavior with rounding of 0.5
             $delta = $this->_roundingDeltas[$type][$rate] ?? 0.000001;
             $price += $delta;
             $this->_roundingDeltas[$type][$rate] = $price - $this->_calculator->round($price);
             $price = $this->_calculator->round($price);
         }
+
         return $price;
     }
 
     /**
      * Recalculate row information for item based on children calculation
      *
-     * @param   Mage_Sales_Model_Quote_Item_Abstract $item
-     *
-     * @return  Mage_Tax_Model_Sales_Total_Quote_Subtotal
+     * @return Mage_Tax_Model_Sales_Total_Quote_Subtotal
      */
     protected function _recalculateParent(Mage_Sales_Model_Quote_Item_Abstract $item)
     {
@@ -758,24 +777,25 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
     /**
      * Get request for fetching store tax rate
      *
-     * @param   Mage_Sales_Model_Quote_Address $address
+     * @param Mage_Sales_Model_Quote_Address $address
      *
-     * @return  Varien_Object
+     * @return Varien_Object
      */
     protected function _getStoreTaxRequest($address)
     {
         if (is_null($this->_storeTaxRequest)) {
             $this->_storeTaxRequest = $this->_calculator->getRateOriginRequest($address->getQuote()->getStore());
         }
+
         return $this->_storeTaxRequest;
     }
 
     /**
      * Get request for fetching address tax rate
      *
-     * @param   Mage_Sales_Model_Quote_Address $address
+     * @param Mage_Sales_Model_Quote_Address $address
      *
-     * @return  Varien_Object
+     * @return Varien_Object
      */
     protected function _getAddressTaxRequest($address)
     {
@@ -783,16 +803,15 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             $address,
             $address->getQuote()->getBillingAddress(),
             $address->getQuote()->getCustomerTaxClassId(),
-            $address->getQuote()->getStore()
+            $address->getQuote()->getStore(),
         );
     }
 
     /**
      * Add row total item amount to subtotal
      *
-     * @param   Mage_Sales_Model_Quote_Address $address
-     * @param   Mage_Sales_Model_Quote_Item_Abstract $item
-     * @return  Mage_Tax_Model_Sales_Total_Quote_Subtotal
+     * @param  Mage_Sales_Model_Quote_Item_Abstract      $item
+     * @return Mage_Tax_Model_Sales_Total_Quote_Subtotal
      */
     protected function _addSubtotalAmount(Mage_Sales_Model_Quote_Address $address, $item)
     {
@@ -804,13 +823,14 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
         } else {
             $address->setTotalAmount(
                 'subtotal',
-                $address->getTotalAmount('subtotal') + $item->getRowTotal()
+                $address->getTotalAmount('subtotal') + $item->getRowTotal(),
             );
             $address->setBaseTotalAmount(
                 'subtotal',
-                $address->getBaseTotalAmount('subtotal') + $item->getBaseRowTotal()
+                $address->getBaseTotalAmount('subtotal') + $item->getBaseRowTotal(),
             );
         }
+
         $address->setSubtotalInclTax($address->getSubtotalInclTax() + $item->getRowTotalInclTax());
         $address->setBaseSubtotalInclTax($address->getBaseSubtotalInclTax() + $item->getBaseRowTotalInclTax());
         return $this;
@@ -820,10 +840,8 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
      * Unset item prices/totals with price include tax.
      * Operation is necessary for reset item state in case if configuration was changed
      *
+     * @return Mage_Tax_Model_Sales_Total_Quote_Subtotal
      * @deprecated after 1.4.1
-     *
-     * @param   Mage_Sales_Model_Quote_Item_Abstract $item
-     * @return  Mage_Tax_Model_Sales_Total_Quote_Subtotal
      */
     protected function _resetItemPriceInclTax(Mage_Sales_Model_Quote_Item_Abstract $item)
     {
@@ -831,11 +849,9 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
     }
 
     /**
-     *
+     * @param  Mage_Sales_Model_Quote_Address            $address
+     * @return Mage_Tax_Model_Sales_Total_Quote_Subtotal
      * @deprecated after 1.4.0.1
-     *
-     * @param   Mage_Sales_Model_Quote_Address $address
-     * @return  Mage_Tax_Model_Sales_Total_Quote_Subtotal
      */
     protected function _processShippingAmount($address)
     {
@@ -846,25 +862,27 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
      * Recollect item price and row total using after taxes subtract.
      * Declare item price including tax attributes
      *
+     * @param Mage_Sales_Model_Quote_Address $address
+     *
+     * @return Mage_Tax_Model_Sales_Total_Quote_Subtotal
      * @deprecated after 1.4.1
-     *
-     * @param   Mage_Sales_Model_Quote_Address $address
-     * @param   Mage_Sales_Model_Quote_Item_Abstract $item
-     *
-     * @return  Mage_Tax_Model_Sales_Total_Quote_Subtotal
      */
     protected function _recollectItem($address, Mage_Sales_Model_Quote_Item_Abstract $item)
     {
         $store = $address->getQuote()->getStore();
         $request = $this->_getStoreTaxRequest($address);
         $request->setProductClassId($item->getProduct()->getTaxClassId());
+
         $rate = $this->_calculator->getRate($request);
         $qty = $item->getTotalQty();
-
-        $price = $taxPrice = $item->getCalculationPriceOriginal();
-        $basePrice = $baseTaxPrice = $item->getBaseCalculationPriceOriginal();
-        $subtotal = $taxSubtotal = $item->getRowTotal();
-        $baseSubtotal = $baseTaxSubtotal = $item->getBaseRowTotal();
+        $price = $item->getCalculationPriceOriginal();
+        $taxPrice = $price;
+        $basePrice = $item->getBaseCalculationPriceOriginal();
+        $baseTaxPrice = $basePrice;
+        $subtotal = $item->getRowTotal();
+        $taxSubtotal = $subtotal;
+        $baseSubtotal = $item->getBaseRowTotal();
+        $baseTaxSubtotal = $baseSubtotal;
 
         if ($this->_config->discountTax($store)) {
             $item->setDiscountCalculationPrice($price);
@@ -916,6 +934,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
             $item->setCustomPrice($unitPrice);
             $item->setBaseCustomPrice($baseUnitPrice);
         }
+
         $item->setPrice($baseUnitPrice);
         $item->setOriginalPrice($unitPrice);
         $item->setBasePrice($baseUnitPrice);
@@ -927,11 +946,10 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
     /**
      * Check if we need subtract store tax amount from item prices
      *
-     * @deprecated after 1.4.1
-     *
      * @param Mage_Sales_Model_Quote_Address $address
      *
      * @return bool
+     * @deprecated after 1.4.1
      */
     protected function _needSubtractTax($address)
     {
@@ -939,17 +957,17 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
         if ($this->_config->priceIncludesTax($store) || $this->_config->getNeedUsePriceExcludeTax()) {
             return true;
         }
+
         return false;
     }
 
     /**
      * Subtract shipping tax
      *
-     * @deprecated after 1.4.0.1
-     *
      * @param Mage_Sales_Model_Quote_Address $address
      *
      * @return bool
+     * @deprecated after 1.4.0.1
      */
     protected function _needSubtractShippingTax($address)
     {
@@ -957,6 +975,7 @@ class Mage_Tax_Model_Sales_Total_Quote_Subtotal extends Mage_Sales_Model_Quote_A
         if ($this->_config->shippingPriceIncludesTax($store) || $this->_config->getNeedUseShippingExcludeTax()) {
             return true;
         }
+
         return false;
     }
 }

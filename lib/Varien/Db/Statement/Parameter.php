@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Db
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -19,11 +13,9 @@
  * Used to transmit specific information about parameter value binding to be bound the right
  * way to the query.
  * Most used properties and methods are defined in interface. Specific things for concrete DB adapter can be
- * transmitted using 'addtional' property (Varien_Object) as a container.
+ * transmitted using 'additional' property (Varien_Object) as a container.
  *
- * @category   Varien
  * @package    Varien_Db
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Varien_Db_Statement_Parameter
 {
@@ -75,7 +67,7 @@ class Varien_Db_Statement_Parameter
     /**
      * Sets parameter value.
      *
-     * @param mixed $value
+     * @param  mixed                         $value
      * @return Varien_Db_Statement_Parameter
      */
     public function setValue($value)
@@ -101,7 +93,7 @@ class Varien_Db_Statement_Parameter
      * TRUE means that DB adapter must ignore other options and use adapter's default options to bind this parameter
      * as a BLOB value.
      *
-     * @param bool $isBlob
+     * @param  bool                          $isBlob
      * @return Varien_Db_Statement_Parameter
      */
     public function setIsBlob($isBlob)
@@ -126,7 +118,7 @@ class Varien_Db_Statement_Parameter
     /**
      * Sets data type option to be used during binding parameter value.
      *
-     * @param mixed $dataType
+     * @param  mixed                         $dataType
      * @return Varien_Db_Statement_Parameter
      */
     public function setDataType($dataType)
@@ -148,7 +140,7 @@ class Varien_Db_Statement_Parameter
     /**
      * Sets length option to be used during binding parameter value.
      *
-     * @param mixed $length
+     * @param  mixed                         $length
      * @return Varien_Db_Statement_Parameter
      */
     public function setLength($length)
@@ -170,7 +162,7 @@ class Varien_Db_Statement_Parameter
     /**
      * Sets specific driver options to be used during binding parameter value.
      *
-     * @param mixed $driverOptions
+     * @param  mixed                         $driverOptions
      * @return Varien_Db_Statement_Parameter
      */
     public function setDriverOptions($driverOptions)
@@ -193,7 +185,7 @@ class Varien_Db_Statement_Parameter
      * Sets additional information for concrete DB adapter.
      * Set there any data you want to pass along with query parameter.
      *
-     * @param Varien_Object $additional
+     * @param  Varien_Object                 $additional
      * @return Varien_Db_Statement_Parameter
      */
     public function setAdditional($additional)

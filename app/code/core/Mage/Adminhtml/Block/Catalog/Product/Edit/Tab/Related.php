@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Related products admin grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Catalog_Model_Resource_Product_Link_Product_Collection getCollection()
  */
@@ -26,7 +18,6 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
 {
     /**
      * Set grid params
-     *
      */
     public function __construct()
     {
@@ -37,13 +28,14 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
         if ($this->_getProduct()->getId()) {
             $this->setDefaultFilter(['in_products' => 1]);
         }
+
         if ($this->isReadonly()) {
             $this->setFilterVisibility(false);
         }
     }
 
     /**
-     * Retirve currently edited product model
+     * Retrieve currently edited product model
      *
      * @return Mage_Catalog_Model_Product
      */
@@ -55,7 +47,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
     /**
      * Add filter
      *
-     * @param object $column
+     * @param  Mage_Adminhtml_Block_Widget_Grid_Column $column
      * @return $this
      */
     protected function _addColumnFilterToCollection($column)
@@ -66,6 +58,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
             if (empty($productIds)) {
                 $productIds = 0;
             }
+
             if ($column->getFilter()->getValue()) {
                 $this->getCollection()->addFieldToFilter('entity_id', ['in' => $productIds]);
             } elseif ($productIds) {
@@ -74,13 +67,14 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
         } else {
             parent::_addColumnFilterToCollection($column);
         }
+
         return $this;
     }
 
     /**
      * Prepare collection
      *
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return $this
      */
     protected function _prepareCollection()
     {
@@ -94,6 +88,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
             if (empty($productIds)) {
                 $productIds = [0];
             }
+
             $collection->addFieldToFilter('entity_id', ['in' => $productIds]);
         }
 
@@ -114,7 +109,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
     /**
      * Add columns to grid
      *
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return $this
      */
     protected function _prepareColumns()
     {
@@ -125,20 +120,18 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
                 'name'              => 'in_products',
                 'values'            => $this->_getSelectedProducts(),
                 'align'             => 'center',
-                'index'             => 'entity_id'
+                'index'             => 'entity_id',
             ]);
         }
 
         $this->addColumn('entity_id', [
             'header'    => Mage::helper('catalog')->__('ID'),
-            'sortable'  => true,
-            'width'     => 60,
-            'index'     => 'entity_id'
+            'index'     => 'entity_id',
         ]);
 
         $this->addColumn('name', [
             'header'    => Mage::helper('catalog')->__('Name'),
-            'index'     => 'name'
+            'index'     => 'name',
         ]);
 
         $this->addColumn('type', [
@@ -181,14 +174,12 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
         $this->addColumn('sku', [
             'header'    => Mage::helper('catalog')->__('SKU'),
             'width'     => 80,
-            'index'     => 'sku'
+            'index'     => 'sku',
         ]);
 
         $this->addColumn('price', [
-            'header'        => Mage::helper('catalog')->__('Price'),
             'type'          => 'currency',
-            'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
-            'index'         => 'price'
+            'currency_code' => Mage_Directory_Helper_Data::getConfigCurrencyBase(),
         ]);
 
         $this->addColumn('position', [
@@ -200,7 +191,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
             'width'                     => 60,
             'editable'                  => !$this->_getProduct()->getRelatedReadonly(),
             'edit_only'                 => !$this->_getProduct()->getId(),
-            'filter_condition_callback' => [$this, '_addLinkModelFilterCallback']
+            'filter_condition_callback' => [$this, '_addLinkModelFilterCallback'],
         ]);
 
         return parent::_prepareColumns();
@@ -225,8 +216,9 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
     {
         $products = $this->getProductsRelated();
         if (!is_array($products)) {
-            $products = array_keys($this->getSelectedRelatedProducts());
+            return array_keys($this->getSelectedRelatedProducts());
         }
+
         return $products;
     }
 
@@ -241,6 +233,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Related extends Mage_Adminht
         foreach (Mage::registry('current_product')->getRelatedProducts() as $product) {
             $products[$product->getId()] = ['position' => $product->getPosition()];
         }
+
         return $products;
     }
 }

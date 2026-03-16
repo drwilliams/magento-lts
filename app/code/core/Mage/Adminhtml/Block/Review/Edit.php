@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Review edit form
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Review_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
@@ -40,9 +32,9 @@ class Mage_Adminhtml_Block_Review_Edit extends Mage_Adminhtml_Block_Widget_Form_
                 Mage::helper('core/js')->getSetLocationJs(
                     $this->getUrl(
                         '*/catalog_product/edit',
-                        ['id' => $this->getRequest()->getParam('productId', false)]
-                    )
-                )
+                        ['id' => $this->getRequest()->getParam('productId', false)],
+                    ),
+                ),
             );
         }
 
@@ -53,9 +45,9 @@ class Mage_Adminhtml_Block_Review_Edit extends Mage_Adminhtml_Block_Widget_Form_
                 Mage::helper('core/js')->getSetLocationJs(
                     $this->getUrl(
                         '*/customer/edit',
-                        ['id' => $this->getRequest()->getParam('customerId', false)]
-                    )
-                )
+                        ['id' => $this->getRequest()->getParam('customerId', false)],
+                    ),
+                ),
             );
         }
 
@@ -63,7 +55,7 @@ class Mage_Adminhtml_Block_Review_Edit extends Mage_Adminhtml_Block_Widget_Form_
             $this->_updateButton(
                 'back',
                 'onclick',
-                Mage::helper('core/js')->getSetLocationJs($this->getUrl('*/*/pending'))
+                Mage::helper('core/js')->getSetLocationJs($this->getUrl('*/*/pending')),
             );
             $this->_updateButton(
                 'delete',
@@ -74,9 +66,9 @@ class Mage_Adminhtml_Block_Review_Edit extends Mage_Adminhtml_Block_Widget_Form_
                         [
                             $this->_objectId => $this->getRequest()->getParam($this->_objectId),
                             'ret'           => 'pending',
-                        ]
-                    )
-                )
+                        ],
+                    ),
+                ),
             );
             Mage::register('ret', 'pending');
         }
@@ -120,6 +112,7 @@ class Mage_Adminhtml_Block_Review_Edit extends Mage_Adminhtml_Block_Widget_Form_
         if (Mage::registry('review_data') && Mage::registry('review_data')->getId()) {
             return Mage::helper('review')->__("Edit Review '%s'", $this->escapeHtml(Mage::registry('review_data')->getTitle()));
         }
+
         return Mage::helper('review')->__('New Review');
     }
 }

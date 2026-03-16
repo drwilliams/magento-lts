@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Messages block
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Block_Messages extends Mage_Core_Block_Template
 {
@@ -67,7 +59,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * @inheritDoc
      */
-    public function _prepareLayout()
+    protected function _prepareLayout()
     {
         $this->addMessages(Mage::getSingleton('core/session')->getMessages(true));
         return parent::_prepareLayout();
@@ -75,7 +67,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
 
     /**
      * Set message escape flag
-     * @param bool $flag
+     * @param  bool  $flag
      * @return $this
      */
     public function setEscapeMessageFlag($flag)
@@ -87,8 +79,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Set messages collection
      *
-     * @param   Mage_Core_Model_Message_Collection $messages
-     * @return  Mage_Core_Block_Messages
+     * @return $this
      */
     public function setMessages(Mage_Core_Model_Message_Collection $messages)
     {
@@ -99,7 +90,6 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Add messages to display
      *
-     * @param Mage_Core_Model_Message_Collection $messages
      * @return $this
      */
     public function addMessages(Mage_Core_Model_Message_Collection $messages)
@@ -107,6 +97,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
         foreach ($messages->getItems() as $message) {
             $this->getMessageCollection()->add($message);
         }
+
         return $this;
     }
 
@@ -120,14 +111,14 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
         if (!($this->_messages instanceof Mage_Core_Model_Message_Collection)) {
             $this->_messages = Mage::getModel('core/message_collection');
         }
+
         return $this->_messages;
     }
 
     /**
      * Adding new message to message collection
      *
-     * @param   Mage_Core_Model_Message_Abstract $message
-     * @return  Mage_Core_Block_Messages
+     * @return $this
      */
     public function addMessage(Mage_Core_Model_Message_Abstract $message)
     {
@@ -138,8 +129,8 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Adding new error message
      *
-     * @param   string $message
-     * @return  Mage_Core_Block_Messages
+     * @param  string $message
+     * @return $this
      */
     public function addError($message)
     {
@@ -150,8 +141,8 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Adding new warning message
      *
-     * @param   string $message
-     * @return  Mage_Core_Block_Messages
+     * @param  string $message
+     * @return $this
      */
     public function addWarning($message)
     {
@@ -162,8 +153,8 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Adding new nitice message
      *
-     * @param   string $message
-     * @return  Mage_Core_Block_Messages
+     * @param  string $message
+     * @return $this
      */
     public function addNotice($message)
     {
@@ -174,8 +165,8 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Adding new success message
      *
-     * @param   string $message
-     * @return  Mage_Core_Block_Messages
+     * @param  string $message
+     * @return $this
      */
     public function addSuccess($message)
     {
@@ -186,8 +177,8 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Retrieve messages array by message type
      *
-     * @param   string $type
-     * @return  array
+     * @param  string $type
+     * @return array
      */
     public function getMessages($type = null)
     {
@@ -197,8 +188,8 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     /**
      * Retrieve messages in HTML format
      *
-     * @param   string $type
-     * @return  string
+     * @param  string $type
+     * @return string
      */
     public function getHtml($type = null)
     {
@@ -208,14 +199,14 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
                 . ($this->_escapeMessageFlag) ? $this->escapeHtml($message->getText()) : $message->getText()
                 . '</' . $this->_messagesSecondLevelTagName . '>';
         }
-        $html .= '</' . $this->_messagesFirstLevelTagName . '>';
-        return $html;
+
+        return $html . ('</' . $this->_messagesFirstLevelTagName . '>');
     }
 
     /**
      * Retrieve messages in HTML format grouped by type
      *
-     * @return  string
+     * @return string
      */
     public function getGroupedHtml()
     {
@@ -223,7 +214,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
             Mage_Core_Model_Message::ERROR,
             Mage_Core_Model_Message::WARNING,
             Mage_Core_Model_Message::NOTICE,
-            Mage_Core_Model_Message::SUCCESS
+            Mage_Core_Model_Message::SUCCESS,
         ];
         $html = '';
         foreach ($types as $type) {
@@ -231,6 +222,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
                 if (!$html) {
                     $html .= '<' . $this->_messagesFirstLevelTagName . ' class="messages">';
                 }
+
                 $html .= '<' . $this->_messagesSecondLevelTagName . ' class="' . $type . '-msg">';
                 $html .= '<' . $this->_messagesFirstLevelTagName . '>';
 
@@ -241,13 +233,17 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
                     $html .= '</' . $this->_messagesContentWrapperTagName . '>';
                     $html .= '</' . $this->_messagesSecondLevelTagName . '>';
                 }
+
                 $html .= '</' . $this->_messagesFirstLevelTagName . '>';
                 $html .= '</' . $this->_messagesSecondLevelTagName . '>';
             }
         }
+
         if ($html) {
             $html .= '</' . $this->_messagesFirstLevelTagName . '>';
         }
+
+        $this->_messages = $this->getMessageCollection()->clear();
         return $html;
     }
 
@@ -287,7 +283,7 @@ class Mage_Core_Block_Messages extends Mage_Core_Block_Template
     public function getCacheKeyInfo()
     {
         return [
-            'storage_types' => serialize($this->_usedStorageTypes)
+            'storage_types' => serialize($this->_usedStorageTypes),
         ];
     }
 

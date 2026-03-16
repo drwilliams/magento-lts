@@ -1,43 +1,33 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Oauth
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+
+use Carbon\Carbon;
 
 /**
  * Application model
  *
- * @category   Mage
  * @package    Mage_Oauth
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method Mage_Oauth_Model_Resource_Consumer _getResource()
- * @method Mage_Oauth_Model_Resource_Consumer getResource()
+ * @method Mage_Oauth_Model_Resource_Consumer            _getResource()
+ * @method string                                        getCallbackUrl()
  * @method Mage_Oauth_Model_Resource_Consumer_Collection getCollection()
+ * @method string                                        getKey()
+ * @method string                                        getName()
+ * @method string                                        getRejectedCallbackUrl()
+ * @method Mage_Oauth_Model_Resource_Consumer            getResource()
  * @method Mage_Oauth_Model_Resource_Consumer_Collection getResourceCollection()
- * @method string getName()
- * @method $this setName() setName(string $name)
- * @method string getKey()
- * @method $this setKey() setKey(string $key)
- * @method string getSecret()
- * @method $this setSecret() setSecret(string $secret)
- * @method string getCallbackUrl()
- * @method $this setCallbackUrl() setCallbackUrl(string $url)
- * @method string getCreatedAt()
- * @method $this setCreatedAt() setCreatedAt(string $date)
- * @method string getUpdatedAt()
- * @method $this setUpdatedAt() setUpdatedAt(string $date)
- * @method string getRejectedCallbackUrl()
- * @method $this setRejectedCallbackUrl() setRejectedCallbackUrl(string $rejectedCallbackUrl)
+ * @method string                                        getSecret()
+ * @method $this                                         setCallbackUrl(string $url)
+ * @method $this                                         setKey(string $key)
+ * @method $this                                         setName(string $name)
+ * @method $this                                         setRejectedCallbackUrl(string $rejectedCallbackUrl)
+ * @method $this                                         setSecret(string $secret)
  */
 class Mage_Oauth_Model_Consumer extends Mage_Core_Model_Abstract
 {
@@ -51,6 +41,9 @@ class Mage_Oauth_Model_Consumer extends Mage_Core_Model_Abstract
      */
     public const SECRET_LENGTH = 32;
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('oauth/consumer');
@@ -64,8 +57,11 @@ class Mage_Oauth_Model_Consumer extends Mage_Core_Model_Abstract
     protected function _beforeSave()
     {
         if (!$this->getId()) {
-            $this->setUpdatedAt(time());
+            $this->setUpdatedAt(Carbon::now()->getTimestamp());
         }
+
+        $this->setCallbackUrl(trim($this->getCallbackUrl()));
+        $this->setRejectedCallbackUrl(trim($this->getRejectedCallbackUrl()));
         $this->validate();
         parent::_beforeSave();
         return $this;
@@ -74,41 +70,23 @@ class Mage_Oauth_Model_Consumer extends Mage_Core_Model_Abstract
     /**
      * Validate data
      *
-     * @return array|bool
-     * @throw Mage_Core_Exception|Exception   Throw exception on fail validation
+     * @return bool
+     * @throws Mage_Core_Exception Throw exception on fail validation
      */
     public function validate()
     {
-        if ($this->getCallbackUrl() || $this->getRejectedCallbackUrl()) {
-            $this->setCallbackUrl(trim($this->getCallbackUrl()));
-            $this->setRejectedCallbackUrl(trim($this->getRejectedCallbackUrl()));
+        $validator = $this->getValidationHelper();
 
-            /** @var Mage_Core_Model_Url_Validator $validatorUrl */
-            $validatorUrl = Mage::getSingleton('core/url_validator');
-
-            if ($this->getCallbackUrl() && !$validatorUrl->isValid($this->getCallbackUrl())) {
-                Mage::throwException(Mage::helper('oauth')->__('Invalid Callback URL'));
-            }
-            if ($this->getRejectedCallbackUrl() && !$validatorUrl->isValid($this->getRejectedCallbackUrl())) {
-                Mage::throwException(Mage::helper('oauth')->__('Invalid Rejected Callback URL'));
-            }
+        $violations = $validator->validateLength(value: $this->getKey(), exactly: self::KEY_LENGTH);
+        if ($violations->count() > 0) {
+            Mage::throwException($violations->get(0)->getMessage());
         }
 
-        /** @var Mage_Oauth_Model_Consumer_Validator_KeyLength $validatorLength */
-        $validatorLength = Mage::getModel('oauth/consumer_validator_keyLength', ['length' => self::KEY_LENGTH]);
-
-        $validatorLength->setName('Consumer Key');
-        if (!$validatorLength->isValid($this->getKey())) {
-            $messages = $validatorLength->getMessages();
-            Mage::throwException(array_shift($messages));
+        $violations = $validator->validateLength(value: $this->getSecret(), exactly: self::SECRET_LENGTH);
+        if ($violations->count() > 0) {
+            Mage::throwException($violations->get(0)->getMessage());
         }
 
-        $validatorLength->setLength(self::SECRET_LENGTH);
-        $validatorLength->setName('Consumer Secret');
-        if (!$validatorLength->isValid($this->getSecret())) {
-            $messages = $validatorLength->getMessages();
-            Mage::throwException(array_shift($messages));
-        }
         return true;
     }
 }

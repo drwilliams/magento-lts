@@ -1,27 +1,24 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Rss
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2021-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+
+use Carbon\Carbon;
 
 /**
  * Review form block
  *
- * @category   Mage
  * @package    Mage_Rss
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Rss_Block_Catalog_Salesrule extends Mage_Rss_Block_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         /*
@@ -41,7 +38,7 @@ class Mage_Rss_Block_Catalog_Salesrule extends Mage_Rss_Block_Abstract
         $storeId       = $this->_getStoreId();
         $websiteId     = Mage::app()->getStore($storeId)->getWebsiteId();
         $customerGroup = $this->_getCustomerGroupId();
-        $now           = date('Y-m-d');
+        $now           = Carbon::now()->format('Y-m-d');
         $url           = Mage::getUrl('');
         $newUrl        = Mage::getUrl('rss/catalog/salesrule');
         $lang          = Mage::getStoreConfig('general/locale/code');
@@ -57,7 +54,7 @@ class Mage_Rss_Block_Catalog_Salesrule extends Mage_Rss_Block_Abstract
             'description' => $title,
             'link'        => $newUrl,
             'charset'     => 'UTF-8',
-            'language'    => $lang
+            'language'    => $lang,
         ];
         $rssObject->_addHeader($data);
 
@@ -67,18 +64,18 @@ class Mage_Rss_Block_Catalog_Salesrule extends Mage_Rss_Block_Abstract
         $collection->load();
 
         foreach ($collection as $sr) {
-            $description = '<table><tr>' .
-            '<td style="text-decoration:none;">' . $sr->getDescription() .
-            '<br/>Discount Start Date: ' . $this->formatDate($sr->getFromDate(), 'medium') .
-            ($sr->getToDate() ? ('<br/>Discount End Date: ' . $this->formatDate($sr->getToDate(), 'medium')) : '') .
-            ($sr->getCouponCode() ? '<br/> Coupon Code: ' . $this->escapeHtml($sr->getCouponCode()) . '' : '') .
-            '</td>' .
-            '</tr></table>';
+            $description = '<table><tr>'
+            . '<td style="text-decoration:none;">' . $sr->getDescription()
+            . '<br/>Discount Start Date: ' . $this->formatDate($sr->getFromDate(), 'medium')
+            . ($sr->getToDate() ? ('<br/>Discount End Date: ' . $this->formatDate($sr->getToDate(), 'medium')) : '')
+            . ($sr->getCouponCode() ? '<br/> Coupon Code: ' . $this->escapeHtml($sr->getCouponCode()) . '' : '')
+            . '</td>'
+            . '</tr></table>';
             $data = [
-                 'title'       => $sr->getName(),
-                 'description' => $description,
-                 'link'        => $url
-             ];
+                'title'       => $sr->getName(),
+                'description' => $description,
+                'link'        => $url,
+            ];
             $rssObject->_addEntry($data);
         }
 

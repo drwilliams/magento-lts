@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Report Customers Review collection
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Reports_Model_Resource_Review_Customer_Collection extends Mage_Review_Model_Resource_Review_Collection
 {
@@ -53,14 +45,14 @@ class Mage_Reports_Model_Resource_Review_Customer_Collection extends Mage_Review
             $firstnameField = 'value';
             $firstnameCondition[] = $adapter->quoteInto(
                 'table_customer_firstname.attribute_id = ?',
-                (int) $firstnameAttr->getAttributeId()
+                (int) $firstnameAttr->getAttributeId(),
             );
         }
 
         $this->getSelect()->joinInner(
             ['table_customer_firstname' => $firstnameAttr->getBackend()->getTable()],
             implode(' AND ', $firstnameCondition),
-            []
+            [],
         );
 
         $middlenameCondition = ['table_customer_middlename.entity_id = detail.customer_id'];
@@ -71,14 +63,14 @@ class Mage_Reports_Model_Resource_Review_Customer_Collection extends Mage_Review
             $middlenameField = 'value';
             $middlenameCondition[] = $adapter->quoteInto(
                 'table_customer_middlename.attribute_id = ?',
-                (int) $middlenameAttr->getAttributeId()
+                (int) $middlenameAttr->getAttributeId(),
             );
         }
 
         $this->getSelect()->joinInner(
             ['table_customer_middlename' => $middlenameAttr->getBackend()->getTable()],
             implode(' AND ', $middlenameCondition),
-            []
+            [],
         );
 
         $lastnameCondition  = ['table_customer_lastname.entity_id = detail.customer_id'];
@@ -88,7 +80,7 @@ class Mage_Reports_Model_Resource_Review_Customer_Collection extends Mage_Review
             $lastnameField = 'value';
             $lastnameCondition[] = $adapter->quoteInto(
                 'table_customer_lastname.attribute_id = ?',
-                (int) $lastnameAttr->getAttributeId()
+                (int) $lastnameAttr->getAttributeId(),
             );
         }
 
@@ -96,13 +88,13 @@ class Mage_Reports_Model_Resource_Review_Customer_Collection extends Mage_Review
         $customerFullname = $adapter->getConcatSql([
             "table_customer_firstname.{$firstnameField}",
             "table_customer_middlename.{$middlenameField}",
-            "table_customer_lastname.{$lastnameField}"
+            "table_customer_lastname.{$lastnameField}",
         ], ' ');
         $this->getSelect()->reset(Zend_Db_Select::COLUMNS)
             ->joinInner(
                 ['table_customer_lastname' => $lastnameAttr->getBackend()->getTable()],
                 implode(' AND ', $lastnameCondition),
-                []
+                [],
             )
             ->columns([
                 'customer_id' => 'detail.customer_id',

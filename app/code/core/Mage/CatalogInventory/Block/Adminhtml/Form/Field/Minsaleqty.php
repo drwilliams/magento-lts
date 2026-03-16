@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml catalog inventory "Minimum Qty Allowed in Shopping Cart" field
  *
- * @category   Mage
  * @package    Mage_CatalogInventory
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_CatalogInventory_Block_Adminhtml_Form_Field_Minsaleqty extends Mage_Adminhtml_Block_System_Config_Form_Field_Array_Abstract
 {
@@ -35,14 +27,17 @@ class Mage_CatalogInventory_Block_Adminhtml_Form_Field_Minsaleqty extends Mage_A
     protected function _getGroupRenderer()
     {
         if (!$this->_groupRenderer) {
-            $this->_groupRenderer = $this->getLayout()->createBlock(
+            /** @var Mage_CatalogInventory_Block_Adminhtml_Form_Field_Customergroup $block */
+            $block = $this->getLayout()->createBlock(
                 'cataloginventory/adminhtml_form_field_customergroup',
                 '',
-                ['is_render_to_js_template' => true]
+                ['is_render_to_js_template' => true],
             );
+            $this->_groupRenderer = $block;
             $this->_groupRenderer->setClass('customer_group_select');
             $this->_groupRenderer->setExtraParams('style="width:120px"');
         }
+
         return $this->_groupRenderer;
     }
 
@@ -65,14 +60,12 @@ class Mage_CatalogInventory_Block_Adminhtml_Form_Field_Minsaleqty extends Mage_A
 
     /**
      * Prepare existing row data object
-     *
-     * @param Varien_Object $row
      */
     protected function _prepareArrayRow(Varien_Object $row)
     {
         $row->setData(
             'option_extra_attr_' . $this->_getGroupRenderer()->calcOptionHash($row->getData('customer_group_id')),
-            'selected="selected"'
+            'selected="selected"',
         );
     }
 }

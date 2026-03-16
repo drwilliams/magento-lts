@@ -1,34 +1,31 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
  * Adminhtml store edit
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_System_Store_Edit extends Mage_Adminhtml_Block_Widget_Form_Container
 {
     public function __construct()
     {
-        $backupAvailable =
-            Mage::getSingleton('admin/session')->isAllowed('system/tools/backup')
-            && Mage::helper('core')->isModuleEnabled('Mage_Backup')
+        $backupAvailable
+            = Mage::getSingleton('admin/session')->isAllowed('system/tools/backup')
+            && $this->isModuleEnabled('Mage_Backup')
             && !Mage::getStoreConfigFlag('advanced/modules_disable_output/Mage_Backup');
+
+        $saveLabel      = '';
+        $deleteLabel    = '';
+        $deleteUrl      = '';
+
         switch (Mage::registry('store_type')) {
             case 'website':
                 $this->_objectId = 'website_id';
@@ -49,6 +46,7 @@ class Mage_Adminhtml_Block_System_Store_Edit extends Mage_Adminhtml_Block_Widget
                 $deleteUrl   = $this->_getDeleteUrl(Mage::registry('store_type'), $backupAvailable);
                 break;
         }
+
         $this->_controller = 'system_store';
 
         parent::__construct();
@@ -60,6 +58,7 @@ class Mage_Adminhtml_Block_System_Store_Edit extends Mage_Adminhtml_Block_Widget
         if (!Mage::registry('store_data')->isCanDelete()) {
             $this->_removeButton('delete');
         }
+
         if (Mage::registry('store_data')->isReadOnly()) {
             $this->_removeButton('save')->_removeButton('reset');
         }
@@ -72,6 +71,9 @@ class Mage_Adminhtml_Block_System_Store_Edit extends Mage_Adminhtml_Block_Widget
      */
     public function getHeaderText()
     {
+        $addLabel   = '';
+        $editLabel  = '';
+
         switch (Mage::registry('store_type')) {
             case 'website':
                 $editLabel = Mage::helper('core')->__('Edit Website');
@@ -93,8 +95,8 @@ class Mage_Adminhtml_Block_System_Store_Edit extends Mage_Adminhtml_Block_Widget
     /**
      * Create URL depending on backups
      *
-     * @param string $storeType
-     * @param bool $backupAvailable
+     * @param  string $storeType
+     * @param  bool   $backupAvailable
      * @return string
      */
     public function _getDeleteUrl($storeType, $backupAvailable = false)
@@ -107,8 +109,8 @@ class Mage_Adminhtml_Block_System_Store_Edit extends Mage_Adminhtml_Block_Widget
                 '*/*/delete' . $storeType . 'Post',
                 [
                     'item_id' => Mage::registry('store_data')->getId(),
-                    'form_key' => Mage::getSingleton('core/session')->getFormKey()
-                ]
+                    'form_key' => Mage::getSingleton('core/session')->getFormKey(),
+                ],
             );
         }
 

@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Customer
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Class Mage_Customer_Block_Widget_Name
  *
- * @category   Mage
  * @package    Mage_Customer
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method bool getForceUseCustomerAttributes()
  * @method bool getForceUseCustomerRequiredAttributes()
  */
 class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstract
 {
-    public function _construct()
+    protected function _construct()
     {
         parent::_construct();
 
@@ -36,12 +28,12 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
     /**
      * Can show config value
      *
-     * @param string $key
+     * @param  string $key
      * @return bool
      */
     protected function _showConfig($key)
     {
-        return (bool)$this->getConfig($key);
+        return (bool) $this->getConfig($key);
     }
 
     /**
@@ -51,7 +43,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
      */
     public function showPrefix()
     {
-        return (bool)$this->_getAttribute('prefix')->getIsVisible();
+        return (bool) $this->_getAttribute('prefix')->getIsVisible();
     }
 
     /**
@@ -61,7 +53,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
      */
     public function isPrefixRequired()
     {
-        return (bool)$this->_getAttribute('prefix')->getIsRequired();
+        return (bool) $this->_getAttribute('prefix')->getIsRequired();
     }
 
     /**
@@ -75,9 +67,10 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
         $helper = $this->helper('customer');
         $prefixOptions = $helper->getNamePrefixOptions();
         if ($this->getObject() && !empty($prefixOptions)) {
-            $oldPrefix = $this->escapeHtml(trim($this->getObject()->getPrefix()));
+            $oldPrefix = $this->escapeHtml(trim($this->getObject()->getPrefix() ?? ''));
             $prefixOptions[$oldPrefix] = $oldPrefix;
         }
+
         return $prefixOptions;
     }
 
@@ -88,7 +81,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
      */
     public function showMiddlename()
     {
-        return (bool)$this->_getAttribute('middlename')->getIsVisible();
+        return (bool) $this->_getAttribute('middlename')->getIsVisible();
     }
 
     /**
@@ -98,7 +91,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
      */
     public function isMiddlenameRequired()
     {
-        return (bool)$this->_getAttribute('middlename')->getIsRequired();
+        return (bool) $this->_getAttribute('middlename')->getIsRequired();
     }
 
     /**
@@ -108,7 +101,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
      */
     public function showSuffix()
     {
-        return (bool)$this->_getAttribute('suffix')->getIsVisible();
+        return (bool) $this->_getAttribute('suffix')->getIsVisible();
     }
 
     /**
@@ -118,7 +111,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
      */
     public function isSuffixRequired()
     {
-        return (bool)$this->_getAttribute('suffix')->getIsRequired();
+        return (bool) $this->_getAttribute('suffix')->getIsRequired();
     }
 
     /**
@@ -132,9 +125,10 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
         $helper = $this->helper('customer');
         $suffixOptions = $helper->getNameSuffixOptions();
         if ($this->getObject() && !empty($suffixOptions)) {
-            $oldSuffix = $this->escapeHtml(trim($this->getObject()->getSuffix()));
+            $oldSuffix = $this->escapeHtml(trim($this->getObject()->getSuffix() ?? ''));
             $suffixOptions[$oldSuffix] = $oldSuffix;
         }
+
         return $suffixOptions;
     }
 
@@ -148,6 +142,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
         if (!$this->hasData('class_name')) {
             $this->setData('class_name', 'customer-name');
         }
+
         return $this->getData('class_name');
     }
 
@@ -161,15 +156,14 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
         $class = $this->getClassName();
         $class .= $this->showPrefix() ? '-prefix' : '';
         $class .= $this->showMiddlename() ? '-middlename' : '';
-        $class .= $this->showSuffix() ? '-suffix' : '';
-        return $class;
+        return $class . ($this->showSuffix() ? '-suffix' : '');
     }
 
     /**
      * Retrieve customer or customer address attribute instance
      *
-     * @param string $attributeCode
-     * @return Mage_Customer_Model_Attribute|false
+     * @param  string                              $attributeCode
+     * @return false|Mage_Customer_Model_Attribute
      */
     protected function _getAttribute($attributeCode)
     {
@@ -192,7 +186,7 @@ class Mage_Customer_Block_Widget_Name extends Mage_Customer_Block_Widget_Abstrac
     /**
      * Retrieve store attribute label
      *
-     * @param string $attributeCode
+     * @param  string                          $attributeCode
      * @return string
      * @throws Mage_Core_Model_Store_Exception
      */

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml customer recent orders grid block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Orders extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -30,7 +22,6 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Orders extends Mage_Adminhtml_
         parent::__construct();
         $this->setId('customer_view_orders_grid');
         $this->setDefaultSort('created_at');
-        $this->setDefaultDir('desc');
         $this->setSortable(false);
         $this->setPagerVisibility(false);
         $this->setFilterVisibility(false);
@@ -94,25 +85,22 @@ class Mage_Adminhtml_Block_Customer_Edit_Tab_View_Orders extends Mage_Adminhtml_
         if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn('store_id', [
                 'header'    => Mage::helper('customer')->__('Bought From'),
-                'index'     => 'store_id',
                 'type'      => 'store',
-                'store_view' => true,
             ]);
         }
 
         $this->addColumn('action', [
+            'type'      => 'action',
             'header'    =>  ' ',
-            'filter'    =>  false,
-            'sortable'  =>  false,
-            'width'     => '100px',
-            'renderer'  =>  'adminhtml/sales_reorder_renderer_action'
+            'width'     => '100',
+            'renderer'  =>  'adminhtml/sales_reorder_renderer_action',
         ]);
 
         return parent::_prepareColumns();
     }
 
     /**
-     * @param Varien_Object $row
+     * @param  Varien_Object $row
      * @return string
      */
     public function getRowUrl($row)

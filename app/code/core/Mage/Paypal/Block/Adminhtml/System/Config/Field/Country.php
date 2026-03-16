@@ -1,46 +1,36 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Paypal
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Field renderer for PayPal merchant country selector
  *
- * @category   Mage
  * @package    Mage_Paypal
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Paypal_Block_Adminhtml_System_Config_Field_Country extends Mage_Adminhtml_Block_System_Config_Form_Field
 {
-    /**#@+
-     *
+    /**
      * Request parameters names
      */
     public const REQUEST_PARAM_COUNTRY = 'country';
+
     public const REQUEST_PARAM_DEFAULT = 'default_country';
-    /**#@-*/
 
     /**
      * Country of default scope
      *
-     * @var string|null
+     * @var null|string
      */
     protected $_defaultCountry;
 
     /**
      * Render country field considering request parameter
      *
-     * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      * @throws Exception
      */
@@ -54,16 +44,19 @@ class Mage_Paypal_Block_Adminhtml_System_Config_Field_Country extends Mage_Admin
         if ($element->getCanUseDefaultValue()) {
             $defaultConfigNode = Mage::getConfig()->getNode(null, 'default');
             if ($defaultConfigNode) {
-                $this->_defaultCountry = (string)$defaultConfigNode->descend('paypal/general/merchant_country');
+                $this->_defaultCountry = (string) $defaultConfigNode->descend('paypal/general/merchant_country');
             }
+
             if (!$this->_defaultCountry) {
                 $this->_defaultCountry = Mage::helper('core')->getDefaultCountry();
             }
+
             if ($country) {
                 $shouldInherit = $country == $this->_defaultCountry
                     && $this->getRequest()->getParam(self::REQUEST_PARAM_DEFAULT);
                 $element->setInherit($shouldInherit);
             }
+
             if ($element->getInherit()) {
                 $this->_defaultCountry = null;
             }
@@ -75,7 +68,6 @@ class Mage_Paypal_Block_Adminhtml_System_Config_Field_Country extends Mage_Admin
     /**
      * Get country selector html
      *
-     * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
@@ -112,7 +104,7 @@ class Mage_Paypal_Block_Adminhtml_System_Config_Field_Country extends Mage_Admin
 
         /** @var Mage_Adminhtml_Helper_Js $helper */
         $helper = $this->helper('adminhtml/js');
-        return parent::_getElementHtml($element) .
-            $helper->getScript('document.observe("dom:loaded", function() {' . $jsString . '});');
+        return parent::_getElementHtml($element)
+            . $helper->getScript('document.observe("dom:loaded", function() {' . $jsString . '});');
     }
 }

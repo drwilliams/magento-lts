@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Api2
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * API2 role list for admin user permissions
  *
- * @category   Mage
  * @package    Mage_Api2
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Api2_Block_Adminhtml_Permissions_User_Edit_Tab_Roles extends Mage_Adminhtml_Block_Widget_Grid implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -70,12 +62,12 @@ class Mage_Api2_Block_Adminhtml_Permissions_User_Edit_Tab_Roles extends Mage_Adm
             'html_name' => 'api2_roles[]',
             'values'    => $this->_getSelectedRoles(),
             'align'     => 'center',
-            'index'     => 'entity_id'
+            'index'     => 'entity_id',
         ]);
 
         $this->addColumn('role_name', [
             'header'    => $this->__('Role Name'),
-            'index'     => 'role_name'
+            'index'     => 'role_name',
         ]);
 
         return parent::_prepareColumns();
@@ -84,7 +76,7 @@ class Mage_Api2_Block_Adminhtml_Permissions_User_Edit_Tab_Roles extends Mage_Adm
     /**
      * Add custom column filter to collection
      *
-     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param  Mage_Adminhtml_Block_Widget_Grid_Column $column
      * @return $this
      */
     protected function _addColumnFilterToCollection($column)
@@ -180,7 +172,7 @@ class Mage_Api2_Block_Adminhtml_Permissions_User_Edit_Tab_Roles extends Mage_Adm
     {
         return $this->getUrl(
             '*/api2_role/rolesGrid',
-            ['user_id' => Mage::registry('permissions_user')->getUserId()]
+            ['user_id' => Mage::registry('permissions_user')->getUserId()],
         );
     }
 }

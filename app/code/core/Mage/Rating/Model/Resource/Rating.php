@@ -1,29 +1,24 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Rating
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Rating resource model
  *
- * @category   Mage
  * @package    Mage_Rating
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abstract
 {
     public const RATING_STATUS_APPROVED = 'Approved';
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('rating/rating', 'rating_id');
@@ -38,7 +33,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     {
         $this->_uniqueFields = [[
             'field' => 'rating_code',
-            'title' => /* Mage::helper('rating')->__('Rating with the same title')*/ ''
+            'title' => /* Mage::helper('rating')->__('Rating with the same title')*/ '',
         ]];
         return $this;
     }
@@ -46,9 +41,9 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Retrieve select object for load object data
      *
-     * @param string $field
-     * @param mixed $value
-     * @param Mage_Rating_Model_Rating $object
+     * @param  string                   $field
+     * @param  mixed                    $value
+     * @param  Mage_Rating_Model_Rating $object
      * @return Varien_Db_Select
      */
     protected function _getLoadSelect($field, $value, $object)
@@ -56,14 +51,14 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
         $adapter    = $this->_getReadAdapter();
 
         $table      = $this->getMainTable();
-        $storeId    = (int)Mage::app()->getStore()->getId();
+        $storeId    = (int) Mage::app()->getStore()->getId();
         $select     = parent::_getLoadSelect($field, $value, $object);
         $codeExpr   = $adapter->getIfNullSql('title.value', "{$table}.rating_code");
 
         $select->joinLeft(
             ['title' => $this->getTable('rating/rating_title')],
             $adapter->quoteInto("{$table}.rating_id = title.rating_id AND title.store_id = ?", $storeId),
-            ['rating_code' => $codeExpr]
+            ['rating_code' => $codeExpr],
         );
 
         return $select;
@@ -72,7 +67,6 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Actions after load
      *
-     * @param Mage_Core_Model_Abstract|Mage_Rating_Model_Rating $object
      * @return $this
      */
     protected function _afterLoad(Mage_Core_Model_Abstract $object)
@@ -84,7 +78,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
         }
 
         $adapter = $this->_getReadAdapter();
-        $bind    = [':rating_id' => (int)$object->getId()];
+        $bind    = [':rating_id' => (int) $object->getId()];
         // load rating titles
         $select  = $adapter->select()
             ->from($this->getTable('rating/rating_title'), ['store_id', 'value'])
@@ -96,7 +90,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
         }
 
         // load rating available in stores
-        $object->setStores($this->getStores((int)$object->getId()));
+        $object->setStores($this->getStores((int) $object->getId()));
 
         return $this;
     }
@@ -104,7 +98,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Retrieve store IDs related to given rating
      *
-     * @param  int $ratingId
+     * @param  int   $ratingId
      * @return array
      */
     public function getStores($ratingId)
@@ -118,7 +112,6 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Actions after save
      *
-     * @param Mage_Core_Model_Abstract|Mage_Rating_Model_Rating $object
      * @return $this
      */
     protected function _afterSave(Mage_Core_Model_Abstract $object)
@@ -126,7 +119,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
         parent::_afterSave($object);
 
         $adapter  = $this->_getWriteAdapter();
-        $ratingId = (int)$object->getId();
+        $ratingId = (int) $object->getId();
 
         if ($object->hasRatingCodes()) {
             $ratingTitleTable = $this->getTable('rating/rating_title');
@@ -136,14 +129,14 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                     ->from($ratingTitleTable, ['store_id', 'value'])
                     ->where('rating_id = :rating_id');
                 $old    = $adapter->fetchPairs($select, [':rating_id' => $ratingId]);
-                $new    = array_filter(array_map('trim', $object->getRatingCodes()));
+                $new    = array_filter(array_map(trim(...), $object->getRatingCodes()));
 
                 $insert = array_diff_assoc($new, $old);
                 $delete = array_diff_assoc($old, $new);
                 if (!empty($delete)) {
                     $where = [
                         'rating_id = ?' => $ratingId,
-                        'store_id IN(?)' => array_keys($delete)
+                        'store_id IN(?)' => array_keys($delete),
                     ];
                     $adapter->delete($ratingTitleTable, $where);
                 }
@@ -153,14 +146,14 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                     foreach ($insert as $storeId => $title) {
                         $data[] = [
                             'rating_id' => $ratingId,
-                            'store_id'  => (int)$storeId,
-                            'value'     => $title
+                            'store_id'  => (int) $storeId,
+                            'value'     => $title,
                         ];
                     }
-                    if (!empty($data)) {
-                        $adapter->insertMultiple($ratingTitleTable, $data);
-                    }
+
+                    $adapter->insertMultiple($ratingTitleTable, $data);
                 }
+
                 $adapter->commit();
             } catch (Exception $e) {
                 Mage::logException($e);
@@ -184,7 +177,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                 if ($delete) {
                     $where = [
                         'rating_id = ?' => $ratingId,
-                        'store_id IN(?)' => $delete
+                        'store_id IN(?)' => $delete,
                     ];
                     $adapter->delete($ratingStoreTable, $where);
                 }
@@ -194,9 +187,10 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                     foreach ($insert as $storeId) {
                         $data[] = [
                             'rating_id' => $ratingId,
-                            'store_id'  => (int)$storeId,
+                            'store_id'  => (int) $storeId,
                         ];
                     }
+
                     $adapter->insertMultiple($ratingStoreTable, $data);
                 }
 
@@ -212,17 +206,18 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
 
     /**
      * Perform actions after object delete
-     * Prepare rating data for reaggregate all data for reviews
+     * Prepare rating data for re-aggregate all data for reviews
      *
-     * @param Mage_Core_Model_Abstract|Mage_Rating_Model_Rating $object
+     * @param  Mage_Rating_Model_Rating $object
      * @return $this
      */
     protected function _afterDelete(Mage_Core_Model_Abstract $object)
     {
         parent::_afterDelete($object);
-        if (!Mage::helper('rating')->isModuleEnabled('Mage_Review')) {
+        if (!$this->isModuleEnabled('Mage_Review', 'rating')) {
             return $this;
         }
+
         $data = $this->_getEntitySummaryData($object);
         $summary = [];
         foreach ($data as $row) {
@@ -230,6 +225,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
             $clone->addData($row);
             $summary[$clone->getStoreId()][$clone->getEntityPkValue()] = $clone;
         }
+
         Mage::getResourceModel('review/review_summary')->reAggregate($summary);
         return $this;
     }
@@ -237,8 +233,8 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Return array of rating summary
      *
-     * @param Mage_Rating_Model_Rating $object
-     * @param bool $onlyForCurrentStore
+     * @param  Mage_Rating_Model_Rating       $object
+     * @param  bool                           $onlyForCurrentStore
      * @return array|Mage_Rating_Model_Rating
      */
     public function getEntitySummary($object, $onlyForCurrentStore = true)
@@ -251,6 +247,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                     $object->addData($row);
                 }
             }
+
             return $object;
         }
 
@@ -278,21 +275,30 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
             }
         }
 
+        if (empty($result[0])) {
+            // when you unapprove the latest comment and save
+            //  store_id = 0 is missing and not updated in review_entity_summary
+            $clone = clone $object;
+            $clone->setCount(0);
+            $clone->setSum(0);
+            $clone->setStoreId(0);
+            $result[0] = $clone;
+        }
+
         return array_values($result);
     }
 
     /**
      * Return data of rating summary
      *
-     * @param Mage_Rating_Model_Rating $object
+     * @param  Mage_Rating_Model_Rating $object
      * @return array
      */
     protected function _getEntitySummaryData($object)
     {
-        $adapter    = $this->_getReadAdapter();
-
-        $sumColumn      = new Zend_Db_Expr("SUM(rating_vote.{$adapter->quoteIdentifier('percent')})");
-        $countColumn    = new Zend_Db_Expr("COUNT(*)");
+        $adapter     = $this->_getReadAdapter();
+        $sumColumn   = new Zend_Db_Expr("SUM(rating_vote.{$adapter->quoteIdentifier('percent')})");
+        $countColumn = new Zend_Db_Expr('COUNT(*)');
 
         $select = $adapter->select()
             ->from(
@@ -300,27 +306,28 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                 [
                     'entity_pk_value' => 'rating_vote.entity_pk_value',
                     'sum'             => $sumColumn,
-                'count'           => $countColumn]
+                    'count'           => $countColumn,
+                ],
             )
             ->join(
                 ['review' => $this->getTable('review/review')],
                 'rating_vote.review_id=review.review_id',
-                []
+                [],
             )
             ->joinLeft(
                 ['review_store' => $this->getTable('review/review_store')],
                 'rating_vote.review_id=review_store.review_id',
-                ['review_store.store_id']
+                ['review_store.store_id'],
             )
             ->join(
                 ['rating_store' => $this->getTable('rating/rating_store')],
                 'rating_store.rating_id = rating_vote.rating_id AND rating_store.store_id = review_store.store_id',
-                []
+                [],
             )
             ->join(
                 ['review_status' => $this->getTable('review/review_status')],
                 'review.status_id = review_status.status_id',
-                []
+                [],
             )
             ->where('review_status.status_code = :status_code')
             ->group('rating_vote.entity_pk_value')
@@ -339,8 +346,8 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Review summary
      *
-     * @param Mage_Rating_Model_Rating $object
-     * @param bool $onlyForCurrentStore
+     * @param  Mage_Rating_Model_Rating       $object
+     * @param  bool                           $onlyForCurrentStore
      * @return array|Mage_Rating_Model_Rating
      */
     public function getReviewSummary($object, $onlyForCurrentStore = true)
@@ -354,18 +361,18 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                 ['rating_vote' => $this->getTable('rating/rating_option_vote')],
                 [
                     'sum'   => $sumColumn,
-                    'count' => $countColumn
-                ]
+                    'count' => $countColumn,
+                ],
             )
             ->joinLeft(
                 ['review_store' => $this->getTable('review/review_store')],
                 'rating_vote.review_id = review_store.review_id',
-                ['review_store.store_id']
+                ['review_store.store_id'],
             )
             ->join(
                 ['rating_store' => $this->getTable('rating/rating_store')],
                 'rating_store.rating_id = rating_vote.rating_id AND rating_store.store_id = review_store.store_id',
-                []
+                [],
             )
             ->where('rating_vote.review_id = :review_id')
             ->group('rating_vote.review_id')
@@ -379,6 +386,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
                     $object->addData($row);
                 }
             }
+
             return $object;
         }
 
@@ -411,8 +419,8 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Get rating entity type id by code
      *
-     * @param string $entityCode
-     * @return int
+     * @param  string $entityCode
+     * @return string
      */
     public function getEntityIdByCode($entityCode)
     {
@@ -426,7 +434,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
     /**
      * Delete ratings by product id
      *
-     * @param int $productId
+     * @param  int   $productId
      * @return $this
      */
     public function deleteAggregatedRatingsByProductId($productId)
@@ -441,7 +449,7 @@ class Mage_Rating_Model_Resource_Rating extends Mage_Core_Model_Resource_Db_Abst
         if ($ratingIds) {
             $where = [
                 'entity_pk_value = ?' => (int) $productId,
-                'rating_id IN(?)'     => $ratingIds
+                'rating_id IN(?)'     => $ratingIds,
             ];
             $adapter->delete($this->getTable('rating/rating_vote_aggregated'), $where);
         }

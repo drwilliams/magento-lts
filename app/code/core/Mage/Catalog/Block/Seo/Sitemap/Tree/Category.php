@@ -1,45 +1,42 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * SEO tree Categories Sitemap block
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Block_Seo_Sitemap_Tree_Category extends Mage_Catalog_Block_Seo_Sitemap_Category
 {
     public const XML_PATH_LINES_PER_PAGE = 'catalog/sitemap/lines_perpage';
 
     protected $_storeRootCategoryPath = '';
+
     protected $_storeRootCategoryLevel = 0;
+
     protected $_total = 0;
+
     protected $_from = 0;
+
     protected $_to = 0;
+
     protected $_currentPage = 0;
+
     protected $_categoriesToPages = [];
+
     /**
      * Initialize categories collection
      *
-     * @return Mage_Catalog_Block_Seo_Sitemap_Category
+     * @return $this
      */
     protected function _prepareLayout()
     {
-        $helper = Mage::helper('catalog/category');
-        /** @var Mage_Catalog_Helper_Category $helper */
         $parent = Mage::getModel('catalog/category')
             ->setStoreId(Mage::app()->getStore()->getId())
             ->load(Mage::app()->getStore()->getRootCategoryId());
@@ -68,6 +65,7 @@ class Mage_Catalog_Block_Seo_Sitemap_Tree_Category extends Mage_Catalog_Block_Se
                 $this->_currentPage = $pager->getCurrentPage();
                 $this->_prepareCollection();
             }
+
             $pager->setFirstNum($this->_from);
             $pager->setLastNum($this->_to);
             $pager->setCollection($this->getCollection());
@@ -97,18 +95,20 @@ class Mage_Catalog_Block_Seo_Sitemap_Tree_Category extends Mage_Catalog_Block_Se
             if (($children + $count) >= $linesPerPage) {
                 $categories[$page][$item->getId()] = [
                     'path' => $item->getPath(),
-                    'children_count' => $this->_total
+                    'children_count' => $this->_total,
                 ];
                 $page++;
                 $count = 0;
                 continue;
             }
+
             $categories[$page][$item->getId()] = [
                 'path' => $item->getPath(),
-                'children_count' => $this->_total
+                'children_count' => $this->_total,
             ];
             $count += $children;
         }
+
         $this->_categoriesToPages = $categories;
         return $this;
     }
@@ -137,16 +137,19 @@ class Mage_Catalog_Block_Seo_Sitemap_Tree_Category extends Mage_Catalog_Block_Se
         $_to = 0;
         $pathFilter = [];
         if (isset($this->_categoriesToPages[$this->_currentPage])) {
-            foreach ($this->_categoriesToPages[$this->_currentPage] as $_categoryId => $_categoryInfo) {
+            foreach ($this->_categoriesToPages[$this->_currentPage] as $_categoryInfo) {
                 $pathFilter[] = $_categoryInfo['path'];
                 $_to = max($_to, $_categoryInfo['children_count']);
             }
         }
+
         if (empty($pathFilter)) {
             $pathFilter = $this->_storeRootCategoryPath . '/';
         }
+
         $collection = $this->getCollection();
         $collection->addPathsFilter($pathFilter);
+
         $this->_to = $_to;
         $this->_from = $_to - $collection->count();
         return $this;
@@ -155,8 +158,8 @@ class Mage_Catalog_Block_Seo_Sitemap_Tree_Category extends Mage_Catalog_Block_Se
     /**
      * Return level of indent
      *
-     * @param Mage_Catalog_Model_Category $item
-     * @param int $delta
+     * @param  Mage_Catalog_Model_Category $item
+     * @param  int                         $delta
      * @return int
      */
     public function getLevel($item, $delta = 1)

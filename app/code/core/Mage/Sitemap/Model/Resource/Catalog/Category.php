@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sitemap
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Sitemap resource catalog collection model
  *
- * @category   Mage
  * @package    Mage_Sitemap
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sitemap_Model_Resource_Catalog_Category extends Mage_Sitemap_Model_Resource_Catalog_Abstract
 {
@@ -33,8 +25,9 @@ class Mage_Sitemap_Model_Resource_Catalog_Category extends Mage_Sitemap_Model_Re
     /**
      * Get category collection array
      *
-     * @param int $storeId
+     * @param  int                 $storeId
      * @return array|false
+     * @throws Mage_Core_Exception
      */
     public function getCollection($storeId)
     {
@@ -56,7 +49,7 @@ class Mage_Sitemap_Model_Resource_Catalog_Category extends Mage_Sitemap_Model_Re
             ->from(['main_table' => $this->getMainTable()], [$this->getIdFieldName()])
             ->where('main_table.path LIKE ?', $categoryRow['path'] . '/%');
 
-        $storeId = (int)$store->getId();
+        $storeId = (int) $store->getId();
 
         $urlRewrite = $this->_factory->getCategoryUrlRewriteHelper();
         $urlRewrite->joinTableToSelect($this->_select, $storeId);
@@ -69,10 +62,9 @@ class Mage_Sitemap_Model_Resource_Catalog_Category extends Mage_Sitemap_Model_Re
     /**
      * Prepare category
      *
-     * @deprecated after 1.7.0.2
-     *
-     * @param array $categoryRow
      * @return Varien_Object
+     * @throws Mage_Core_Exception
+     * @deprecated after 1.7.0.2
      */
     protected function _prepareCategory(array $categoryRow)
     {
@@ -82,20 +74,21 @@ class Mage_Sitemap_Model_Resource_Catalog_Category extends Mage_Sitemap_Model_Re
     /**
      * Retrieve entity url
      *
-     * @param array $row
-     * @param Varien_Object $entity
+     * @param  array         $row
+     * @param  Varien_Object $entity
      * @return string
      */
     protected function _getEntityUrl($row, $entity)
     {
-        return !empty($row['request_path']) ? $row['request_path'] : 'catalog/category/view/id/' . $entity->getId();
+        return empty($row['request_path']) ? 'catalog/category/view/id/' . $entity->getId() : $row['request_path'];
     }
 
     /**
      * Loads category attribute by given attribute code.
      *
-     * @param string $attributeCode
+     * @param  string              $attributeCode
      * @return $this
+     * @throws Mage_Core_Exception
      */
     protected function _loadAttribute($attributeCode)
     {
@@ -106,7 +99,7 @@ class Mage_Sitemap_Model_Resource_Catalog_Category extends Mage_Sitemap_Model_Re
             'attribute_id'   => $attribute->getId(),
             'table'          => $attribute->getBackend()->getTable(),
             'is_global'      => $attribute->getIsGlobal(),
-            'backend_type'   => $attribute->getBackendType()
+            'backend_type'   => $attribute->getBackendType(),
         ];
         return $this;
     }

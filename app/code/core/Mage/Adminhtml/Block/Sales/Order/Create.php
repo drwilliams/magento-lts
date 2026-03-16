@@ -1,25 +1,17 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
  * Adminhtml sales order create
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Sales_Order_Create extends Mage_Adminhtml_Block_Widget_Form_Container
 {
@@ -37,7 +29,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create extends Mage_Adminhtml_Block_Widge
         $storeId    = $this->_getSession()->getStoreId();
 
         $this->_updateButton('save', 'label', Mage::helper('sales')->__('Submit Order'));
-        $this->_updateButton('save', 'onclick', "order.submit()");
+        $this->_updateButton('save', 'onclick', 'order.submit()');
         $this->_updateButton('save', 'id', 'submit_order_top_button');
         if (is_null($customerId) || !$storeId) {
             $this->_updateButton('save', 'style', 'display:none');
@@ -61,8 +53,8 @@ class Mage_Adminhtml_Block_Sales_Order_Create extends Mage_Adminhtml_Block_Widge
             'onclick',
             Mage::helper('core/js')->getDeleteConfirmJs(
                 $this->getCancelUrl(),
-                Mage::helper('sales')->__('Are you sure you want to cancel this order?')
-            )
+                Mage::helper('sales')->__('Are you sure you want to cancel this order?'),
+            ),
         );
     }
 
@@ -96,8 +88,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create extends Mage_Adminhtml_Block_Widge
     public function getFormHtml()
     {
         $html = parent::getFormHtml();
-        $html .= $this->getLayout()->createBlock('adminhtml/catalog_product_composite_configure')->toHtml();
-        return $html;
+        return $html . $this->getLayout()->createBlock('adminhtml/catalog_product_composite_configure')->toHtml();
     }
 
     /**
@@ -125,7 +116,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create extends Mage_Adminhtml_Block_Widge
     {
         if ($this->_getSession()->getOrder()->getId()) {
             $url = $this->getUrl('*/sales_order/view', [
-                'order_id' => Mage::getSingleton('adminhtml/session_quote')->getOrder()->getId()
+                'order_id' => Mage::getSingleton('adminhtml/session_quote')->getOrder()->getId(),
             ]);
         } else {
             $url = $this->getUrl('*/*/cancel');

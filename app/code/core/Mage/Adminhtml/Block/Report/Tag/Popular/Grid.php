@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml popular tags report grid block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Report_Tag_Popular_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -28,6 +20,9 @@ class Mage_Adminhtml_Block_Report_Tag_Popular_Grid extends Mage_Adminhtml_Block_
         $this->setId('grid');
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function _prepareCollection()
     {
         if ($this->getRequest()->getParam('website')) {
@@ -35,7 +30,7 @@ class Mage_Adminhtml_Block_Report_Tag_Popular_Grid extends Mage_Adminhtml_Block_
         } elseif ($this->getRequest()->getParam('group')) {
             $storeId = Mage::app()->getGroup($this->getRequest()->getParam('group'))->getStoreIds();
         } elseif ($this->getRequest()->getParam('store')) {
-            $storeId = (int)$this->getRequest()->getParam('store');
+            $storeId = (int) $this->getRequest()->getParam('store');
         } else {
             $storeId = '';
         }
@@ -48,41 +43,42 @@ class Mage_Adminhtml_Block_Report_Tag_Popular_Grid extends Mage_Adminhtml_Block_
         return parent::_prepareCollection();
     }
 
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('name', [
             'header'    => Mage::helper('reports')->__('Tag Name'),
-            'index'     => 'name'
+            'index'     => 'name',
         ]);
 
         $this->addColumn('taged', [
             'header'    => Mage::helper('reports')->__('Popularity'),
             'width'     => '50px',
             'align'     => 'right',
-            'index'     => 'popularity'
+            'index'     => 'popularity',
         ]);
 
         $this->addColumn(
             'action',
             [
-                'header'    => Mage::helper('catalog')->__('Action'),
-                'width'     => '100%',
+                'width'     => '100',
                 'type'      => 'action',
                 'getter'    => 'getId',
                 'actions'   => [
                     [
                         'caption' => Mage::helper('catalog')->__('Show Details'),
                         'url'     => [
-                            'base' => '*/*/tagDetail'
+                            'base' => '*/*/tagDetail',
                         ],
-                        'field'   => 'id'
-                    ]
+                        'field'   => 'id',
+                    ],
                 ],
                 'is_system' => true,
-                'filter'    => false,
-                'sortable'  => false,
                 'index'     => 'stores',
-            ]
+            ],
         );
         $this->setFilterVisibility(false);
 
@@ -92,6 +88,10 @@ class Mage_Adminhtml_Block_Report_Tag_Popular_Grid extends Mage_Adminhtml_Block_
         return parent::_prepareColumns();
     }
 
+    /**
+     * @inheritDoc
+     * @param Mage_Tag_Model_Tag $row
+     */
     public function getRowUrl($row)
     {
         return $this->getUrl('*/*/tagDetail', ['id' => $row->getTagId()]);

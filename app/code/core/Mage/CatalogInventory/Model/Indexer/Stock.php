@@ -1,37 +1,29 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogInventory
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * CatalogInventory Stock Status Indexer Model
  *
- * @category   Mage
  * @package    Mage_CatalogInventory
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_CatalogInventory_Model_Resource_Indexer_Stock _getResource()
+ * @method int                                                getProductId()
+ * @method float                                              getQty()
  * @method Mage_CatalogInventory_Model_Resource_Indexer_Stock getResource()
- * @method int getProductId()
- * @method $this setProductId(int $value)
- * @method int getWebsiteId()
- * @method $this setWebsiteId(int $value)
- * @method int getStockId()
- * @method $this setStockId(int $value)
- * @method float getQty()
- * @method $this setQty(float $value)
- * @method int getStockStatus()
- * @method $this setStockStatus(int $value)
+ * @method int                                                getStockId()
+ * @method int                                                getStockStatus()
+ * @method int                                                getWebsiteId()
+ * @method $this                                              setProductId(int $value)
+ * @method $this                                              setQty(float $value)
+ * @method $this                                              setStockId(int $value)
+ * @method $this                                              setStockStatus(int $value)
+ * @method $this                                              setWebsiteId(int $value)
  */
 class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer_Abstract
 {
@@ -45,25 +37,25 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
      */
     protected $_matchedEntities = [
         Mage_CatalogInventory_Model_Stock_Item::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Catalog_Model_Product::ENTITY => [
             Mage_Index_Model_Event::TYPE_SAVE,
             Mage_Index_Model_Event::TYPE_MASS_ACTION,
-            Mage_Index_Model_Event::TYPE_DELETE
+            Mage_Index_Model_Event::TYPE_DELETE,
         ],
         Mage_Core_Model_Store::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Core_Model_Store_Group::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Core_Model_Config_Data::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Catalog_Model_Convert_Adapter_Product::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
-        ]
+            Mage_Index_Model_Event::TYPE_SAVE,
+        ],
     ];
 
     /**
@@ -73,9 +65,12 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
      */
     protected $_relatedConfigSettings = [
         Mage_CatalogInventory_Model_Stock_Item::XML_PATH_MANAGE_STOCK,
-        Mage_CatalogInventory_Helper_Data::XML_PATH_SHOW_OUT_OF_STOCK
+        Mage_CatalogInventory_Helper_Data::XML_PATH_SHOW_OUT_OF_STOCK,
     ];
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('cataloginventory/indexer_stock');
@@ -105,7 +100,6 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
      * Check if event can be matched by process.
      * Overwrote for specific config save, store and store groups save matching
      *
-     * @param Mage_Index_Model_Event $event
      * @return bool
      */
     public function matchEvent(Mage_Index_Model_Event $event)
@@ -150,8 +144,6 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
 
     /**
      * Register data required by process in event object
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerEvent(Mage_Index_Model_Event $event)
     {
@@ -185,14 +177,13 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
                             ->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
                     }
                 }
+
                 break;
         }
     }
 
     /**
      * Register data required by catalog product processes in event object
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerCatalogProductEvent(Mage_Index_Model_Event $event)
     {
@@ -203,6 +194,7 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
                 if ($product && $product->getStockData()) {
                     $product->setForceReindexRequired(true);
                 }
+
                 break;
             case Mage_Index_Model_Event::TYPE_MASS_ACTION:
                 $this->_registerCatalogProductMassActionEvent($event);
@@ -216,22 +208,17 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
 
     /**
      * Register data required by cataloginventory stock item processes in event object
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerCatalogInventoryStockItemEvent(Mage_Index_Model_Event $event)
     {
-        switch ($event->getType()) {
-            case Mage_Index_Model_Event::TYPE_SAVE:
-                $this->_registerStockItemSaveEvent($event);
-                break;
+        if ($event->getType() === Mage_Index_Model_Event::TYPE_SAVE) {
+            $this->_registerStockItemSaveEvent($event);
         }
     }
 
     /**
      * Register data required by stock item save process in event object
      *
-     * @param Mage_Index_Model_Event $event
      * @return $this
      */
     protected function _registerStockItemSaveEvent(Mage_Index_Model_Event $event)
@@ -251,7 +238,7 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
             Mage::getSingleton('index/indexer')->logEvent(
                 $massObject,
                 Mage_Catalog_Model_Product::ENTITY,
-                Mage_Index_Model_Event::TYPE_MASS_ACTION
+                Mage_Index_Model_Event::TYPE_MASS_ACTION,
             );
         }
 
@@ -261,7 +248,6 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
     /**
      * Register data required by product delete process in event object
      *
-     * @param Mage_Index_Model_Event $event
      * @return $this
      */
     protected function _registerCatalogProductDeleteEvent(Mage_Index_Model_Event $event)
@@ -280,14 +266,13 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
     /**
      * Register data required by product mass action process in event object
      *
-     * @param Mage_Index_Model_Event $event
      * @return $this
      */
     protected function _registerCatalogProductMassActionEvent(Mage_Index_Model_Event $event)
     {
         $actionObject = $event->getDataObject();
         $attributes   = [
-            'status'
+            'status',
         ];
         $reindexStock = false;
 
@@ -317,8 +302,6 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
 
     /**
      * Process event
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _processEvent(Mage_Index_Model_Event $event)
     {
@@ -326,6 +309,7 @@ class Mage_CatalogInventory_Model_Indexer_Stock extends Mage_Index_Model_Indexer
         if (!empty($data['cataloginventory_stock_reindex_all'])) {
             $this->reindexAll();
         }
+
         if (empty($data['cataloginventory_stock_skip_call_event_handler'])) {
             $this->callEventHandler($event);
         }

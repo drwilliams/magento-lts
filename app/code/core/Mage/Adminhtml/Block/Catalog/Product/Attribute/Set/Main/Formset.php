@@ -1,28 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2021-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Catalog_Product_Attribute_Set_Main_Formset extends Mage_Adminhtml_Block_Widget_Form
 {
     /**
      * Prepares attribute set form
-     *
      */
     protected function _prepareForm()
     {
@@ -37,13 +28,13 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Set_Main_Formset extends Ma
             'name' => 'attribute_set_name',
             'required' => true,
             'class' => 'required-entry validate-no-html-tags',
-            'value' => $data->getAttributeSetName()
+            'value' => $data->getAttributeSetName(),
         ]);
 
         if (!$this->getRequest()->getParam('id', false)) {
             $fieldset->addField('gotoEdit', 'hidden', [
                 'name' => 'gotoEdit',
-                'value' => '1'
+                'value' => '1',
             ]);
 
             $sets = Mage::getModel('eav/entity_attribute_set')

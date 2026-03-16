@@ -1,31 +1,25 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Customer
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2018-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
+use Carbon\Carbon;
 use Mage_Customer_Helper_Data as Helper;
 
 /**
  * Customer account controller
  *
- * @category   Mage
  * @package    Mage_Customer
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
 {
-    public const CUSTOMER_ID_SESSION_NAME = "customerId";
-    public const TOKEN_SESSION_NAME = "token";
+    public const CUSTOMER_ID_SESSION_NAME = 'customerId';
+
+    public const TOKEN_SESSION_NAME = 'token';
 
     /**
      * Action list where need check enabled cookie
@@ -56,7 +50,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         parent::preDispatch();
 
         if (!$this->getRequest()->isDispatched()) {
-            return;
+            return $this;
         }
 
         $action = strtolower($this->getRequest()->getActionName());
@@ -70,7 +64,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             'resetpassword',
             'resetpasswordpost',
             'confirm',
-            'confirmation'
+            'confirmation',
         ];
         $pattern = '/^(' . implode('|', $openActions) . ')/i';
 
@@ -81,6 +75,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         } else {
             $this->_getSession()->setNoReferer(true);
         }
+
         return $this;
     }
 
@@ -106,7 +101,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         $this->_initLayoutMessages('catalog/session');
 
         $this->getLayout()->getBlock('content')->append(
-            $this->getLayout()->createBlock('customer/account_dashboard')
+            $this->getLayout()->createBlock('customer/account_dashboard'),
         );
         $this->getLayout()->getBlock('head')->setTitle($this->__('My Account'));
         $this->renderLayout();
@@ -121,10 +116,12 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             $this->_redirect('*/*/');
             return;
         }
+
         $this->getResponse()->setHeader('Login-Required', 'true');
         $this->loadLayout();
         $this->_initLayoutMessages('customer/session');
         $this->_initLayoutMessages('catalog/session');
+        $this->getLayout()->getBlock('head')->setTitle($this->__('Customer Login'));
         $this->renderLayout();
     }
 
@@ -142,6 +139,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             $this->_redirect('*/*/');
             return;
         }
+
         $session = $this->_getSession();
 
         if ($this->getRequest()->isPost()) {
@@ -166,9 +164,10 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                         default:
                             $message = $e->getMessage();
                     }
+
                     $session->addError($message);
                     $session->setUsername($login['username']);
-                } catch (Exception $e) {
+                } catch (Exception) {
                     // Mage::logException($e); // PA DSS violation: this exception log can disclose customer password
                 }
             } else {
@@ -184,6 +183,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
      */
     protected function _loginPostRedirect()
     {
+        Mage::dispatchEvent('customer_controller_account_login_post_redirect_before', ['controller' => $this]);
         /** @var Helper $helper */
         $helper = $this->_getHelper('customer');
 
@@ -198,7 +198,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                     $referer = $this->getRequest()->getParam(Helper::REFERER_QUERY_PARAM_NAME);
                     if ($referer) {
                         // Rebuild referer URL to handle the case when SID was changed
-                        $referer = $this->_getModel('core/url')
+                        $referer = Mage::getModel('core/url')
                             ->getRebuiltUrl($this->_getHelper('core')->urlDecodeAndEscape($referer));
                         if ($this->_isUrlInternal($referer)) {
                             $session->setBeforeAuthUrl($referer);
@@ -216,10 +216,12 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             if (!$session->getAfterAuthUrl()) {
                 $session->setAfterAuthUrl($session->getBeforeAuthUrl());
             }
+
             if ($session->isLoggedIn()) {
                 $session->setBeforeAuthUrl($session->getAfterAuthUrl(true));
             }
         }
+
         $this->_redirectUrl($session->getBeforeAuthUrl(true));
     }
 
@@ -236,6 +238,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         } else {
             $session->setBeforeAuthUrl($this->_getRefererUrl());
         }
+
         $this->_redirect('*/*/logoutSuccess');
     }
 
@@ -293,14 +296,14 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
 
             if (empty($errors)) {
                 $customer->cleanPasswordsValidationData();
-                $customer->setPasswordCreatedAt(time());
+                $customer->setPasswordCreatedAt(Carbon::now()->getTimestamp());
                 $customer->save();
                 $this->_dispatchRegisterSuccess($customer);
                 $this->_successProcessRegistration($customer);
                 return;
-            } else {
-                $this->_addSessionError($errors);
             }
+
+            $this->_addSessionError($errors);
         } catch (Mage_Core_Exception $e) {
             $session->setCustomerFormData($this->getRequest()->getPost());
             if ($e->getCode() === Mage_Customer_Model_Customer::EXCEPTION_EMAIL_EXISTS) {
@@ -309,6 +312,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             } else {
                 $message = $this->_escapeHtml($e->getMessage());
             }
+
             $session->addError($message);
         } catch (Exception $e) {
             $session->setCustomerFormData($this->getRequest()->getPost());
@@ -321,7 +325,6 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Success Registration
      *
-     * @param Mage_Customer_Model_Customer $customer
      * @return $this
      * @throws Mage_Core_Exception
      */
@@ -335,19 +338,20 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 'confirmation',
                 $session->getBeforeAuthUrl(),
                 $store->getId(),
-                $this->getRequest()->getPost('password')
+                $this->getRequest()->getPost('password'),
             );
             /** @var Helper $customerHelper */
             $customerHelper = $this->_getHelper('customer');
             $session->addSuccess($this->__(
                 'Account confirmation is required. Please, check your email for the confirmation link. To resend the confirmation email please <a href="%s">click here</a>.',
-                $customerHelper->getEmailConfirmationUrl($customer->getEmail())
+                $customerHelper->getEmailConfirmationUrl($customer->getEmail()),
             ));
             $url = $this->_getUrl('*/*/index', ['_secure' => true]);
         } else {
             $session->setCustomerAsLoggedIn($customer);
             $url = $this->_welcomeCustomer($customer);
         }
+
         $this->_redirectSuccess($url);
         return $this;
     }
@@ -361,11 +365,13 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     {
         $customer = $this->_getFromRegistry('current_customer');
         if (!$customer) {
-            $customer = $this->_getModel('customer/customer')->setId(null);
+            $customer = Mage::getModel('customer/customer')->setId(null);
         }
+
         if ($this->getRequest()->getParam('is_subscribed', false)) {
             $customer->setIsSubscribed(1);
         }
+
         /**
          * Initialize customer group id
          */
@@ -377,7 +383,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Add session error method
      *
-     * @param string|array $errors
+     * @param array|string $errors
      */
     protected function _addSessionError($errors)
     {
@@ -395,7 +401,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Escape message text HTML.
      *
-     * @param string $text
+     * @param  string $text
      * @return string
      */
     protected function _escapeHtml($text)
@@ -406,7 +412,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Validate customer data and return errors if they are
      *
-     * @param Mage_Customer_Model_Customer $customer
+     * @param  Mage_Customer_Model_Customer $customer
      * @return array
      */
     protected function _getCustomerErrors($customer)
@@ -416,6 +422,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         if ($request->getPost('create_address')) {
             $errors = $this->_getErrorsOnCustomerAddress($customer);
         }
+
         $customerForm = $this->_getCustomerForm($customer);
         $customerData = $customerForm->extractData($request);
         $customerErrors = $customerForm->validateData($customerData);
@@ -430,19 +437,19 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 $errors = array_merge($customerErrors, $errors);
             }
         }
+
         return $errors;
     }
 
     /**
-     * Get Customer Form Initalized Model
+     * Get Customer Form Initialized Model
      *
-     * @param Mage_Customer_Model_Customer $customer
+     * @param  Mage_Customer_Model_Customer $customer
      * @return Mage_Customer_Model_Form
      */
     protected function _getCustomerForm($customer)
     {
-        /** @var Mage_Customer_Model_Form $customerForm */
-        $customerForm = $this->_getModel('customer/form');
+        $customerForm = Mage::getModel('customer/form');
         $customerForm->setFormCode('customer_account_create');
         $customerForm->setEntity($customer);
         return $customerForm;
@@ -451,7 +458,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Get Helper
      *
-     * @param string $path
+     * @param  string                    $path
      * @return Mage_Core_Helper_Abstract
      */
     protected function _getHelper($path)
@@ -478,23 +485,21 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     {
         Mage::dispatchEvent(
             'customer_register_success',
-            ['account_controller' => $this, 'customer' => $customer]
+            ['account_controller' => $this, 'customer' => $customer],
         );
     }
 
     /**
      * Gets customer address
      *
-     * @param Mage_Customer_Model_Customer $customer
-     * @return array $errors
+     * @param  Mage_Customer_Model_Customer $customer
+     * @return array                        $errors
      */
     protected function _getErrorsOnCustomerAddress($customer)
     {
         $errors = [];
-        /** @var Mage_Customer_Model_Address $address */
-        $address = $this->_getModel('customer/address');
-        /** @var Mage_Customer_Model_Form $addressForm */
-        $addressForm = $this->_getModel('customer/form');
+        $address = Mage::getModel('customer/address');
+        $addressForm = Mage::getModel('customer/form');
         $addressForm->setFormCode('customer_register_address')
             ->setEntity($address);
 
@@ -503,6 +508,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         if (is_array($addressErrors)) {
             $errors = array_merge($errors, $addressErrors);
         }
+
         $address->setId(null)
             ->setIsDefaultBilling($this->getRequest()->getParam('default_billing', false))
             ->setIsDefaultShipping($this->getRequest()->getParam('default_shipping', false));
@@ -511,17 +517,18 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
 
         $addressErrors = $address->validate();
         if (is_array($addressErrors)) {
-            $errors = array_merge($errors, $addressErrors);
+            return array_merge($errors, $addressErrors);
         }
+
         return $errors;
     }
 
     /**
-     * Get model by path
-     *
-     * @param string $path
-     * @param array|null $arguments
+     * @param  string                         $path
+     * @param  null|array                     $arguments
      * @return false|Mage_Core_Model_Abstract
+     * @deprecated Use Mage::getModel() instead for PHPStan and IDE type hinting.
+     * Get model by path
      */
     public function _getModel($path, $arguments = [])
     {
@@ -531,7 +538,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Get model from registry by path
      *
-     * @param string $path
+     * @param  string $path
      * @return mixed
      */
     protected function _getFromRegistry($path)
@@ -543,36 +550,31 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
      * Add welcome message and send new account email.
      * Returns success URL
      *
-     * @param Mage_Customer_Model_Customer $customer
-     * @param bool $isJustConfirmed
+     * @param  bool                            $isJustConfirmed
      * @return string
-     * @throws Mage_Core_Model_Store_Exception
      * @throws Mage_Core_Exception
+     * @throws Mage_Core_Model_Store_Exception
      */
     protected function _welcomeCustomer(Mage_Customer_Model_Customer $customer, $isJustConfirmed = false)
     {
         $this->_getSession()->addSuccess(
-            $this->__('Thank you for registering with %s.', Mage::app()->getStore()->getFrontendName())
+            $this->__('Thank you for registering with %s.', Mage::app()->getStore()->getFrontendName()),
         );
         if ($this->_isVatValidationEnabled()) {
             // Show corresponding VAT message to customer
             /** @var Mage_Customer_Helper_Address $helper */
             $helper = $this->_getHelper('customer/address');
             $configAddressType = $helper->getTaxCalculationAddressType();
-            $userPrompt = '';
-            switch ($configAddressType) {
-                case Mage_Customer_Model_Address_Abstract::TYPE_SHIPPING:
-                    $userPrompt = $this->__(
-                        'If you are a registered VAT customer, please click <a href="%s">here</a> to enter you shipping address for proper VAT calculation',
-                        $this->_getUrl('customer/address/edit')
-                    );
-                    break;
-                default:
-                    $userPrompt = $this->__(
-                        'If you are a registered VAT customer, please click <a href="%s">here</a> to enter you billing address for proper VAT calculation',
-                        $this->_getUrl('customer/address/edit')
-                    );
-            }
+            $userPrompt = match ($configAddressType) {
+                Mage_Customer_Model_Address_Abstract::TYPE_SHIPPING => $this->__(
+                    'If you are a registered VAT customer, please click <a href="%s">here</a> to enter you shipping address for proper VAT calculation',
+                    $this->_getUrl('customer/address/edit'),
+                ),
+                default => $this->__(
+                    'If you are a registered VAT customer, please click <a href="%s">here</a> to enter you billing address for proper VAT calculation',
+                    $this->_getUrl('customer/address/edit'),
+                ),
+            };
             $this->_getSession()->addSuccess($userPrompt);
         }
 
@@ -580,13 +582,14 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             $isJustConfirmed ? 'confirmed' : 'registered',
             '',
             Mage::app()->getStore()->getId(),
-            $this->getRequest()->getPost('password')
+            $this->getRequest()->getPost('password'),
         );
 
         $successUrl = $this->_getUrl('*/*/index', ['_secure' => true]);
         if ($this->_getSession()->getBeforeAuthUrl()) {
-            $successUrl = $this->_getSession()->getBeforeAuthUrl(true);
+            return $this->_getSession()->getBeforeAuthUrl(true);
         }
+
         return $successUrl;
     }
 
@@ -599,6 +602,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         if ($session->isLoggedIn()) {
             $this->_getSession()->logout()->regenerateSessionId();
         }
+
         try {
             $id      = $this->getRequest()->getParam('id', false);
             $key     = $this->getRequest()->getParam('key', false);
@@ -609,13 +613,12 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
 
             // load customer by id (try/catch in case if it throws exceptions)
             try {
-                /** @var Mage_Customer_Model_Customer $customer */
-                $customer = $this->_getModel('customer/customer')->load($id);
-                if ((!$customer) || (!$customer->getId())) {
+                $customer = Mage::getModel('customer/customer')->load($id);
+                if (!$customer->getId()) {
                     throw new Exception('Failed to load customer by id.');
                 }
             } catch (Exception $e) {
-                throw new Exception($this->__('Wrong customer account specified.'));
+                throw new Exception($this->__('Wrong customer account specified.'), $e->getCode(), $e);
             }
 
             // check if it is inactive
@@ -629,7 +632,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                     $customer->setConfirmation(null);
                     $customer->save();
                 } catch (Exception $e) {
-                    throw new Exception($this->__('Failed to confirm customer account.'));
+                    throw new Exception($this->__('Failed to confirm customer account.'), $e->getCode(), $e);
                 }
 
                 // log in and send greeting email, then die happy
@@ -642,9 +645,9 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             // die happy
             $this->_redirectSuccess($this->_getUrl('*/*/index', ['_secure' => true]));
             return;
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             // die unhappy
-            $this->_getSession()->addError($e->getMessage());
+            $this->_getSession()->addError($exception->getMessage());
             $this->_redirectError($this->_getUrl('*/*/index', ['_secure' => true]));
             return;
         }
@@ -655,7 +658,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
      */
     public function confirmationAction()
     {
-        $customer = $this->_getModel('customer/customer');
+        $customer = Mage::getModel('customer/customer');
         if ($this->_getSession()->isLoggedIn()) {
             $this->_redirect('*/*/');
             return;
@@ -669,18 +672,21 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 if (!$customer->getId()) {
                     throw new Exception('');
                 }
+
                 if ($customer->getConfirmation()) {
                     $customer->sendNewAccountEmail('confirmation', '', Mage::app()->getStore()->getId());
                     $this->_getSession()->addSuccess($this->__('Please, check your email for confirmation key.'));
                 } else {
                     $this->_getSession()->addSuccess($this->__('This email does not require confirmation.'));
                 }
+
                 $this->_getSession()->setUsername($email);
                 $this->_redirectSuccess($this->_getUrl('*/*/index', ['_secure' => true]));
             } catch (Exception $e) {
                 $this->_getSession()->addException($e, $this->__('Wrong email.'));
                 $this->_redirectError($this->_getUrl('*/*/*', ['email' => $email, '_secure' => true]));
             }
+
             return;
         }
 
@@ -697,8 +703,8 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Get Url method
      *
-     * @param string $url
-     * @param array $params
+     * @param  string $url
+     * @param  array  $params
      * @return string
      */
     protected function _getUrl($url, $params = [])
@@ -714,7 +720,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         $this->loadLayout();
 
         $this->getLayout()->getBlock('forgotPassword')->setEmailValue(
-            $this->_getSession()->getForgottenEmail()
+            $this->_getSession()->getForgottenEmail(),
         );
         $this->_getSession()->unsForgottenEmail();
 
@@ -724,17 +730,23 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
 
     /**
      * Forgot customer password action
+     * @throws Mage_Core_Exception
      * @throws Mage_Core_Model_Store_Exception
      */
     public function forgotPasswordPostAction()
     {
         $email = (string) $this->getRequest()->getPost('email');
         if ($email) {
-            /**
-             * @var Mage_Customer_Model_Flowpassword $flowPassword
-             */
-            $flowPassword = $this->_getModel('customer/flowpassword');
-            $flowPassword->setEmail($email)->save();
+            /** @var Mage_Core_Helper_Validate $validator */
+            $validator = Mage::helper('core/validate');
+            if ($validator->validateEmail($email)->count() > 0) {
+                $this->_getSession()->setForgottenEmail($email);
+                $this->_getSession()->addError($this->__('Invalid email address.'));
+                $this->_redirect('*/*/forgotpassword');
+                return;
+            }
+
+            $flowPassword = Mage::getModel('customer/flowpassword');
 
             if (!$flowPassword->checkCustomerForgotPasswordFlowEmail($email)) {
                 $this->_getSession()
@@ -749,22 +761,15 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 return;
             }
 
-            if (!Zend_Validate::is($email, 'EmailAddress')) {
-                $this->_getSession()->setForgottenEmail($email);
-                $this->_getSession()->addError($this->__('Invalid email address.'));
-                $this->_redirect('*/*/forgotpassword');
-                return;
-            }
-
-            /** @var Mage_Customer_Model_Customer $customer */
-            $customer = $this->_getModel('customer/customer');
-            $customer
+            $customer = Mage::getModel('customer/customer')
                 ->setWebsiteId(Mage::app()->getStore()->getWebsiteId())
                 ->loadByEmail($email);
 
             $customerId = $customer->getId();
-            if ($customerId) {
-                try {
+
+            try {
+                $flowPassword->setEmail($email)->save();
+                if ($customerId) {
                     /** @var Helper $helper */
                     $helper = $this->_getHelper('customer');
                     $newResetPasswordLinkToken = $helper->generateResetPasswordLinkToken();
@@ -772,39 +777,37 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                     $customer->changeResetPasswordLinkCustomerId($newResetPasswordLinkCustomerId);
                     $customer->changeResetPasswordLinkToken($newResetPasswordLinkToken);
                     $customer->sendPasswordResetConfirmationEmail();
-                } catch (Exception $exception) {
-                    $this->_getSession()->addError($exception->getMessage());
-                    $this->_redirect('*/*/forgotpassword');
-                    return;
                 }
+            } catch (Exception $exception) {
+                $this->_getSession()->addError($exception->getMessage());
+                $this->_redirect('*/*/forgotpassword');
+                return;
             }
+
             $this->_getSession()
                 ->addSuccess($this->_getHelper('customer')
                 ->__(
                     'If there is an account associated with %s you will receive an email with a link to reset your password.',
-                    $this->_getHelper('customer')->escapeHtml($email)
+                    $this->_getHelper('customer')->escapeHtml($email),
                 ));
             $this->_redirect('*/*/');
-            return;
         } else {
             $this->_getSession()->addError($this->__('Please enter your email.'));
             $this->_redirect('*/*/forgotpassword');
-            return;
         }
     }
 
     /**
      * Display reset forgotten password form
-     *
      */
     public function changeForgottenAction()
     {
         try {
-            list($customerId, $resetPasswordLinkToken) = $this->_getRestorePasswordParameters($this->_getSession());
+            [$customerId, $resetPasswordLinkToken] = $this->_getRestorePasswordParameters($this->_getSession());
             $this->_validateResetPasswordLinkToken($customerId, $resetPasswordLinkToken);
             $this->loadLayout();
             $this->renderLayout();
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $this->_getSession()->addError($this->_getHelper('customer')->__('Your password reset link has expired.'));
             $this->_redirect('*/*/forgotpassword');
         }
@@ -814,18 +817,17 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
      * Checks reset forgotten password token
      *
      * User is redirected on this action when he clicks on the corresponding link in password reset confirmation email.
-     *
      */
     public function resetPasswordAction()
     {
         try {
-            $customerId = (int)$this->getCustomerId();
-            $resetPasswordLinkToken = (string)$this->getRequest()->getQuery('token');
+            $customerId = (int) $this->getCustomerId();
+            $resetPasswordLinkToken = (string) $this->getRequest()->getQuery('token');
 
             $this->_validateResetPasswordLinkToken($customerId, $resetPasswordLinkToken);
             $this->_saveRestorePasswordParameters($customerId, $resetPasswordLinkToken)
                 ->_redirect('*/*/changeforgotten');
-        } catch (Exception $exception) {
+        } catch (Exception) {
             $this->_getSession()->addError($this->_getHelper('customer')->__('Your password reset link has expired.'));
             $this->_redirect('*/*/forgotpassword');
         }
@@ -833,7 +835,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
 
     /**
      * Reset forgotten password
-     * Used to handle data recieved from reset forgotten password form
+     * Used to handle data received from reset forgotten password form
      */
     public function resetPasswordPostAction()
     {
@@ -842,9 +844,9 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             return;
         }
 
-        list($customerId, $resetPasswordLinkToken) = $this->_getRestorePasswordParameters($this->_getSession());
-        $password = (string)$this->getRequest()->getPost('password');
-        $passwordConfirmation = (string)$this->getRequest()->getPost('confirmation');
+        [$customerId, $resetPasswordLinkToken] = $this->_getRestorePasswordParameters($this->_getSession());
+        $password = (string) $this->getRequest()->getPost('password');
+        $passwordConfirmation = (string) $this->getRequest()->getPost('confirmation');
 
         try {
             $this->_validateResetPasswordLinkToken($customerId, $resetPasswordLinkToken);
@@ -858,11 +860,12 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         if (iconv_strlen($password) <= 0) {
             $errorMessages[] = $this->_getHelper('customer')->__('New password field cannot be empty.');
         }
-        /** @var Mage_Customer_Model_Customer $customer */
-        $customer = $this->_getModel('customer/customer')->load($customerId);
+
+        $customer = Mage::getModel('customer/customer')->load($customerId);
 
         $customer->setPassword($password);
         $customer->setPasswordConfirmation($passwordConfirmation);
+
         $validationErrorMessages = $customer->validateResetPassword();
         if (is_array($validationErrorMessages)) {
             $errorMessages = array_merge($errorMessages, $validationErrorMessages);
@@ -873,6 +876,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             foreach ($errorMessages as $errorMessage) {
                 $this->_getSession()->addError($errorMessage);
             }
+
             $this->_redirect('*/*/changeforgotten');
             return;
         }
@@ -882,8 +886,9 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             $customer->setRpToken(null);
             $customer->setRpTokenCreatedAt(null);
             $customer->cleanPasswordsValidationData();
-            $customer->setPasswordCreatedAt(time());
+            $customer->setPasswordCreatedAt(Carbon::now()->getTimestamp());
             $customer->setRpCustomerId(null);
+            $customer->setConfirmation(null); // Set email is confirmed.
             $customer->save();
 
             $this->_getSession()->unsetData(self::TOKEN_SESSION_NAME);
@@ -899,19 +904,18 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     }
 
     /**
-     * @return mixed
+     * @return false|string
      */
     protected function getCustomerId()
     {
-        $customerId = $this->getRequest()->getQuery("id");
-        if (strlen($customerId) > 12) {
-            /** @var Mage_Customer_Model_Resource_Customer_Collection $customerCollection */
-            $customerCollection = $this->_getModel('customer/customer')
+        $customerId = $this->getRequest()->getQuery('id', false);
+        if (is_string($customerId) && strlen($customerId) > 12) {
+            $customerCollection = Mage::getModel('customer/customer')
                 ->getCollection()
                 ->addAttributeToSelect(['rp_customer_id'])
                 ->addFieldToFilter('rp_customer_id', $customerId);
             $customerId = count($customerCollection) === 1
-                ? $customerId = $customerCollection->getFirstItem()->getId()
+                ? $customerCollection->getFirstItem()->getId()
                 : false;
         }
 
@@ -921,8 +925,8 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Check if password reset token is valid
      *
-     * @param int $customerId
-     * @param string $resetPasswordLinkToken
+     * @param  int                 $customerId
+     * @param  string              $resetPasswordLinkToken
      * @throws Mage_Core_Exception
      */
     protected function _validateResetPasswordLinkToken($customerId, $resetPasswordLinkToken)
@@ -936,14 +940,13 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
             throw Mage::exception('Mage_Core', $this->_getHelper('customer')->__('Invalid password reset token.'));
         }
 
-        /** @var Mage_Customer_Model_Customer $customer */
-        $customer = $this->_getModel('customer/customer')->load($customerId);
+        $customer = Mage::getModel('customer/customer')->load($customerId);
         if (!$customer || !$customer->getId()) {
             throw Mage::exception('Mage_Core', $this->_getHelper('customer')->__('Wrong customer account specified.'));
         }
 
         $customerToken = $customer->getRpToken();
-        if (strcmp($customerToken, $resetPasswordLinkToken) != 0 || $customer->isResetPasswordLinkTokenExpired()) {
+        if (is_null($customerToken) || strcmp($customerToken, $resetPasswordLinkToken) !== 0 || $customer->isResetPasswordLinkTokenExpired()) {
             throw Mage::exception('Mage_Core', $this->_getHelper('customer')->__('Your password reset link has expired.'));
         }
     }
@@ -961,11 +964,13 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         if ($block) {
             $block->setRefererUrl($this->_getRefererUrl());
         }
+
         $data = $this->_getSession()->getCustomerFormData(true);
         $customer = $this->_getSession()->getCustomer();
         if (!empty($data)) {
             $customer->addData($data);
         }
+
         if ($this->getRequest()->getParam('changepass') == 1) {
             $customer->setChangePassword(1);
         }
@@ -987,8 +992,7 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
         if ($this->getRequest()->isPost()) {
             $customer = $this->_getSession()->getCustomer();
             $customer->setOldEmail($customer->getEmail());
-            /** @var Mage_Customer_Model_Form $customerForm */
-            $customerForm = $this->_getModel('customer/form');
+            $customerForm = Mage::getModel('customer/form');
             $customerForm->setFormCode('customer_account_edit')
                 ->setEntity($customer);
 
@@ -1046,13 +1050,14 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
                 foreach ($errors as $message) {
                     $this->_getSession()->addError($message);
                 }
+
                 $this->_redirect('*/*/edit');
                 return $this;
             }
 
             try {
                 $customer->cleanPasswordsValidationData();
-                $customer->setPasswordCreatedAt(time());
+                $customer->setPasswordCreatedAt(Carbon::now()->getTimestamp());
 
                 // Reset all password reset tokens if all data was sufficient and correct on email change
                 if ($customer->getIsChangeEmail()) {
@@ -1085,19 +1090,18 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Filtering posted data. Converting localized data if needed
      *
-     * @param array $data
+     * @param  array $data
      * @return array
      */
     protected function _filterPostData($data)
     {
-        $data = $this->_filterDates($data, ['dob']);
-        return $data;
+        return $this->_filterDates($data, ['dob']);
     }
 
     /**
      * Check whether VAT ID validation is enabled
      *
-     * @param Mage_Core_Model_Store|string|int $store
+     * @param  int|Mage_Core_Model_Store|string $store
      * @return bool
      */
     protected function _isVatValidationEnabled($store = null)
@@ -1110,21 +1114,20 @@ class Mage_Customer_AccountController extends Mage_Core_Controller_Front_Action
     /**
      * Get restore password params.
      *
-     * @param Mage_Customer_Model_Session $session
      * @return array array ($customerId, $resetPasswordToken)
      */
     protected function _getRestorePasswordParameters(Mage_Customer_Model_Session $session)
     {
         return [
             (int) $session->getData(self::CUSTOMER_ID_SESSION_NAME),
-            (string) $session->getData(self::TOKEN_SESSION_NAME)
+            (string) $session->getData(self::TOKEN_SESSION_NAME),
         ];
     }
 
     /**
      * Save restore password params to session.
      *
-     * @param int $customerId
+     * @param  int    $customerId
      * @param  string $resetPasswordLinkToken
      * @return $this
      */

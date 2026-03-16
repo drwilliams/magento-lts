@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog api resource
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Api_Resource extends Mage_Api_Model_Resource_Abstract
 {
@@ -51,8 +43,8 @@ class Mage_Catalog_Model_Api_Resource extends Mage_Api_Model_Resource_Abstract
     /**
      * Check is attribute allowed
      *
-     * @param Mage_Eav_Model_Entity_Attribute_Abstract $attribute
-     * @param array $attributes
+     * @param  Mage_Eav_Model_Entity_Attribute_Abstract $attribute
+     * @param  array                                    $attributes
      * @return bool
      */
     protected function _isAllowedAttribute($attribute, $attributes = null)
@@ -76,9 +68,9 @@ class Mage_Catalog_Model_Api_Resource extends Mage_Api_Model_Resource_Abstract
 
     /**
      * Retrieves store id from store code, if no store id specified,
-     * it use seted session or admin store
+     * it uses set session or admin store
      *
-     * @param string|int $store
+     * @param  int|string $store
      * @return int
      */
     protected function _getStoreId($store = null)
@@ -90,7 +82,7 @@ class Mage_Catalog_Model_Api_Resource extends Mage_Api_Model_Resource_Abstract
 
         try {
             $storeId = Mage::app()->getStore($store)->getId();
-        } catch (Mage_Core_Model_Store_Exception $e) {
+        } catch (Mage_Core_Model_Store_Exception) {
             $this->_fault('store_not_exists');
         }
 
@@ -100,9 +92,9 @@ class Mage_Catalog_Model_Api_Resource extends Mage_Api_Model_Resource_Abstract
     /**
      * Return loaded product instance
      *
-     * @param  int|string $productId (SKU or ID)
-     * @param  int|string $store
-     * @param  string $identifierType
+     * @param  int|string                 $productId      (SKU or ID)
+     * @param  int|string                 $store
+     * @param  string                     $identifierType
      * @return Mage_Catalog_Model_Product
      */
     protected function _getProduct($productId, $store = null, $identifierType = null)
@@ -111,13 +103,14 @@ class Mage_Catalog_Model_Api_Resource extends Mage_Api_Model_Resource_Abstract
         if (is_null($product->getId())) {
             $this->_fault('product_not_exists');
         }
+
         return $product;
     }
 
     /**
      * Set current store for catalog.
      *
-     * @param string|int $store
+     * @param  int|string $store
      * @return int
      */
     public function currentStore($store = null)
@@ -125,7 +118,7 @@ class Mage_Catalog_Model_Api_Resource extends Mage_Api_Model_Resource_Abstract
         if (!is_null($store)) {
             try {
                 $storeId = Mage::app()->getStore($store)->getId();
-            } catch (Mage_Core_Model_Store_Exception $e) {
+            } catch (Mage_Core_Model_Store_Exception) {
                 $this->_fault('store_not_exists');
             }
 

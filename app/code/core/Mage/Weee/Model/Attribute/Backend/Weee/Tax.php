@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Weee
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 class Mage_Weee_Model_Attribute_Backend_Weee_Tax extends Mage_Catalog_Model_Product_Attribute_Backend_Price
 {
@@ -35,8 +29,8 @@ class Mage_Weee_Model_Attribute_Backend_Weee_Tax extends Mage_Catalog_Model_Prod
     /**
      * Validate data
      *
-     * @param   Mage_Catalog_Model_Product $object
-     * @return  $this
+     * @param  Mage_Catalog_Model_Product $object
+     * @return $this
      */
     public function validate($object)
     {
@@ -44,6 +38,7 @@ class Mage_Weee_Model_Attribute_Backend_Weee_Tax extends Mage_Catalog_Model_Prod
         if (empty($taxes)) {
             return $this;
         }
+
         $dup = [];
 
         foreach ($taxes as $tax) {
@@ -56,25 +51,27 @@ class Mage_Weee_Model_Attribute_Backend_Weee_Tax extends Mage_Catalog_Model_Prod
 
             if (!empty($dup[$key1])) {
                 Mage::throwException(
-                    Mage::helper('catalog')->__('Duplicate website, country and state tax found.')
+                    Mage::helper('catalog')->__('Duplicate website, country and state tax found.'),
                 );
             }
+
             $dup[$key1] = 1;
         }
+
         return $this;
     }
 
     /**
      * Assign WEEE taxes to product data
      *
-     * @param   Mage_Catalog_Model_Product $object
-     * @return  $this
+     * @param  Mage_Catalog_Model_Product $object
+     * @return $this
      */
     public function afterLoad($object)
     {
         $data = $this->_getResource()->loadProductData($object, $this->getAttribute());
 
-        foreach ($data as $i => $row) {
+        foreach (array_keys($data) as $i) {
             if ($data[$i]['website_id'] == 0) {
                 $rate = Mage::app()->getStore()->getBaseCurrency()->getRate(Mage::app()->getBaseCurrencyCode());
                 if ($rate) {
@@ -86,12 +83,13 @@ class Mage_Weee_Model_Attribute_Backend_Weee_Tax extends Mage_Catalog_Model_Prod
                 $data[$i]['website_value'] = $data[$i]['value'];
             }
         }
+
         $object->setData($this->getAttribute()->getName(), $data);
         return $this;
     }
 
     /**
-     * @param Mage_Catalog_Model_Product $object
+     * @param  Mage_Catalog_Model_Product                               $object
      * @return $this|Mage_Catalog_Model_Product_Attribute_Backend_Price
      */
     public function afterSave($object)
@@ -134,7 +132,7 @@ class Mage_Weee_Model_Attribute_Backend_Weee_Tax extends Mage_Catalog_Model_Prod
     }
 
     /**
-     * @param Varien_Object $object
+     * @param  Varien_Object                                          $object
      * @return $this|Mage_Eav_Model_Entity_Attribute_Backend_Abstract
      */
     public function afterDelete($object)

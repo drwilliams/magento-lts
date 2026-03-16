@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml transaction details grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Sales_Transactions_Child_Grid extends Mage_Adminhtml_Block_Sales_Transactions_Grid
 {
@@ -31,7 +23,6 @@ class Mage_Adminhtml_Block_Sales_Transactions_Child_Grid extends Mage_Adminhtml_
 
     /**
      * Disable pager and filter
-     *
      */
     public function __construct()
     {
@@ -45,7 +36,7 @@ class Mage_Adminhtml_Block_Sales_Transactions_Child_Grid extends Mage_Adminhtml_
     /**
      * Add filter by parent transaction ID
      *
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return $this
      */
     protected function _prepareCollection()
     {
@@ -57,19 +48,19 @@ class Mage_Adminhtml_Block_Sales_Transactions_Child_Grid extends Mage_Adminhtml_
 
     /**
      * Remove some columns and make other not sortable
-     *
      */
     protected function _prepareColumns()
     {
         $result = parent::_prepareColumns();
 
-        foreach ($this->_columns as $key => $value) {
+        foreach (array_keys($this->_columns) as $key) {
             if (in_array($key, $this->_columnsToRemove)) {
                 unset($this->_columns[$key]);
             } else {
                 $this->_columns[$key]->setData('sortable', false);
             }
         }
+
         return $result;
     }
 }

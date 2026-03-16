@@ -1,26 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Quote item resource collection
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method Mage_Sales_Model_Quote_Item getItemById(int $value)
+ * @method Mage_Sales_Model_Quote_Item   getItemById(int $value)
  * @method Mage_Sales_Model_Quote_Item[] getItems()
  */
 class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
@@ -39,6 +31,9 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
      */
     protected $_productIds   = [];
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('sales/quote_item');
@@ -51,13 +46,13 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
      */
     public function getStoreId()
     {
-        return (int)$this->_quote->getStoreId();
+        return (int) $this->_quote->getStoreId();
     }
 
     /**
      * Set Quote object to Collection
      *
-     * @param Mage_Sales_Model_Quote $quote
+     * @param  Mage_Sales_Model_Quote $quote
      * @return $this
      */
     public function setQuote($quote)
@@ -70,6 +65,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
             $this->_totalRecords = 0;
             $this->_setIsLoaded(true);
         }
+
         return $this;
     }
 
@@ -77,8 +73,8 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
      * Reset the collection and inner join it to quotes table
      * Optionally can select items with specified product id only
      *
-     * @param string $quotesTableName
-     * @param int $productId
+     * @param  string $quotesTableName
+     * @param  int    $productId
      * @return $this
      */
     public function resetJoinQuotes($quotesTableName, $productId = null)
@@ -86,16 +82,17 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
         $this->getSelect()->reset()
             ->from(
                 ['qi' => $this->getResource()->getMainTable()],
-                ['item_id', 'qty', 'quote_id']
+                ['item_id', 'qty', 'quote_id'],
             )
             ->joinInner(
                 ['q' => $quotesTableName],
                 'qi.quote_id = q.entity_id',
-                ['store_id', 'items_qty', 'items_count']
+                ['store_id', 'items_qty', 'items_count'],
             );
         if ($productId) {
-            $this->getSelect()->where('qi.product_id = ?', (int)$productId);
+            $this->getSelect()->where('qi.product_id = ?', (int) $productId);
         }
+
         return $this;
     }
 
@@ -115,6 +112,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
             if ($item->getParentItemId()) {
                 $item->setParentItem($this->getItemById($item->getParentItemId()));
             }
+
             if ($this->_quote) {
                 $item->setQuote($this->_quote);
             }
@@ -143,6 +141,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
         foreach ($this as $item) {
             $item->setOptions($optionCollection->getOptionsByItem($item));
         }
+
         $productIds        = $optionCollection->getProductIds();
         $this->_productIds = array_merge($this->_productIds, $productIds);
 
@@ -162,8 +161,9 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
 
         $productIds = [];
         foreach ($this as $item) {
-            $productIds[] = (int)$item->getProductId();
+            $productIds[] = (int) $item->getProductId();
         }
+
         $this->_productIds = array_merge($this->_productIds, $productIds);
 
         $productCollection = Mage::getModel('catalog/product')->getCollection()
@@ -180,7 +180,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
             'store_id'              => $this->getStoreId(),
         ]);
         Mage::dispatchEvent('sales_quote_item_collection_products_after_load', [
-            'product_collection'    => $productCollection
+            'product_collection'    => $productCollection,
         ]);
 
         $recollectQuote = false;
@@ -197,7 +197,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
                     $product->getTypeInstance(true)->assignProductToOption(
                         $productCollection->getItemById($option->getProductId()),
                         $option,
-                        $product
+                        $product,
                     );
 
                     if (is_object($option->getProduct()) && $option->getProduct()->getId() != $product->getId()) {
@@ -205,12 +205,10 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
                     }
                 }
 
-                if ($optionProductIds) {
-                    foreach ($optionProductIds as $optionProductId) {
-                        $qtyOption = $item->getOptionByCode('product_qty_' . $optionProductId);
-                        if ($qtyOption) {
-                            $qtyOptions[$optionProductId] = $qtyOption;
-                        }
+                foreach ($optionProductIds as $optionProductId) {
+                    $qtyOption = $item->getOptionByCode('product_qty_' . $optionProductId);
+                    if ($qtyOption) {
+                        $qtyOptions[$optionProductId] = $qtyOption;
                     }
                 }
 
@@ -219,6 +217,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Collection extends Mage_Core_Model_Re
                 $item->isDeleted(true);
                 $recollectQuote = true;
             }
+
             $item->checkData();
         }
 

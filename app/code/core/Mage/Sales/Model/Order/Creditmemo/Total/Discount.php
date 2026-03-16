@@ -1,27 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Order_Creditmemo_Total_Discount extends Mage_Sales_Model_Order_Creditmemo_Total_Abstract
 {
     /**
-     * @param Mage_Sales_Model_Order_Creditmemo $creditmemo
      * @return $this
      */
     public function collect(Mage_Sales_Model_Order_Creditmemo $creditmemo)
@@ -42,8 +33,8 @@ class Mage_Sales_Model_Order_Creditmemo_Total_Discount extends Mage_Sales_Model_
         if ($baseShippingAmount) {
             $baseShippingDiscount = $baseShippingAmount * $order->getBaseShippingDiscountAmount() / $order->getBaseShippingAmount();
             $shippingDiscount = $order->getShippingAmount() * $baseShippingDiscount / $order->getBaseShippingAmount();
-            $totalDiscountAmount = $totalDiscountAmount + $shippingDiscount;
-            $baseTotalDiscountAmount = $baseTotalDiscountAmount + $baseShippingDiscount;
+            $totalDiscountAmount += $shippingDiscount;
+            $baseTotalDiscountAmount += $baseShippingDiscount;
         }
 
         /** @var Mage_Sales_Model_Order_Invoice_Item $item */
@@ -66,12 +57,12 @@ class Mage_Sales_Model_Order_Creditmemo_Total_Discount extends Mage_Sales_Model_
                     $discount = $creditmemo->roundPrice(
                         $discount / $availableQty * $item->getQty(),
                         'regular',
-                        true
+                        true,
                     );
                     $baseDiscount = $creditmemo->roundPrice(
                         $baseDiscount / $availableQty * $item->getQty(),
                         'base',
-                        true
+                        true,
                     );
                 }
 

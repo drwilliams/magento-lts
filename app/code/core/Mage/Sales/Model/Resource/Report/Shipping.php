@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2017-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Shipping report resource model
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resource_Report_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_setResource('sales');
@@ -30,8 +25,8 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
     /**
      * Aggregate Shipping data
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     public function aggregate($from = null, $to = null)
@@ -50,8 +45,8 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
     /**
      * Aggregate shipping report by order create_at as period
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     protected function _aggregateByOrderCreatedAt($from, $to)
@@ -71,7 +66,7 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
             $this->_clearTableByDateRange($table, $from, $to, $subSelect);
             // convert dates from UTC to current admin timezone
             $periodExpr = $adapter->getDatePartSql(
-                $this->getStoreTZOffsetQuery($sourceTable, 'created_at', $from, $to)
+                $this->getStoreTZOffsetQuery($sourceTable, 'created_at', $from, $to),
             );
             $ifnullBaseShippingCanceled = $adapter->getIfNullSql('base_shipping_canceled', 0);
             $ifnullBaseShippingRefunded = $adapter->getIfNullSql('base_shipping_refunded', 0);
@@ -82,18 +77,18 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
                 'shipping_description'  => 'shipping_description',
                 'orders_count'          => new Zend_Db_Expr('COUNT(entity_id)'),
                 'total_shipping'        => new Zend_Db_Expr(
-                    "SUM((base_shipping_amount - {$ifnullBaseShippingCanceled}) * base_to_global_rate)"
+                    "SUM((base_shipping_amount - {$ifnullBaseShippingCanceled}) * base_to_global_rate)",
                 ),
                 'total_shipping_actual' => new Zend_Db_Expr(
-                    "SUM((base_shipping_invoiced - {$ifnullBaseShippingRefunded}) * base_to_global_rate)"
+                    "SUM((base_shipping_invoiced - {$ifnullBaseShippingRefunded}) * base_to_global_rate)",
                 ),
             ];
 
             $select = $adapter->select();
             $select->from($sourceTable, $columns)
                  ->where('state NOT IN (?)', [
-                    Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
+                     Mage_Sales_Model_Order::STATE_NEW,
                  ])
                 ->where('is_virtual = 0');
 
@@ -105,7 +100,7 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
                 $periodExpr,
                 'store_id',
                 'status',
-                'shipping_description'
+                'shipping_description',
             ]);
 
             $select->having('orders_count > 0');
@@ -119,7 +114,7 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
 
             $columns = [
                 'period'                => 'period',
-                'store_id'              => new Zend_Db_Expr(Mage_Core_Model_App::ADMIN_STORE_ID),
+                'store_id'              => new Zend_Db_Expr((string) Mage_Core_Model_App::ADMIN_STORE_ID),
                 'order_status'          => 'order_status',
                 'shipping_description'  => 'shipping_description',
                 'orders_count'          => new Zend_Db_Expr('SUM(orders_count)'),
@@ -138,24 +133,25 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
             $select->group([
                 'period',
                 'order_status',
-                'shipping_description'
+                'shipping_description',
             ]);
 
             $insertQuery = $helper->getInsertFromSelectUsingAnalytic($select, $table, array_keys($columns));
             $adapter->query($insertQuery);
             $adapter->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $adapter->rollBack();
-            throw $e;
+            throw $exception;
         }
+
         return $this;
     }
 
     /**
      * Aggregate shipping report by shipment create_at as period
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     protected function _aggregateByShippingCreatedAt($from, $to)
@@ -175,7 +171,7 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
                     'created_at',
                     'updated_at',
                     $from,
-                    $to
+                    $to,
                 );
             } else {
                 $subSelect = null;
@@ -188,8 +184,8 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
                     ['source_table' => $sourceTable],
                     'source_table.created_at',
                     $from,
-                    $to
-                )
+                    $to,
+                ),
             );
             $ifnullBaseShippingCanceled = $adapter->getIfNullSql('order_table.base_shipping_canceled', 0);
             $ifnullBaseShippingRefunded = $adapter->getIfNullSql('order_table.base_shipping_refunded', 0);
@@ -211,9 +207,9 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
                     ['order_table' => $orderTable],
                     $adapter->quoteInto(
                         'source_table.order_id = order_table.entity_id AND order_table.state != ?',
-                        Mage_Sales_Model_Order::STATE_CANCELED
+                        Mage_Sales_Model_Order::STATE_CANCELED,
                     ),
-                    []
+                    [],
                 )
                 ->useStraightJoin();
 
@@ -232,7 +228,7 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
                 $periodExpr,
                 'order_table.store_id',
                 'order_table.status',
-                'order_table.shipping_description'
+                'order_table.shipping_description',
             ]);
 
             /** @var Mage_Core_Model_Resource_Helper_Mysql4 $helper */
@@ -244,7 +240,7 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
 
             $columns = [
                 'period'                => 'period',
-                'store_id'              => new Zend_Db_Expr(Mage_Core_Model_App::ADMIN_STORE_ID),
+                'store_id'              => new Zend_Db_Expr((string) Mage_Core_Model_App::ADMIN_STORE_ID),
                 'order_status'          => 'order_status',
                 'shipping_description'  => 'shipping_description',
                 'orders_count'          => new Zend_Db_Expr('SUM(orders_count)'),
@@ -263,15 +259,16 @@ class Mage_Sales_Model_Resource_Report_Shipping extends Mage_Sales_Model_Resourc
             $select->group([
                 'period',
                 'order_status',
-                'shipping_description'
+                'shipping_description',
             ]);
             $insertQuery = $helper->getInsertFromSelectUsingAnalytic($select, $table, array_keys($columns));
             $adapter->query($insertQuery);
             $adapter->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $adapter->rollBack();
-            throw $e;
+            throw $exception;
         }
+
         return $this;
     }
 }

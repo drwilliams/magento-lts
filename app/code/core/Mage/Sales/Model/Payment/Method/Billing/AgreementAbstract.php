@@ -1,35 +1,28 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Sales Billing Agreement Payment Method Abstract model
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Sales_Model_Payment_Method_Billing_AgreementAbstract extends Mage_Payment_Model_Method_Abstract
 {
     /**
      * Transport billing agreement id
-     *
      */
     public const TRANSPORT_BILLING_AGREEMENT_ID = 'ba_agreement_id';
+
     public const PAYMENT_INFO_REFERENCE_ID      = 'ba_reference_id';
 
     protected $_infoBlockType = 'sales/payment_info_billing_agreement';
+
     protected $_formBlockType = 'sales/payment_form_billing_agreement';
 
     /**
@@ -42,7 +35,7 @@ abstract class Mage_Sales_Model_Payment_Method_Billing_AgreementAbstract extends
     /**
      * Check whether method is available
      *
-     * @param Mage_Sales_Model_Quote $quote
+     * @param  Mage_Sales_Model_Quote $quote
      * @return bool
      */
     public function isAvailable($quote = null)
@@ -50,23 +43,27 @@ abstract class Mage_Sales_Model_Payment_Method_Billing_AgreementAbstract extends
         if (is_null($this->_isAvailable)) {
             if (is_object($quote) && $quote->getCustomer()) {
                 $availableBA = Mage::getModel('sales/billing_agreement')->getAvailableCustomerBillingAgreements(
-                    $quote->getCustomer()->getId()
+                    $quote->getCustomer()->getId(),
                 );
                 $isAvailableBA = count($availableBA) > 0;
-                $this->_canUseForMultishipping = $this->_canUseCheckout = $this->_canUseInternal = $isAvailableBA;
+                $this->_canUseForMultishipping = $isAvailableBA;
+                $this->_canUseCheckout = $isAvailableBA;
+                $this->_canUseInternal = $isAvailableBA;
             }
+
             $this->_isAvailable = parent::isAvailable($quote) && $this->_isAvailable($quote);
             $this->_canUseCheckout = ($this->_isAvailable && $this->_canUseCheckout);
             $this->_canUseForMultishipping = ($this->_isAvailable && $this->_canUseForMultishipping);
             $this->_canUseInternal = ($this->_isAvailable && $this->_canUseInternal);
         }
+
         return $this->_isAvailable;
     }
 
     /**
      * Assign data to info model instance
      *
-     * @param mixed $data
+     * @param  mixed                              $data
      * @return Mage_Payment_Model_Method_Abstract
      * @throws Mage_Core_Exception
      */
@@ -81,6 +78,7 @@ abstract class Mage_Sales_Model_Payment_Method_Billing_AgreementAbstract extends
         } elseif ($data instanceof Varien_Object && $data->getData($key)) {
             $id = $data->getData($key);
         }
+
         if ($id) {
             $info = $this->getInfoInstance();
             $ba = Mage::getModel('sales/billing_agreement')->load($id);
@@ -89,12 +87,11 @@ abstract class Mage_Sales_Model_Payment_Method_Billing_AgreementAbstract extends
                     ->setAdditionalInformation(self::PAYMENT_INFO_REFERENCE_ID, $ba->getReferenceId());
             }
         }
+
         return $result;
     }
 
     /**
-     *
-     *
      * @param Mage_Sales_Model_Quote $quote
      */
     abstract protected function _isAvailable($quote);

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Eav
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Entity/Attribute/Model - attribute backend abstract
  *
- * @category   Mage
  * @package    Mage_Eav
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_Eav_Model_Entity_Attribute_Backend_Interface
 {
@@ -67,7 +59,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * Set attribute instance
      *
-     * @param Mage_Eav_Model_Entity_Attribute_Abstract $attribute
+     * @param  Mage_Eav_Model_Entity_Attribute_Abstract $attribute
      * @return $this
      */
     public function setAttribute($attribute)
@@ -149,7 +141,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * Set value id
      *
-     * @param int $valueId
+     * @param  int   $valueId
      * @return $this
      */
     public function setValueId($valueId)
@@ -161,8 +153,8 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * Set entity value id
      *
-     * @param Varien_Object $entity
-     * @param int $valueId
+     * @param  Varien_Object $entity
+     * @param  int           $valueId
      * @return $this
      */
     public function setEntityValueId($entity, $valueId)
@@ -188,7 +180,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * Get entity value id
      *
-     * @param Varien_Object $entity
+     * @param  Varien_Object $entity
      * @return int
      */
     public function getEntityValueId($entity)
@@ -211,7 +203,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
             if ($this->getAttribute()->getDefaultValue()) {
                 $this->_defaultValue = $this->getAttribute()->getDefaultValue();
             } else {
-                $this->_defaultValue = "";
+                $this->_defaultValue = '';
             }
         }
 
@@ -221,9 +213,9 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * Validate object
      *
-     * @param Varien_Object $object
-     * @throws Mage_Eav_Exception
-     * @return bool
+     * @param  Varien_Object                          $object
+     * @return $this|bool
+     * @throws Mage_Core_Exception|Mage_Eav_Exception
      */
     public function validate($object)
     {
@@ -238,7 +230,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
             $label = $this->getAttribute()->getFrontend()->getLabel();
             throw Mage::exception(
                 'Mage_Eav',
-                Mage::helper('eav')->__('The value of attribute "%s" contains invalid data.', $label)
+                Mage::helper('eav')->__('The value of attribute "%s" contains invalid data.', $label),
             );
         }
 
@@ -254,7 +246,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
                 $label = $this->getAttribute()->getFrontend()->getLabel();
                 throw Mage::exception(
                     'Mage_Eav',
-                    Mage::helper('eav')->__('The value of attribute "%s" must be unique', $label)
+                    Mage::helper('eav')->__('The value of attribute "%s" must be unique', $label),
                 );
             }
         }
@@ -265,7 +257,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * After load method
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return $this
      */
     public function afterLoad($object)
@@ -276,7 +268,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * Before save method
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return $this
      */
     public function beforeSave($object)
@@ -292,7 +284,7 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * After save method
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return $this
      */
     public function afterSave($object)
@@ -303,17 +295,18 @@ abstract class Mage_Eav_Model_Entity_Attribute_Backend_Abstract implements Mage_
     /**
      * Before delete method
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return $this
      */
     public function beforeDelete($object)
     {
         return $this;
     }
+
     /**
      * After delete method
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object $object
      * @return $this
      */
     public function afterDelete($object)

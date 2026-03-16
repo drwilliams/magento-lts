@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogSearch
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Advanced search result
  *
- * @category   Mage
  * @package    Mage_CatalogSearch
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method setResultCount(int $value)
  */
@@ -35,14 +27,15 @@ class Mage_CatalogSearch_Block_Advanced_Result extends Mage_Core_Block_Template
             $breadcrumbs->addCrumb('home', [
                 'label' => Mage::helper('catalogsearch')->__('Home'),
                 'title' => Mage::helper('catalogsearch')->__('Go to Home Page'),
-                'link' => Mage::getBaseUrl()
+                'link' => Mage::getBaseUrl(),
             ])->addCrumb('search', [
                 'label' => Mage::helper('catalogsearch')->__('Catalog Advanced Search'),
-                'link' => $this->getUrl('*/*/')
+                'link' => $this->getUrl('*/*/'),
             ])->addCrumb('search_result', [
-                'label' => Mage::helper('catalogsearch')->__('Results')
+                'label' => Mage::helper('catalogsearch')->__('Results'),
             ]);
         }
+
         return parent::_prepareLayout();
     }
 
@@ -55,7 +48,7 @@ class Mage_CatalogSearch_Block_Advanced_Result extends Mage_Core_Block_Template
         $availableOrders = $category->getAvailableSortByOptions();
         unset($availableOrders['position']);
         $availableOrders = array_merge([
-            'relevance' => $this->__('Relevance')
+            'relevance' => $this->__('Relevance'),
         ], $availableOrders);
         $this->getChild('search_result_list')
             ->setAvailableOrders($availableOrders)
@@ -101,6 +94,7 @@ class Mage_CatalogSearch_Block_Advanced_Result extends Mage_Core_Block_Template
             $size = $this->getSearchModel()->getProductCollection()->getSize();
             $this->setResultCount($size);
         }
+
         return $this->getData('result_count');
     }
 
@@ -129,7 +123,7 @@ class Mage_CatalogSearch_Block_Advanced_Result extends Mage_Core_Block_Template
     public function getSearchCriterias()
     {
         $searchCriterias = $this->getSearchModel()->getSearchCriterias();
-        $middle = ceil(count($searchCriterias) / 2);
+        $middle = (int) ceil(count($searchCriterias) / 2);
         $left = array_slice($searchCriterias, 0, $middle);
         $right = array_slice($searchCriterias, $middle);
 

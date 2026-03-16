@@ -1,45 +1,36 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Log
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Log Model
  *
- * @category   Mage
  * @package    Mage_Log
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Log_Model_Resource_Log _getResource()
+ * @method string                      getFirstVisitAt()
+ * @method int                         getLastUrlId()
+ * @method string                      getLastVisitAt()
  * @method Mage_Log_Model_Resource_Log getResource()
- * @method string getSessionId()
- * @method $this setSessionId(string $value)
- * @method string getFirstVisitAt()
- * @method $this setFirstVisitAt(string $value)
- * @method string getLastVisitAt()
- * @method $this setLastVisitAt(string $value)
- * @method int getLastUrlId()
- * @method $this setLastUrlId(int $value)
- * @method int getStoreId()
- * @method $this setStoreId(int $value)
+ * @method string                      getSessionId()
+ * @method int                         getStoreId()
+ * @method $this                       setFirstVisitAt(string $value)
+ * @method $this                       setLastUrlId(int $value)
+ * @method $this                       setLastVisitAt(string $value)
+ * @method $this                       setSessionId(string $value)
+ * @method $this                       setStoreId(int $value)
  */
 class Mage_Log_Model_Log extends Mage_Core_Model_Abstract
 {
     public const XML_LOG_CLEAN_DAYS    = 'system/log/clean_after_day';
 
     /**
-     * Init Resource Model
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -51,7 +42,7 @@ class Mage_Log_Model_Log extends Mage_Core_Model_Abstract
      */
     public function getLogCleanTime()
     {
-        return (int)Mage::getStoreConfig(self::XML_LOG_CLEAN_DAYS) * 60 * 60 * 24;
+        return Mage::getStoreConfigAsInt(self::XML_LOG_CLEAN_DAYS) * 60 * 60 * 24;
     }
 
     /**

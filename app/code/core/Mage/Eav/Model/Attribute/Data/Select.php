@@ -1,31 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Eav
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * EAV Entity Attribute Select Data Model
  *
- * @category   Mage
  * @package    Mage_Eav
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Eav_Model_Attribute_Data_Select extends Mage_Eav_Model_Attribute_Data_Abstract
 {
     /**
      * Extract data from request and return value
      *
-     * @param Zend_Controller_Request_Http $request
      * @return array|string
      */
     public function extractValue(Zend_Controller_Request_Http $request)
@@ -37,8 +28,8 @@ class Mage_Eav_Model_Attribute_Data_Select extends Mage_Eav_Model_Attribute_Data
      * Validate data
      * Return true or array of errors
      *
-     * @param array|string $value
-     * @return bool|array
+     * @param  array|string $value
+     * @return array|bool
      */
     public function validateValue($value)
     {
@@ -69,7 +60,7 @@ class Mage_Eav_Model_Attribute_Data_Select extends Mage_Eav_Model_Attribute_Data
     /**
      * Export attribute value to entity model
      *
-     * @param array|string $value
+     * @param  array|string $value
      * @return $this
      */
     public function compactValue($value)
@@ -77,13 +68,14 @@ class Mage_Eav_Model_Attribute_Data_Select extends Mage_Eav_Model_Attribute_Data
         if ($value !== false) {
             $this->getEntity()->setData($this->getAttribute()->getAttributeCode(), $value);
         }
+
         return $this;
     }
 
     /**
      * Restore attribute value from SESSION to entity model
      *
-     * @param array|string $value
+     * @param  array|string $value
      * @return $this
      */
     public function restoreValue($value)
@@ -94,7 +86,7 @@ class Mage_Eav_Model_Attribute_Data_Select extends Mage_Eav_Model_Attribute_Data
     /**
      * Return a text for option value
      *
-     * @param int $value
+     * @param  int    $value
      * @return string
      */
     protected function _getOptionText($value)
@@ -105,8 +97,8 @@ class Mage_Eav_Model_Attribute_Data_Select extends Mage_Eav_Model_Attribute_Data
     /**
      * Return formatted attribute value from entity model
      *
-     * @param string $format
-     * @return string|array
+     * @param  string              $format
+     * @return array|string
      * @throws Mage_Core_Exception
      */
     public function outputValue($format = Mage_Eav_Model_Attribute_Data::OUTPUT_FORMAT_TEXT)
@@ -122,6 +114,7 @@ class Mage_Eav_Model_Attribute_Data_Select extends Mage_Eav_Model_Attribute_Data
                 } else {
                     $output = '';
                 }
+
                 break;
         }
 

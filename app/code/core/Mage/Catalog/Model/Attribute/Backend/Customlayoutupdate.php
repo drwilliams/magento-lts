@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product url key attribute backend
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Attribute_Backend_Customlayoutupdate extends Mage_Eav_Model_Entity_Attribute_Backend_Abstract
 {
@@ -26,14 +18,14 @@ class Mage_Catalog_Model_Attribute_Backend_Customlayoutupdate extends Mage_Eav_M
      * Product custom layout update attribute validate function.
      * In case invalid data throws exception.
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object                             $object
      * @return bool
      * @throws Mage_Eav_Model_Entity_Attribute_Exception
      */
     public function validate($object)
     {
         $attributeName = $this->getAttribute()->getName();
-        $xml = trim($object->getData($attributeName));
+        $xml = trim((string) $object->getData($attributeName));
 
         if (!$this->getAttribute()->getIsRequired() && empty($xml)) {
             return true;
@@ -43,12 +35,13 @@ class Mage_Catalog_Model_Attribute_Backend_Customlayoutupdate extends Mage_Eav_M
         $validator = Mage::getModel('adminhtml/layoutUpdate_validator');
         if (!$validator->isValid($xml)) {
             $messages = $validator->getMessages();
-            //Add first message to exception
+            // add first message to exception
             $massage = array_shift($messages);
             $eavExc = new Mage_Eav_Model_Entity_Attribute_Exception($massage);
             $eavExc->setAttributeCode($attributeName);
             throw $eavExc;
         }
+
         return true;
     }
 }

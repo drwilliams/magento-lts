@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2015-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -23,342 +17,317 @@
  *  sales_order_delete_before
  *  sales_order_delete_after
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method Mage_Sales_Model_Resource_Order _getResource()
- * @method Mage_Sales_Model_Resource_Order getResource()
+ * @method Mage_Sales_Model_Resource_Order            _getResource()
+ * @method float                                      getAdjustmentNegative()
+ * @method float                                      getAdjustmentPositive()
+ * @method null|string                                getAppliedRuleIds()
+ * @method array                                      getAppliedTaxes()
+ * @method bool                                       getAppliedTaxIsSaved()
+ * @method float                                      getBaseAdjustmentNegative()
+ * @method float                                      getBaseAdjustmentPositive()
+ * @method string                                     getBaseCurrencyCode()
+ * @method float                                      getBaseDiscountAmount()
+ * @method float                                      getBaseDiscountCanceled()
+ * @method float                                      getBaseDiscountInvoiced()
+ * @method float                                      getBaseDiscountRefunded()
+ * @method float                                      getBaseGrandTotal()
+ * @method float                                      getBaseHiddenTaxAmount()
+ * @method float                                      getBaseHiddenTaxInvoiced()
+ * @method float                                      getBaseHiddenTaxRefunded()
+ * @method float                                      getBaseShippingAmount()
+ * @method float                                      getBaseShippingCanceled()
+ * @method float                                      getBaseShippingDiscountAmount()
+ * @method float                                      getBaseShippingHiddenTaxAmount()
+ * @method float                                      getBaseShippingHiddenTaxInvoiced()
+ * @method float                                      getBaseShippingHiddenTaxRefunded()
+ * @method float                                      getBaseShippingInclTax()
+ * @method float                                      getBaseShippingInvoiced()
+ * @method float                                      getBaseShippingRefunded()
+ * @method float                                      getBaseShippingTaxAmount()
+ * @method float                                      getBaseShippingTaxInvoiced()
+ * @method float                                      getBaseShippingTaxRefunded()
+ * @method float                                      getBaseSubtotal()
+ * @method float                                      getBaseSubtotalCanceled()
+ * @method float                                      getBaseSubtotalInclTax()
+ * @method float                                      getBaseSubtotalInvoiced()
+ * @method float                                      getBaseSubtotalRefunded()
+ * @method float                                      getBaseTaxAmount()
+ * @method float                                      getBaseTaxCanceled()
+ * @method float                                      getBaseTaxInvoiced()
+ * @method float                                      getBaseTaxRefunded()
+ * @method float                                      getBaseToGlobalRate()
+ * @method float                                      getBaseToOrderRate()
+ * @method float                                      getBaseTotalCanceled()
+ * @method float                                      getBaseTotalInvoiced()
+ * @method float                                      getBaseTotalInvoicedCost()
+ * @method float                                      getBaseTotalOfflineRefunded()
+ * @method float                                      getBaseTotalOnlineRefunded()
+ * @method float                                      getBaseTotalPaid()
+ * @method float                                      getBaseTotalQtyOrdered()
+ * @method float                                      getBaseTotalRefunded()
+ * @method int                                        getBillingAddressId()
+ * @method int                                        getBillingFirstname()
+ * @method int                                        getBillingLastname()
+ * @method bool                                       getCanReturnToStock()
+ * @method int                                        getCanShipPartially()
+ * @method int                                        getCanShipPartiallyItem()
  * @method Mage_Sales_Model_Resource_Order_Collection getCollection()
- *
- * @method float getAdjustmentNegative()
- * @method $this setAdjustmentNegative(float $value)
- * @method float getAdjustmentPositive()
- * @method $this setAdjustmentPositive(float $value)
- * @method string getAppliedRuleIds()
- * @method $this setAppliedRuleIds(string $value)
- * @method array getAppliedTaxes()
- * @method $this setAppliedTaxes(array $value)
- * @method bool getAppliedTaxIsSaved()
- * @method $this setAppliedTaxIsSaved(bool $value)
- *
- * @method string getBackUrl()
- * @method float getBaseAdjustmentNegative()
- * @method $this setBaseAdjustmentNegative(float $value)
- * @method float getBaseAdjustmentPositive()
- * @method $this setBaseAdjustmentPositive(float $value)
- * @method string getBaseCurrencyCode()
- * @method $this setBaseCurrencyCode(string $value)
- * @method float getBaseDiscountAmount()
- * @method $this setBaseDiscountAmount(float $value)
- * @method float getBaseDiscountCanceled()
- * @method $this setBaseDiscountCanceled(float $value)
- * @method float getBaseDiscountInvoiced()
- * @method $this setBaseDiscountInvoiced(float $value)
- * @method float getBaseDiscountRefunded()
- * @method $this setBaseDiscountRefunded(float $value)
- * @method float getBaseGrandTotal()
- * @method $this setBaseGrandTotal(float $value)
- * @method float getBaseHiddenTaxAmount()
- * @method $this setBaseHiddenTaxAmount(float $value)
- * @method float getBaseHiddenTaxInvoiced()
- * @method $this setBaseHiddenTaxInvoiced(float $value)
- * @method float getBaseHiddenTaxRefunded()
- * @method $this setBaseHiddenTaxRefunded(float $value)
- * @method float getBaseShippingAmount()
- * @method $this setBaseShippingAmount(float $value)
- * @method float getBaseShippingCanceled()
- * @method $this setBaseShippingCanceled(float $value)
- * @method float getBaseShippingDiscountAmount()
- * @method $this setBaseShippingDiscountAmount(float $value)
- * @method float getBaseShippingHiddenTaxAmount()
- * @method $this setBaseShippingHiddenTaxAmount(float $value)
- * @method float getBaseShippingHiddenTaxInvoiced()
- * @method float getBaseShippingHiddenTaxRefunded()
- * @method float getBaseShippingInclTax()
- * @method $this setBaseShippingInclTax(float $value)
- * @method float getBaseShippingInvoiced()
- * @method $this setBaseShippingInvoiced(float $value)
- * @method float getBaseShippingRefunded()
- * @method $this setBaseShippingRefunded(float $value)
- * @method float getBaseShippingTaxAmount()
- * @method $this setBaseShippingTaxAmount(float $value)
- * @method float getBaseShippingTaxInvoiced()
- * @method $this setBaseShippingTaxInvoiced(float $value)
- * @method float getBaseShippingTaxRefunded()
- * @method $this setBaseShippingTaxRefunded(float $value)
- * @method float getBaseSubtotal()
- * @method $this setBaseSubtotal(float $value)
- * @method float getBaseSubtotalCanceled()
- * @method $this setBaseSubtotalCanceled(float $value)
- * @method float getBaseSubtotalInclTax()
- * @method $this setBaseSubtotalInclTax(float $value)
- * @method float getBaseSubtotalInvoiced()
- * @method $this setBaseSubtotalInvoiced(float $value)
- * @method float getBaseSubtotalRefunded()
- * @method $this setBaseSubtotalRefunded(float $value)
- * @method float getBaseTaxAmount()
- * @method $this setBaseTaxAmount(float $value)
- * @method float getBaseTaxCanceled()
- * @method $this setBaseTaxCanceled(float $value)
- * @method float getBaseTaxInvoiced()
- * @method $this setBaseTaxInvoiced(float $value)
- * @method float getBaseTaxRefunded()
- * @method $this setBaseTaxRefunded(float $value)
- * @method float getBaseToGlobalRate()
- * @method $this setBaseToGlobalRate(float $value)
- * @method float getBaseToOrderRate()
- * @method $this setBaseToOrderRate(float $value)
- * @method float getBaseTotalCanceled()
- * @method $this setBaseTotalCanceled(float $value)
- * @method $this setBaseTotalDue(float $value)
- * @method float getBaseTotalInvoiced()
- * @method $this setBaseTotalInvoiced(float $value)
- * @method float getBaseTotalInvoicedCost()
- * @method $this setBaseTotalInvoicedCost(float $value)
- * @method float getBaseTotalOfflineRefunded()
- * @method $this setBaseTotalOfflineRefunded(float $value)
- * @method float getBaseTotalOnlineRefunded()
- * @method $this setBaseTotalOnlineRefunded(float $value)
- * @method float getBaseTotalPaid()
- * @method $this setBaseTotalPaid(float $value)
- * @method float getBaseTotalQtyOrdered()
- * @method $this setBaseTotalQtyOrdered(float $value)
- * @method float getBaseTotalRefunded()
- * @method $this setBaseTotalRefunded(float $value)
- * @method bool hasBillingAddressId()
- * @method int getBillingAddressId()
- * @method $this setBillingAddressId(int $value)
- * @method $this unsBillingAddressId()
- * @method int getBillingFirstname()
- * @method int getBillingLastname()
- *
- * @method bool hasCanReturnToStock()
- * @method bool getCanReturnToStock()
- * @method $this setCanReturnToStock()
- * @method int getCanShipPartially()
- * @method $this setCanShipPartially(int $value)
- * @method int getCanShipPartiallyItem()
- * @method $this setCanShipPartiallyItem(int $value)
- * @method bool getConvertingFromQuote()
- * @method $this setConvertingFromQuote(bool $value)
- * @method string getCouponCode()
- * @method $this setCouponCode(string $value)
- * @method $this setCouponRuleName(string $value)
- * @method string getCreatedAt()
- * @method $this setCreatedAt(string $value)
- * @method Mage_Customer_Model_Customer getCustomer()
- * @method $this setCustomer(Mage_Customer_Model_Customer $value)
- * @method string getCustomerDob()
- * @method $this setCustomerDob(string $value)
- * @method string getCustomerEmail()
- * @method $this setCustomerEmail(string $value)
- * @method string getCustomerFirstname()
- * @method $this setCustomerFirstname(string $value)
- * @method int getCustomerGender()
- * @method $this setCustomerGender(int $value)
- * @method int getCustomerGroupId()
- * @method $this setCustomerGroupId(int $value)
- * @method int getCustomerId()
- * @method $this setCustomerId(int $value)
- * @method int getCustomerIsGuest()
- * @method $this setCustomerIsGuest(int $value)
- * @method string getCustomerLastname()
- * @method $this setCustomerLastname(string $value)
- * @method string getCustomerMiddlename()
- * @method $this setCustomerMiddlename(string $value)
- * @method string getCustomerNote()
- * @method $this setCustomerNote(string $value)
- * @method bool hasCustomerNoteNotify()
- * @method int getCustomerNoteNotify()
- * @method $this setCustomerNoteNotify(int $value)
- * @method string getCustomerPrefix()
- * @method $this setCustomerPrefix(string $value)
- * @method string getCustomerSuffix()
- * @method $this setCustomerSuffix(string $value)
- * @method string getCustomerTaxvat()
- * @method $this setCustomerTaxvat(string $value)
- *
- * @method float getDiscountAmount()
- * @method $this setDiscountAmount(float $value)
- * @method float getDiscountCanceled()
- * @method $this setDiscountCanceled(float $value)
- * @method string getDiscountDescription()
- * @method $this setDiscountDescription(string $value)
- * @method float getDiscountInvoiced()
- * @method $this setDiscountInvoiced(float $value)
- * @method float getDiscountRefunded()
- * @method $this setDiscountRefunded(float $value)
- *
- * @method int getEditIncrement()
- * @method $this setEditIncrement(int $value)
- * @method int getEmailSent()
- * @method $this setEmailSent(int $value)
- * @method string getExtCustomerId()
- * @method $this setExtCustomerId(string $value)
- * @method string getExtOrderId()
- * @method $this setExtOrderId(string $value)
- *
- * @method bool hasForcedCanCreditmemo()
- * @method bool getForcedCanCreditmemo()
- * @method $this setForcedCanCreditmemo(bool $value)
- * @method int getForcedDoShipmentWithInvoice()
- * @method $this setForcedDoShipmentWithInvoice(int $value)
- *
- * @method $this setGiftMessage(string $value)
- * @method int getGiftMessageId()
- * @method $this setGiftMessageId(int $value)
- * @method string getGlobalCurrencyCode()
- * @method $this setGlobalCurrencyCode(string $value)
- * @method float getGrandTotal()
- * @method $this setGrandTotal(float $value)
- *
- * @method float getHiddenTaxAmount()
- * @method $this setHiddenTaxAmount(float $value)
- * @method float getHiddenTaxInvoiced()
- * @method $this setHiddenTaxInvoiced(float $value)
- * @method float getHiddenTaxRefunded()
- * @method $this setHiddenTaxRefunded(float $value)
- * @method string getHoldBeforeState()
- * @method $this setHoldBeforeState(string $value)
- * @method string getHoldBeforeStatus()
- * @method $this setHoldBeforeStatus(string $value)
- *
- * @method string getIncrementId()
- * @method $this setIncrementId(string $value)
- * @method bool getIsInProcess()
- * @method $this setIsInProcess(bool $value)
- * @method bool getIsMultiPayment()
- *
- * @method string getOrderCurrencyCode()
- * @method $this setOrderCurrencyCode(string $value)
- * @method string getOriginalIncrementId()
- * @method $this setOriginalIncrementId(string $value)
- *
- * @method float getPaymentAuthorizationAmount()
- * @method $this setPaymentAuthorizationAmount(float $value)
- * @method int getPaymentAuthorizationExpiration()
- * @method $this setPaymentAuthorizationExpiration(int $value)
- * @method int getPaypalIpnCustomerNotified()
- * @method $this setPaypalIpnCustomerNotified(int $value)
- * @method string getProtectCode()
- * @method $this setProtectCode(string $value)
- *
- * @method float getQuantity()
- * @method Mage_Sales_Model_Quote getQuote()
- * @method int getQuoteAddressId()
- * @method $this setQuoteAddressId(int $value)
- * @method float getQuoteBaseGrandTotal()
- * @method int getQuoteId()
- * @method $this setQuoteId(int $value)
- * @method $this setQuote(Mage_Sales_Model_Quote $value)
- *
- * @method string getRelationChildId()
- * @method $this setRelationChildId(string $value)
- * @method string getRelationChildRealId()
- * @method $this setRelationChildRealId(string $value)
- * @method string getRelationParentId()
- * @method $this setRelationParentId(string $value)
- * @method string getRelationParentRealId()
- * @method $this setRelationParentRealId(string $value)
- * @method string getRemoteIp()
- * @method $this setRemoteIp(string $value)
- * @method bool getReordered()
- * @method float getRevenue()
- * @method int getRowTaxDisplayPrecision()
- *
- * @method float getShipping()
- * @method bool hasShippingAddressId()
- * @method int getShippingAddressId()
- * @method $this setShippingAddressId(int $value)
- * @method $this unsShippingAddressId()
- * @method float getShippingAmount()
- * @method $this setShippingAmount(float $value)
- * @method float getShippingCanceled()
- * @method $this setShippingCanceled(float $value)
- * @method string getShippingDescription()
- * @method $this setShippingDescription(string $value)
- * @method float getShippingDiscountAmount()
- * @method $this setShippingDiscountAmount(float $value)
- * @method float getShippingHiddenTaxAmount()
- * @method $this setShippingHiddenTaxAmount(float $value)
- * @method float getShippingHiddenTaxInvoiced()
- * @method float getShippingHiddenTaxRefunded()
- * @method float getShippingInclTax()
- * @method $this setShippingInclTax(float $value)
- * @method float getShippingInvoiced()
- * @method $this setShippingInvoiced(float $value)
- * @method $this setShippingMethod(string $value)
- * @method float getShippingRefunded()
- * @method $this setShippingRefunded(float $value)
- * @method float getShippingTaxAmount()
- * @method $this setShippingTaxAmount(float $value)
- * @method float getShippingTaxInvoiced()
- * @method $this setShippingTaxInvoiced(float $value)
- * @method float getShippingTaxRefunded()
- * @method $this setShippingTaxRefunded(float $value)
- * @method string getState()
- * @method string getStatus()
- * @method $this setStatus(string $value)
- * @method string getStoreCurrencyCode()
- * @method $this setStoreCurrencyCode(string $value)
- * @method int getStoreId()
- * @method $this setStoreId(int $value)
- * @method string getStoreName()
- * @method $this setStoreName(string $value)
- * @method float getStoreToBaseRate()
- * @method $this setStoreToBaseRate(float $value)
- * @method float getStoreToOrderRate()
- * @method $this setStoreToOrderRate(float $value)
- * @method float getSubtotal()
- * @method $this setSubtotal(float $value)
- * @method float getSubtotalCanceled()
- * @method $this setSubtotalCanceled(float $value)
- * @method float getSubtotalInclTax()
- * @method $this setSubtotalInclTax(float $value)
- * @method float getSubtotalInvoiced()
- * @method $this setSubtotalInvoiced(float $value)
- * @method float getSubtotalRefunded()
- * @method $this setSubtotalRefunded(float $value)
- *
- * @method float getTax()
- * @method float getTaxAmount()
- * @method $this setTaxAmount(float $value)
- * @method float getTaxCanceled()
- * @method $this setTaxCanceled(float $value)
- * @method float getTaxInvoiced()
- * @method $this setTaxInvoiced(float $value)
- * @method float getTaxRefunded()
- * @method $this setTaxRefunded(float $value)
- * @method float getTotalCanceled()
- * @method $this setTotalCanceled(float $value)
- * @method $this setTotalDue(float $value)
- * @method float getTotalInvoiced()
- * @method $this setTotalInvoiced(float $value)
- * @method int getTotalItemCount()
- * @method $this setTotalItemCount(int $value)
- * @method float getTotalOfflineRefunded()
- * @method $this setTotalOfflineRefunded(float $value)
- * @method float getTotalOnlineRefunded()
- * @method $this setTotalOnlineRefunded(float $value)
- * @method float getTotalPaid()
- * @method $this setTotalPaid(float $value)
- * @method float getTotalQtyOrdered()
- * @method $this setTotalQtyOrdered(float $value)
- * @method float getTotalRefunded()
- * @method $this setTotalRefunded(float $value)
- *
- * @method string getUpdatedAt()
- * @method $this setUpdatedAt(string $value)
- *
- * @method int getIsVirtual()
- * @method $this setIsVirtual(int $value)
- *
- * @method float getWeight()
- * @method $this setWeight(float $value)
- *
- * @method string getXForwardedFor()
- * @method $this setXForwardedFor(string $value)
+ * @method bool                                       getConvertingFromQuote()
+ * @method string                                     getCouponCode()
+ * @method Mage_Customer_Model_Customer               getCustomer()
+ * @method string                                     getCustomerDob()
+ * @method string                                     getCustomerEmail()
+ * @method string                                     getCustomerFirstname()
+ * @method int                                        getCustomerGender()
+ * @method int                                        getCustomerGroupId()
+ * @method int                                        getCustomerId()
+ * @method int                                        getCustomerIsGuest()
+ * @method string                                     getCustomerLastname()
+ * @method string                                     getCustomerMiddlename()
+ * @method string                                     getCustomerNote()
+ * @method int                                        getCustomerNoteNotify()
+ * @method string                                     getCustomerPrefix()
+ * @method string                                     getCustomerSuffix()
+ * @method string                                     getCustomerTaxvat()
+ * @method float                                      getDiscountAmount()
+ * @method float                                      getDiscountCanceled()
+ * @method string                                     getDiscountDescription()
+ * @method float                                      getDiscountInvoiced()
+ * @method float                                      getDiscountRefunded()
+ * @method int                                        getEditIncrement()
+ * @method int                                        getEmailSent()
+ * @method string                                     getExtCustomerId()
+ * @method string                                     getExtOrderId()
+ * @method bool                                       getForcedCanCreditmemo()
+ * @method int                                        getForcedDoShipmentWithInvoice()
+ * @method int                                        getGiftMessageId()
+ * @method string                                     getGlobalCurrencyCode()
+ * @method float                                      getGrandTotal()
+ * @method float                                      getHiddenTaxAmount()
+ * @method float                                      getHiddenTaxInvoiced()
+ * @method float                                      getHiddenTaxRefunded()
+ * @method string                                     getHoldBeforeState()
+ * @method string                                     getHoldBeforeStatus()
+ * @method string                                     getIncrementId()
+ * @method bool                                       getIsInProcess()
+ * @method bool                                       getIsMultiPayment()
+ * @method int                                        getIsVirtual()
+ * @method string                                     getOrderCurrencyCode()
+ * @method string                                     getOriginalIncrementId()
+ * @method float                                      getPaymentAuthorizationAmount()
+ * @method int                                        getPaymentAuthorizationExpiration()
+ * @method int                                        getPaypalIpnCustomerNotified()
+ * @method string                                     getProtectCode()
+ * @method float                                      getQuantity()
+ * @method Mage_Sales_Model_Quote                     getQuote()
+ * @method int                                        getQuoteAddressId()
+ * @method float                                      getQuoteBaseGrandTotal()
+ * @method int                                        getQuoteId()
+ * @method string                                     getRelationChildId()
+ * @method string                                     getRelationChildRealId()
+ * @method string                                     getRelationParentId()
+ * @method string                                     getRelationParentRealId()
+ * @method string                                     getRemoteIp()
+ * @method bool                                       getReordered()
+ * @method Mage_Sales_Model_Resource_Order            getResource()
+ * @method Mage_Sales_Model_Resource_Order_Collection getResourceCollection()
+ * @method float                                      getRevenue()
+ * @method int                                        getRowTaxDisplayPrecision()
+ * @method float                                      getShipping()
+ * @method int                                        getShippingAddressId()
+ * @method float                                      getShippingAmount()
+ * @method float                                      getShippingCanceled()
+ * @method string                                     getShippingDescription()
+ * @method float                                      getShippingDiscountAmount()
+ * @method float                                      getShippingHiddenTaxAmount()
+ * @method float                                      getShippingHiddenTaxInvoiced()
+ * @method float                                      getShippingHiddenTaxRefunded()
+ * @method float                                      getShippingInclTax()
+ * @method float                                      getShippingInvoiced()
+ * @method float                                      getShippingRefunded()
+ * @method float                                      getShippingTaxAmount()
+ * @method float                                      getShippingTaxInvoiced()
+ * @method float                                      getShippingTaxRefunded()
+ * @method string                                     getState()
+ * @method string                                     getStatus()
+ * @method string                                     getStoreCurrencyCode()
+ * @method int                                        getStoreId()
+ * @method string                                     getStoreName()
+ * @method float                                      getStoreToBaseRate()
+ * @method float                                      getStoreToOrderRate()
+ * @method float                                      getSubtotal()
+ * @method float                                      getSubtotalCanceled()
+ * @method float                                      getSubtotalInclTax()
+ * @method float                                      getSubtotalInvoiced()
+ * @method float                                      getSubtotalRefunded()
+ * @method float                                      getTax()
+ * @method float                                      getTaxAmount()
+ * @method float                                      getTaxCanceled()
+ * @method float                                      getTaxInvoiced()
+ * @method float                                      getTaxRefunded()
+ * @method float                                      getTotalCanceled()
+ * @method float                                      getTotalInvoiced()
+ * @method int                                        getTotalItemCount()
+ * @method float                                      getTotalOfflineRefunded()
+ * @method float                                      getTotalOnlineRefunded()
+ * @method float                                      getTotalPaid()
+ * @method float                                      getTotalQtyOrdered()
+ * @method float                                      getTotalRefunded()
+ * @method float                                      getWeight()
+ * @method string                                     getXForwardedFor()
+ * @method bool                                       hasBillingAddressId()
+ * @method bool                                       hasCanReturnToStock()
+ * @method bool                                       hasCustomerNoteNotify()
+ * @method bool                                       hasForcedCanCreditmemo()
+ * @method bool                                       hasShippingAddressId()
+ * @method $this                                      setAdjustmentNegative(float $value)
+ * @method $this                                      setAdjustmentPositive(float $value)
+ * @method $this                                      setAppliedRuleIds(string $value)
+ * @method $this                                      setAppliedTaxes(array $value)
+ * @method $this                                      setAppliedTaxIsSaved(bool $value)
+ * @method $this                                      setBaseAdjustmentNegative(float $value)
+ * @method $this                                      setBaseAdjustmentPositive(float $value)
+ * @method $this                                      setBaseCurrencyCode(string $value)
+ * @method $this                                      setBaseDiscountAmount(float $value)
+ * @method $this                                      setBaseDiscountCanceled(float $value)
+ * @method $this                                      setBaseDiscountInvoiced(float $value)
+ * @method $this                                      setBaseDiscountRefunded(float $value)
+ * @method $this                                      setBaseGrandTotal(float $value)
+ * @method $this                                      setBaseHiddenTaxAmount(float $value)
+ * @method $this                                      setBaseHiddenTaxInvoiced(float $value)
+ * @method $this                                      setBaseHiddenTaxRefunded(float $value)
+ * @method $this                                      setBaseShippingAmount(float $value)
+ * @method $this                                      setBaseShippingCanceled(float $value)
+ * @method $this                                      setBaseShippingDiscountAmount(float $value)
+ * @method $this                                      setBaseShippingHiddenTaxAmount(float $value)
+ * @method $this                                      setBaseShippingInclTax(float $value)
+ * @method $this                                      setBaseShippingInvoiced(float $value)
+ * @method $this                                      setBaseShippingRefunded(float $value)
+ * @method $this                                      setBaseShippingTaxAmount(float $value)
+ * @method $this                                      setBaseShippingTaxInvoiced(float $value)
+ * @method $this                                      setBaseShippingTaxRefunded(float $value)
+ * @method $this                                      setBaseSubtotal(float $value)
+ * @method $this                                      setBaseSubtotalCanceled(float $value)
+ * @method $this                                      setBaseSubtotalInclTax(float $value)
+ * @method $this                                      setBaseSubtotalInvoiced(float $value)
+ * @method $this                                      setBaseSubtotalRefunded(float $value)
+ * @method $this                                      setBaseTaxAmount(float $value)
+ * @method $this                                      setBaseTaxCanceled(float $value)
+ * @method $this                                      setBaseTaxInvoiced(float $value)
+ * @method $this                                      setBaseTaxRefunded(float $value)
+ * @method $this                                      setBaseToGlobalRate(float $value)
+ * @method $this                                      setBaseToOrderRate(float $value)
+ * @method $this                                      setBaseTotalCanceled(float $value)
+ * @method $this                                      setBaseTotalDue(float $value)
+ * @method $this                                      setBaseTotalInvoiced(float $value)
+ * @method $this                                      setBaseTotalInvoicedCost(float $value)
+ * @method $this                                      setBaseTotalOfflineRefunded(float $value)
+ * @method $this                                      setBaseTotalOnlineRefunded(float $value)
+ * @method $this                                      setBaseTotalPaid(float $value)
+ * @method $this                                      setBaseTotalQtyOrdered(float $value)
+ * @method $this                                      setBaseTotalRefunded(float $value)
+ * @method $this                                      setBillingAddressId(int $value)
+ * @method $this                                      setCanReturnToStock()
+ * @method $this                                      setCanShipPartially(int $value)
+ * @method $this                                      setCanShipPartiallyItem(int $value)
+ * @method $this                                      setConvertingFromQuote(bool $value)
+ * @method $this                                      setCouponCode(string $value)
+ * @method $this                                      setCouponRuleName(string $value)
+ * @method $this                                      setCustomer(Mage_Customer_Model_Customer $value)
+ * @method $this                                      setCustomerDob(string $value)
+ * @method $this                                      setCustomerEmail(string $value)
+ * @method $this                                      setCustomerFirstname(string $value)
+ * @method $this                                      setCustomerGender(int $value)
+ * @method $this                                      setCustomerGroupId(int $value)
+ * @method $this                                      setCustomerId(int $value)
+ * @method $this                                      setCustomerIsGuest(int $value)
+ * @method $this                                      setCustomerLastname(string $value)
+ * @method $this                                      setCustomerMiddlename(string $value)
+ * @method $this                                      setCustomerNote(string $value)
+ * @method $this                                      setCustomerNoteNotify(int $value)
+ * @method $this                                      setCustomerPrefix(string $value)
+ * @method $this                                      setCustomerSuffix(string $value)
+ * @method $this                                      setCustomerTaxvat(string $value)
+ * @method $this                                      setDiscountAmount(float $value)
+ * @method $this                                      setDiscountCanceled(float $value)
+ * @method $this                                      setDiscountDescription(string $value)
+ * @method $this                                      setDiscountInvoiced(float $value)
+ * @method $this                                      setDiscountRefunded(float $value)
+ * @method $this                                      setEditIncrement(int $value)
+ * @method $this                                      setEmailSent(int $value)
+ * @method $this                                      setExtCustomerId(string $value)
+ * @method $this                                      setExtOrderId(string $value)
+ * @method $this                                      setForcedCanCreditmemo(bool $value)
+ * @method $this                                      setForcedDoShipmentWithInvoice(int $value)
+ * @method $this                                      setGiftMessage(string $value)
+ * @method $this                                      setGiftMessageId(int $value)
+ * @method $this                                      setGlobalCurrencyCode(string $value)
+ * @method $this                                      setGrandTotal(float $value)
+ * @method $this                                      setHiddenTaxAmount(float $value)
+ * @method $this                                      setHiddenTaxInvoiced(float $value)
+ * @method $this                                      setHiddenTaxRefunded(float $value)
+ * @method $this                                      setHoldBeforeState(string $value)
+ * @method $this                                      setHoldBeforeStatus(string $value)
+ * @method $this                                      setIncrementId(string $value)
+ * @method $this                                      setIsInProcess(bool $value)
+ * @method $this                                      setIsVirtual(int $value)
+ * @method $this                                      setOrderCurrencyCode(string $value)
+ * @method $this                                      setOriginalIncrementId(string $value)
+ * @method $this                                      setPaymentAuthorizationAmount(float $value)
+ * @method $this                                      setPaymentAuthorizationExpiration(int $value)
+ * @method $this                                      setPaypalIpnCustomerNotified(int $value)
+ * @method $this                                      setProtectCode(string $value)
+ * @method $this                                      setQuote(Mage_Sales_Model_Quote $value)
+ * @method $this                                      setQuoteAddressId(int $value)
+ * @method $this                                      setQuoteId(int $value)
+ * @method $this                                      setRelationChildId(string $value)
+ * @method $this                                      setRelationChildRealId(string $value)
+ * @method $this                                      setRelationParentId(string $value)
+ * @method $this                                      setRelationParentRealId(string $value)
+ * @method $this                                      setRemoteIp(string $value)
+ * @method $this                                      setShippingAddressId(int $value)
+ * @method $this                                      setShippingAmount(float $value)
+ * @method $this                                      setShippingCanceled(float $value)
+ * @method $this                                      setShippingDescription(string $value)
+ * @method $this                                      setShippingDiscountAmount(float $value)
+ * @method $this                                      setShippingHiddenTaxAmount(float $value)
+ * @method $this                                      setShippingInclTax(float $value)
+ * @method $this                                      setShippingInvoiced(float $value)
+ * @method $this                                      setShippingMethod(string $value)
+ * @method $this                                      setShippingRefunded(float $value)
+ * @method $this                                      setShippingTaxAmount(float $value)
+ * @method $this                                      setShippingTaxInvoiced(float $value)
+ * @method $this                                      setShippingTaxRefunded(float $value)
+ * @method $this                                      setStatus(string $value)
+ * @method $this                                      setStoreCurrencyCode(string $value)
+ * @method $this                                      setStoreId(int $value)
+ * @method $this                                      setStoreName(string $value)
+ * @method $this                                      setStoreToBaseRate(float $value)
+ * @method $this                                      setStoreToOrderRate(float $value)
+ * @method $this                                      setSubtotal(float $value)
+ * @method $this                                      setSubtotalCanceled(float $value)
+ * @method $this                                      setSubtotalInclTax(float $value)
+ * @method $this                                      setSubtotalInvoiced(float $value)
+ * @method $this                                      setSubtotalRefunded(float $value)
+ * @method $this                                      setTaxAmount(float $value)
+ * @method $this                                      setTaxCanceled(float $value)
+ * @method $this                                      setTaxInvoiced(float $value)
+ * @method $this                                      setTaxRefunded(float $value)
+ * @method $this                                      setTotalCanceled(float $value)
+ * @method $this                                      setTotalDue(float $value)
+ * @method $this                                      setTotalInvoiced(float $value)
+ * @method $this                                      setTotalItemCount(int $value)
+ * @method $this                                      setTotalOfflineRefunded(float $value)
+ * @method $this                                      setTotalOnlineRefunded(float $value)
+ * @method $this                                      setTotalPaid(float $value)
+ * @method $this                                      setTotalQtyOrdered(float $value)
+ * @method $this                                      setTotalRefunded(float $value)
+ * @method $this                                      setWeight(float $value)
+ * @method $this                                      setXForwardedFor(string $value)
+ * @method $this                                      unsBillingAddressId()
+ * @method $this                                      unsShippingAddressId()
  */
 class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
 {
@@ -371,35 +340,53 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
      * Event type names for order emails
      */
     public const EMAIL_EVENT_NAME_NEW_ORDER    = 'new_order';
+
     public const EMAIL_EVENT_NAME_UPDATE_ORDER = 'update_order';
 
     /**
      * XML configuration paths
      */
     public const XML_PATH_EMAIL_TEMPLATE               = 'sales_email/order/template';
+
     public const XML_PATH_EMAIL_GUEST_TEMPLATE         = 'sales_email/order/guest_template';
+
     public const XML_PATH_EMAIL_IDENTITY               = 'sales_email/order/identity';
+
     public const XML_PATH_EMAIL_COPY_TO                = 'sales_email/order/copy_to';
+
     public const XML_PATH_EMAIL_COPY_METHOD            = 'sales_email/order/copy_method';
+
     public const XML_PATH_EMAIL_ENABLED                = 'sales_email/order/enabled';
 
     public const XML_PATH_UPDATE_EMAIL_TEMPLATE        = 'sales_email/order_comment/template';
+
     public const XML_PATH_UPDATE_EMAIL_GUEST_TEMPLATE  = 'sales_email/order_comment/guest_template';
+
     public const XML_PATH_UPDATE_EMAIL_IDENTITY        = 'sales_email/order_comment/identity';
+
     public const XML_PATH_UPDATE_EMAIL_COPY_TO         = 'sales_email/order_comment/copy_to';
+
     public const XML_PATH_UPDATE_EMAIL_COPY_METHOD     = 'sales_email/order_comment/copy_method';
+
     public const XML_PATH_UPDATE_EMAIL_ENABLED         = 'sales_email/order_comment/enabled';
 
     /**
      * Order states
      */
     public const STATE_NEW             = 'new';
+
     public const STATE_PENDING_PAYMENT = 'pending_payment';
+
     public const STATE_PROCESSING      = 'processing';
+
     public const STATE_COMPLETE        = 'complete';
+
     public const STATE_CLOSED          = 'closed';
+
     public const STATE_CANCELED        = 'canceled';
+
     public const STATE_HOLDED          = 'holded';
+
     public const STATE_PAYMENT_REVIEW  = 'payment_review';
 
     /**
@@ -411,71 +398,85 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
      * Order flags
      */
     public const ACTION_FLAG_CANCEL                    = 'cancel';
+
     public const ACTION_FLAG_HOLD                      = 'hold';
+
     public const ACTION_FLAG_UNHOLD                    = 'unhold';
+
     public const ACTION_FLAG_EDIT                      = 'edit';
+
     public const ACTION_FLAG_CREDITMEMO                = 'creditmemo';
+
     public const ACTION_FLAG_INVOICE                   = 'invoice';
+
     public const ACTION_FLAG_REORDER                   = 'reorder';
+
     public const ACTION_FLAG_SHIP                      = 'ship';
+
     public const ACTION_FLAG_COMMENT                   = 'comment';
+
     public const ACTION_FLAG_PRODUCTS_PERMISSION_DENIED = 'product_permission_denied';
 
     /**
      * Report date types
      */
     public const REPORT_DATE_TYPE_CREATED = 'created';
+
     public const REPORT_DATE_TYPE_UPDATED = 'updated';
+
     /**
      * Identifier for history item
      */
     public const HISTORY_ENTITY_NAME = 'order';
 
     protected $_eventPrefix = 'sales_order';
+
     protected $_eventObject = 'order';
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Address_Collection|Mage_Sales_Model_Order_Address[]|null
+     * @var null|Mage_Sales_Model_Order_Address[]|Mage_Sales_Model_Resource_Order_Address_Collection
      */
     protected $_addresses       = null;
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Item_Collection|Mage_Sales_Model_Order_Item[]|null
+     * @var null|Mage_Sales_Model_Order_Item[]|Mage_Sales_Model_Resource_Order_Item_Collection
      */
     protected $_items           = null;
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Payment_Collection|Mage_Sales_Model_Order_Payment[]|null
+     * @var null|Mage_Sales_Model_Order_Payment[]|Mage_Sales_Model_Resource_Order_Payment_Collection
      */
     protected $_payments        = null;
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Status_History_Collection|Mage_Sales_Model_Order_Status_History[]|null
+     * @var null|Mage_Sales_Model_Order_Status_History[]|Mage_Sales_Model_Resource_Order_Status_History_Collection
      */
     protected $_statusHistory   = null;
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Invoice_Collection|null
+     * @var null|Mage_Sales_Model_Resource_Order_Invoice_Collection
      */
     protected $_invoices;
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Shipment_Track_Collection|null
+     * @var null|Mage_Sales_Model_Resource_Order_Shipment_Track_Collection
      */
     protected $_tracks;
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Shipment_Collection|false|null
+     * @var null|false|Mage_Sales_Model_Resource_Order_Shipment_Collection
      */
     protected $_shipments;
 
     /**
-     * @var Mage_Sales_Model_Resource_Order_Creditmemo_Collection|Mage_Sales_Model_Order_Creditmemo[]|false|null
+     * @var null|false|Mage_Sales_Model_Order_Creditmemo[]|Mage_Sales_Model_Resource_Order_Creditmemo_Collection
      */
     protected $_creditmemos;
 
     protected $_relatedObjects  = [];
+
     protected $_orderCurrency   = null;
+
     protected $_baseCurrency    = null;
 
     /**
@@ -499,28 +500,35 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
      */
     protected $_historyEntityName = self::HISTORY_ENTITY_NAME;
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('sales/order');
     }
 
     /**
-    * Init mapping array of short fields to
-    * its full names
-    *
-    * @return Varien_Object
-    */
+     * Init mapping array of short fields to
+     * its full names
+     *
+     * @return Varien_Object
+     */
     protected function _initOldFieldsMap()
     {
         // pre 1.6 fields names, old => new
-        $this->_oldFieldsMap = Mage::helper('sales')->getOldFieldMap('order');
+        $this->_oldFieldsMap = [
+            'payment_authorization_expiration' => 'payment_auth_expiration',
+            'forced_do_shipment_with_invoice' => 'forced_shipment_with_invoice',
+            'base_shipping_hidden_tax_amount' => 'base_shipping_hidden_tax_amnt',
+        ];
         return $this;
     }
 
     /**
      * Clear order object data
      *
-     * @param string $key data key
+     * @param  string $key data key
      * @return $this
      */
     public function unsetData($key = null)
@@ -529,14 +537,15 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (is_null($key)) {
             $this->_items = null;
         }
+
         return $this;
     }
 
     /**
      * Retrieve can flag for action (edit, unhold, etc..)
      *
-     * @param string $action
-     * @return bool|null
+     * @param  string    $action
+     * @return null|bool
      */
     public function getActionFlag($action)
     {
@@ -546,8 +555,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Set can flag value for action (edit, unhold, etc...)
      *
-     * @param string $action
-     * @param bool $flag
+     * @param  string $action
+     * @param  bool   $flag
      * @return $this
      */
     public function setActionFlag($action, $flag)
@@ -569,7 +578,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Set flag for order if it can sends new email to customer.
      *
-     * @param bool $flag
+     * @param  bool  $flag
      * @return $this
      */
     public function setCanSendNewEmailFlag($flag)
@@ -581,7 +590,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Load order by system increment identifier
      *
-     * @param string $incrementId
+     * @param  string $incrementId
      * @return $this
      */
     public function loadByIncrementId($incrementId)
@@ -592,8 +601,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Load order by custom attribute value. Attribute value should be unique
      *
-     * @param string $attribute
-     * @param string $value
+     * @param  string $attribute
+     * @param  string $value
      * @return $this
      */
     public function loadByAttribute($attribute, $value)
@@ -613,6 +622,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($storeId) {
             return Mage::app()->getStore($storeId);
         }
+
         return Mage::app()->getStore();
     }
 
@@ -626,6 +636,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$this->_canVoidOrder()) {
             return false;
         }
+
         if ($this->canUnhold()) {  // $this->isPaymentReview()
             return false;
         }
@@ -637,6 +648,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 break;
             }
         }
+
         if ($allInvoiced) {
             return false;
         }
@@ -649,6 +661,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getActionFlag(self::ACTION_FLAG_CANCEL) === false) {
             return false;
         }
+
         /**
          * Use only state for availability detect
          */
@@ -681,6 +694,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->canUnhold() || $this->isPaymentReview()) {
             return false;
         }
+
         return true;
     }
 
@@ -694,6 +708,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->canUnhold() || $this->isPaymentReview()) {
             return false;
         }
+
         $state = $this->getState();
         if ($this->isCanceled() || $state === self::STATE_COMPLETE || $state === self::STATE_CLOSED) {
             return false;
@@ -708,6 +723,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return true;
             }
         }
+
         return false;
     }
 
@@ -742,6 +758,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getActionFlag(self::ACTION_FLAG_EDIT) === false) {
             return false;
         }
+
         return true;
     }
 
@@ -762,6 +779,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getActionFlag(self::ACTION_FLAG_HOLD) === false) {
             return false;
         }
+
         return true;
     }
 
@@ -775,6 +793,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getActionFlag(self::ACTION_FLAG_UNHOLD) === false || $this->isPaymentReview()) {
             return false;
         }
+
         return $this->getState() === self::STATE_HOLDED;
     }
 
@@ -788,6 +807,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getActionFlag(self::ACTION_FLAG_COMMENT) === false) {
             return false;
         }
+
         return true;
     }
 
@@ -817,6 +837,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return true;
             }
         }
+
         return false;
     }
 
@@ -872,7 +893,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Retrieve order reorder availability
      *
-     * @param bool $ignoreSalable
+     * @param  bool $ignoreSalable
      * @return bool
      */
     protected function _canReorder($ignoreSalable = false)
@@ -890,34 +911,31 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
             $products[] = $item->getProductId();
         }
 
-        if (!empty($products)) {
-            /*
-             * @TODO ACPAOC: Use product collection here, but ensure that product
-             * is loaded with order store id, otherwise there'll be problems with isSalable()
-             * for configurables, bundles and other composites
-             *
-             */
-            /*
-            $productsCollection = Mage::getModel('catalog/product')->getCollection()
-                ->setStoreId($this->getStoreId())
-                ->addIdFilter($products)
-                ->addAttributeToSelect('status')
-                ->load();
+        /*
+         * @TODO ACPAOC: Use product collection here, but ensure that product
+         * is loaded with order store id, otherwise there'll be problems with isSalable()
+         * for configurables, bundles and other composites
+         *
+         */
+        /*
+        $productsCollection = Mage::getModel('catalog/product')->getCollection()
+            ->setStoreId($this->getStoreId())
+            ->addIdFilter($products)
+            ->addAttributeToSelect('status')
+            ->load();
 
-            foreach ($productsCollection as $product) {
-                if (!$product->isSalable()) {
-                    return false;
-                }
+        foreach ($productsCollection as $product) {
+            if (!$product->isSalable()) {
+                return false;
             }
-            */
-
-            foreach ($products as $productId) {
-                $product = Mage::getModel('catalog/product')
-                    ->setStoreId($this->getStoreId())
-                    ->load($productId);
-                if (!$product->getId() || (!$ignoreSalable && !$product->isSalable())) {
-                    return false;
-                }
+        }
+        */
+        foreach ($products as $productId) {
+            $product = Mage::getModel('catalog/product')
+                ->setStoreId($this->getStoreId())
+                ->load($productId);
+            if (!$product->getId() || (!$ignoreSalable && !$product->isSalable())) {
+                return false;
             }
         }
 
@@ -981,7 +999,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Retrieve order payment model object
      *
-     * @return Mage_Sales_Model_Order_Payment|false
+     * @return false|Mage_Sales_Model_Order_Payment
      */
     public function getPayment()
     {
@@ -990,14 +1008,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return $payment;
             }
         }
+
         return false;
     }
 
     /**
      * Declare order billing address
      *
-     * @param   Mage_Sales_Model_Order_Address $address
-     * @return  $this
+     * @return $this
      */
     public function setBillingAddress(Mage_Sales_Model_Order_Address $address)
     {
@@ -1005,6 +1023,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!empty($old)) {
             $address->setId($old->getId());
         }
+
         $this->addAddress($address->setAddressType('billing'));
         return $this;
     }
@@ -1012,8 +1031,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Declare order shipping address
      *
-     * @param   Mage_Sales_Model_Order_Address $address
-     * @return  $this
+     * @return $this
      */
     public function setShippingAddress(Mage_Sales_Model_Order_Address $address)
     {
@@ -1021,6 +1039,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!empty($old)) {
             $address->setId($old->getId());
         }
+
         $this->addAddress($address->setAddressType('shipping'));
         return $this;
     }
@@ -1028,7 +1047,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Retrieve order billing address
      *
-     * @return Mage_Sales_Model_Order_Address|false
+     * @return false|Mage_Sales_Model_Order_Address
      */
     public function getBillingAddress()
     {
@@ -1037,13 +1056,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return $address;
             }
         }
+
         return false;
     }
 
     /**
      * Retrieve order shipping address
      *
-     * @return Mage_Sales_Model_Order_Address|false
+     * @return false|Mage_Sales_Model_Order_Address
      */
     public function getShippingAddress()
     {
@@ -1052,18 +1072,19 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return $address;
             }
         }
+
         return false;
     }
 
     /**
      * Order state setter.
      * If status is specified, will add order status history with specified comment
-     * the setData() cannot be overriden because of compatibility issues with resource model
+     * the setData() cannot be overridden because of compatibility issues with resource model
      *
-     * @param string $state
-     * @param string|bool $status
-     * @param string $comment
-     * @param bool $isCustomerNotified
+     * @param  string      $state
+     * @param  bool|string $status
+     * @param  string      $comment
+     * @param  bool        $isCustomerNotified
      * @return $this
      */
     public function setState($state, $status = false, $comment = '', $isCustomerNotified = null)
@@ -1076,11 +1097,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
      * By default allows to set any state. Can also update status to default or specified value
      * Сomplete and closed states are encapsulated intentionally, see the _checkState()
      *
-     * @param string $state
-     * @param string|bool $status
-     * @param string $comment
-     * @param bool $isCustomerNotified
-     * @param bool $shouldProtectState
+     * @param  string      $state
+     * @param  bool|string $status
+     * @param  string      $comment
+     * @param  bool        $isCustomerNotified
+     * @param  bool        $shouldProtectState
      * @return $this
      */
     protected function _setState(
@@ -1094,10 +1115,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($shouldProtectState) {
             if ($this->isStateProtected($state)) {
                 Mage::throwException(
-                    Mage::helper('sales')->__('The Order State "%s" must not be set manually.', $state)
+                    Mage::helper('sales')->__('The Order State "%s" must not be set manually.', $state),
                 );
             }
         }
+
         $this->setData('state', $state);
 
         // add status history
@@ -1105,16 +1127,18 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
             if ($status === true) {
                 $status = $this->getConfig()->getStateDefaultStatus($state);
             }
+
             $this->setStatus($status);
             $history = $this->addStatusHistoryComment($comment, false); // no sense to set $status again
             $history->setIsCustomerNotified($isCustomerNotified); // for backwards compatibility
         }
+
         return $this;
     }
 
     /**
      * Whether specified state can be set from outside
-     * @param string $state
+     * @param  string $state
      * @return bool
      */
     public function isStateProtected($state)
@@ -1122,6 +1146,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (empty($state)) {
             return false;
         }
+
         return self::STATE_COMPLETE == $state || self::STATE_CLOSED == $state;
     }
 
@@ -1137,12 +1162,12 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
 
     /**
      * Add status change information to history
-     * @deprecated after 1.4.0.0-alpha3
      *
      * @param  string $status
      * @param  string $comment
-     * @param  bool $isCustomerNotified
+     * @param  bool   $isCustomerNotified
      * @return $this
+     * @deprecated after 1.4.0.0-alpha3
      */
     public function addStatusToHistory($status, $comment = '', $isCustomerNotified = false)
     {
@@ -1155,8 +1180,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
      * Add a comment to order
      * Different or default status may be specified
      *
-     * @param string $comment
-     * @param bool|string $status
+     * @param  string                                $comment
+     * @param  bool|string                           $status
      * @return Mage_Sales_Model_Order_Status_History
      */
     public function addStatusHistoryComment($comment, $status = false)
@@ -1168,6 +1193,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         } else {
             $this->setStatus($status);
         }
+
         $history = Mage::getModel('sales/order_status_history')
             ->setStatus($status)
             ->setComment($comment)
@@ -1179,7 +1205,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Overrides entity id, which will be saved to comments history status
      *
-     * @param string $entityName
+     * @param  string $entityName
      * @return $this
      */
     public function setHistoryEntityName($entityName)
@@ -1210,6 +1236,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$this->canHold()) {
             Mage::throwException(Mage::helper('sales')->__('Hold action is not available.'));
         }
+
         $this->setHoldBeforeState($this->getState());
         $this->setHoldBeforeStatus($this->getStatus());
         $this->setState(self::STATE_HOLDED, true);
@@ -1227,6 +1254,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$this->canUnhold()) {
             Mage::throwException(Mage::helper('sales')->__('Unhold action is not available.'));
         }
+
         $this->setState($this->getHoldBeforeState(), $this->getHoldBeforeStatus());
         $this->setHoldBeforeState(null);
         $this->setHoldBeforeStatus(null);
@@ -1235,7 +1263,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
 
     /**
      * Cancel order
-     * @param string $comment
+     * @param  string $comment
      * @return $this
      */
     public function cancel($comment = '')
@@ -1251,8 +1279,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
 
     /**
      * Prepare order totals to cancellation
-     * @param string $comment
-     * @param bool $graceful
+     * @param  string              $comment
+     * @param  bool                $graceful
      * @return $this
      * @throws Mage_Core_Exception
      */
@@ -1268,6 +1296,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                         $cancelState = self::STATE_COMPLETE;
                     }
                 }
+
                 $item->cancel();
             }
 
@@ -1290,6 +1319,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         } elseif (!$graceful) {
             Mage::throwException(Mage::helper('sales')->__('Order does not allow to be canceled.'));
         }
+
         return $this;
     }
 
@@ -1303,6 +1333,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getData('tracking_numbers')) {
             return explode(',', $this->getData('tracking_numbers'));
         }
+
         return [];
     }
 
@@ -1326,15 +1357,17 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                     $carrierModel = Mage::getModel($className);
                 }
             }
+
             $this->setData('shipping_carrier', $carrierModel);
         }
+
         return $carrierModel;
     }
 
     /**
      * Retrieve shipping method
      *
-     * @param bool $asObject return carrier code and shipping method data as object
+     * @param  bool                 $asObject return carrier code and shipping method data as object
      * @return string|Varien_Object
      */
     public function getShippingMethod($asObject = false)
@@ -1342,17 +1375,43 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         $shippingMethod = parent::getShippingMethod();
         if (!$asObject) {
             return $shippingMethod;
-        } else {
-            $segments = explode('_', $shippingMethod, 2);
-            if (!isset($segments[1])) {
-                $segments[1] = $segments[0];
-            }
-            list($carrierCode, $method) = $segments;
-            return new Varien_Object([
-                'carrier_code' => $carrierCode,
-                'method'       => $method
-            ]);
         }
+
+        $segments = explode('_', $shippingMethod, 2);
+        if (!isset($segments[1])) {
+            $segments[1] = $segments[0];
+        }
+
+        [$carrierCode, $method] = $segments;
+        return new Varien_Object([
+            'carrier_code' => $carrierCode,
+            'method'       => $method,
+        ]);
+    }
+
+    /**
+     * Get the current customer email.
+     *
+     * @return string
+     */
+    public function getCurrentCustomerEmail()
+    {
+        if (!$this->getData('current_customer_email')) {
+            if ($this->getCustomer()) {
+                $email = $this->getCustomer()->getEmail();
+            } elseif ($this->getCustomerId()) {
+                $email = Mage::getResourceSingleton('customer/customer')->getEmail($this->getCustomerId());
+            }
+
+            // Guest checkout or customer was deleted.
+            if (empty($email)) {
+                $email = $this->getCustomerEmail();
+            }
+
+            $this->setData('current_customer_email', $email);
+        }
+
+        return $this->getData('current_customer_email');
     }
 
     /**
@@ -1388,12 +1447,13 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 ->setIsSecureMode(true);
             $paymentBlock->getMethod()->setStore($storeId);
             $paymentBlockHtml = $paymentBlock->toHtml();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             // Stop store emulation process
             if (isset($appEmulation, $initialEnvironmentInfo)) {
                 $appEmulation->stopEnvironmentEmulation($initialEnvironmentInfo);
             }
-            throw $e;
+
+            throw $exception;
         }
 
         // Stop store emulation process
@@ -1414,13 +1474,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         $mailer = Mage::getModel('core/email_template_mailer');
         /** @var Mage_Core_Model_Email_Info $emailInfo */
         $emailInfo = Mage::getModel('core/email_info');
-        $emailInfo->addTo($this->getCustomerEmail(), $customerName);
+        $emailInfo->addTo($this->getCurrentCustomerEmail(), $customerName);
         if ($copyTo && $copyMethod == 'bcc') {
             // Add bcc to customer email
             foreach ($copyTo as $email) {
                 $emailInfo->addBcc($email);
             }
         }
+
         $mailer->addEmailInfo($emailInfo);
 
         // Email copies are sent as separated emails if their copy method is 'copy'
@@ -1439,7 +1500,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         $mailer->setTemplateParams([
             'order'        => $this,
             'billing'      => $this->getBillingAddress(),
-            'payment_html' => $paymentBlockHtml
+            'payment_html' => $paymentBlockHtml,
         ]);
 
         /** @var Mage_Core_Model_Email_Queue $emailQueue */
@@ -1471,9 +1532,9 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Queue email with order update information
      *
-     * @param bool $notifyCustomer
+     * @param bool   $notifyCustomer
      * @param string $comment
-     * @param bool $forceMode if true then email will be sent regardless of the fact that it was already sent previously
+     * @param bool   $forceMode      if true then email will be sent regardless of the fact that it was already sent previously
      *
      * @return $this
      */
@@ -1484,6 +1545,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!Mage::helper('sales')->canSendOrderCommentEmail($storeId)) {
             return $this;
         }
+
         // Get the destination email addresses to send copies to
         $copyTo = $this->_getEmails(self::XML_PATH_UPDATE_EMAIL_COPY_TO);
         $copyMethod = Mage::getStoreConfig(self::XML_PATH_UPDATE_EMAIL_COPY_METHOD, $storeId);
@@ -1506,13 +1568,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($notifyCustomer) {
             /** @var Mage_Core_Model_Email_Info $emailInfo */
             $emailInfo = Mage::getModel('core/email_info');
-            $emailInfo->addTo($this->getCustomerEmail(), $customerName);
+            $emailInfo->addTo($this->getCurrentCustomerEmail(), $customerName);
             if ($copyTo && $copyMethod == 'bcc') {
                 // Add bcc to customer email
                 foreach ($copyTo as $email) {
                     $emailInfo->addBcc($email);
                 }
             }
+
             $mailer->addEmailInfo($emailInfo);
         }
 
@@ -1531,9 +1594,9 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         $mailer->setStoreId($storeId);
         $mailer->setTemplateId($templateId);
         $mailer->setTemplateParams([
-                'order'   => $this,
-                'comment' => $comment,
-                'billing' => $this->getBillingAddress()
+            'order'   => $this,
+            'comment' => $comment,
+            'billing' => $this->getBillingAddress(),
         ]);
 
         /** @var Mage_Core_Model_Email_Queue $emailQueue */
@@ -1550,7 +1613,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Send email with order update information
      *
-     * @param bool $notifyCustomer
+     * @param bool   $notifyCustomer
      * @param string $comment
      *
      * @return $this
@@ -1562,7 +1625,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     }
 
     /**
-     * @param string $configPath
+     * @param  string      $configPath
      * @return array|false
      */
     protected function _getEmails($configPath)
@@ -1571,6 +1634,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!empty($data)) {
             return explode(',', $data);
         }
+
         return false;
     }
 
@@ -1596,7 +1660,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     }
 
     /**
-     * @param int|string $addressId
+     * @param  int|string                           $addressId
      * @return false|Mage_Sales_Model_Order_Address
      */
     public function getAddressById($addressId)
@@ -1606,11 +1670,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return $address;
             }
         }
+
         return false;
     }
 
     /**
-     * @param Mage_Sales_Model_Order_Address $address
      * @return $this
      * @throws Exception
      */
@@ -1620,12 +1684,13 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$address->getId()) {
             $this->getAddressesCollection()->addItem($address);
         }
+
         return $this;
     }
 
     /**
-     * @param array $filterByTypes
-     * @param bool $nonChildrenOnly
+     * @param  array                                           $filterByTypes
+     * @param  bool                                            $nonChildrenOnly
      * @return Mage_Sales_Model_Resource_Order_Item_Collection
      */
     public function getItemsCollection($filterByTypes = [], $nonChildrenOnly = false)
@@ -1637,6 +1702,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
             if ($filterByTypes) {
                 $this->_items->filterByTypes($filterByTypes);
             }
+
             if ($nonChildrenOnly) {
                 $this->_items->filterByParent();
             }
@@ -1647,13 +1713,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 }
             }
         }
+
         return $this->_items;
     }
 
     /**
      * Get random items collection with related children
      *
-     * @param int $limit
+     * @param  int                                             $limit
      * @return Mage_Sales_Model_Resource_Order_Item_Collection
      */
     public function getItemsRandomCollection($limit = 1)
@@ -1664,7 +1731,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Get random items collection without related children
      *
-     * @param int $limit
+     * @param  int                                             $limit
      * @return Mage_Sales_Model_Resource_Order_Item_Collection
      */
     public function getParentItemsRandomCollection($limit = 1)
@@ -1675,8 +1742,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Get random items collection with or without related children
      *
-     * @param int $limit
-     * @param bool $nonChildrenOnly
+     * @param  int                                             $limit
+     * @param  bool                                            $nonChildrenOnly
      * @return Mage_Sales_Model_Resource_Order_Item_Collection
      */
     protected function _getItemsRandomCollection($limit, $nonChildrenOnly = false)
@@ -1688,6 +1755,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($nonChildrenOnly) {
             $collection->filterByParent();
         }
+
         $products = [];
         /** @var Mage_Sales_Model_Order_Item $item */
         foreach ($collection as $item) {
@@ -1724,6 +1792,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 $items[] =  $item;
             }
         }
+
         return $items;
     }
 
@@ -1738,12 +1807,13 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 $items[] = $item;
             }
         }
+
         return $items;
     }
 
     /**
-     * @param int $itemId
-     * @return Mage_Sales_Model_Order_Item|null
+     * @param  int                              $itemId
+     * @return null|Mage_Sales_Model_Order_Item
      */
     public function getItemById($itemId)
     {
@@ -1751,8 +1821,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     }
 
     /**
-     * @param int $quoteItemId
-     * @return Mage_Sales_Model_Order_Item|null
+     * @param  int                              $quoteItemId
+     * @return null|Mage_Sales_Model_Order_Item
      */
     public function getItemByQuoteItemId($quoteItemId)
     {
@@ -1761,11 +1831,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return $item;
             }
         }
+
         return null;
     }
 
     /**
-     * @param Mage_Sales_Model_Order_Item $item
      * @return $this
      * @throws Exception
      */
@@ -1775,6 +1845,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$item->getId()) {
             $this->getItemsCollection()->addItem($item);
         }
+
         return $this;
     }
 
@@ -1790,6 +1861,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return false;
             }
         }
+
         return true;
     }
 
@@ -1810,6 +1882,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 }
             }
         }
+
         return $this->_payments;
     }
 
@@ -1824,11 +1897,12 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 $payments[] =  $payment;
             }
         }
+
         return $payments;
     }
 
     /**
-     * @param int $paymentId
+     * @param  int                                 $paymentId
      * @return bool|Mage_Sales_Model_Order_Payment
      */
     public function getPaymentById($paymentId)
@@ -1838,11 +1912,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return $payment;
             }
         }
+
         return false;
     }
 
     /**
-     * @param Mage_Sales_Model_Order_Payment $payment
      * @return $this
      * @throws Exception
      */
@@ -1853,11 +1927,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$payment->getId()) {
             $this->getPaymentsCollection()->addItem($payment);
         }
+
         return $this;
     }
 
     /**
-     * @param Mage_Sales_Model_Order_Payment $payment
      * @return Mage_Sales_Model_Order_Payment
      */
     public function setPayment(Mage_Sales_Model_Order_Payment $payment)
@@ -1865,6 +1939,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$this->getIsMultiPayment() && ($old = $this->getPayment())) {
             $payment->setId($old->getId());
         }
+
         $this->addPayment($payment);
         return $payment;
     }
@@ -1872,7 +1947,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /*********************** STATUSES ***************************/
 
     /**
-     * @param bool $reload
+     * @param  bool                                                      $reload
      * @return Mage_Sales_Model_Resource_Order_Status_History_Collection
      */
     public function getStatusHistoryCollection($reload = false)
@@ -1889,6 +1964,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 }
             }
         }
+
         return $this->_statusHistory;
     }
 
@@ -1905,6 +1981,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 $history[] =  $status;
             }
         }
+
         return $history;
     }
 
@@ -1921,11 +1998,12 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 $history[] =  $status;
             }
         }
+
         return $history;
     }
 
     /**
-     * @param int $statusId
+     * @param  int                                         $statusId
      * @return false|Mage_Sales_Model_Order_Status_History
      */
     public function getStatusHistoryById($statusId)
@@ -1935,6 +2013,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return $status;
             }
         }
+
         return false;
     }
 
@@ -1944,7 +2023,6 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
      * See the entity_id attribute backend model.
      * Or the history record can be saved standalone after this.
      *
-     * @param Mage_Sales_Model_Order_Status_History $history
      * @return $this
      */
     public function addStatusHistory(Mage_Sales_Model_Order_Status_History $history)
@@ -1954,6 +2032,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (!$history->getId()) {
             $this->getStatusHistoryCollection()->addItem($history);
         }
+
         return $this;
     }
 
@@ -1964,8 +2043,9 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     {
         $id = $this->getData('real_order_id');
         if (is_null($id)) {
-            $id = $this->getIncrementId();
+            return $this->getIncrementId();
         }
+
         return $id;
     }
 
@@ -1979,15 +2059,16 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (is_null($this->_orderCurrency)) {
             $this->_orderCurrency = Mage::getModel('directory/currency')->load($this->getOrderCurrencyCode());
         }
+
         return $this->_orderCurrency;
     }
 
     /**
      * Get formatted price value including order currency rate to order website currency
      *
-     * @param   float $price
-     * @param   bool  $addBrackets
-     * @return  string
+     * @param  float  $price
+     * @param  bool   $addBrackets
+     * @return string
      */
     public function formatPrice($price, $addBrackets = false)
     {
@@ -1995,9 +2076,9 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     }
 
     /**
-     * @param float $price
-     * @param int $precision
-     * @param bool $addBrackets
+     * @param  float  $price
+     * @param  int    $precision
+     * @param  bool   $addBrackets
      * @return string
      */
     public function formatPricePrecision($price, $precision, $addBrackets = false)
@@ -2008,7 +2089,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Retrieve currency formatted string.
      *
-     * @param float|string $price Numeric value or field name, e.g. "grand_total".
+     * @param  float|string $price Numeric value or field name, e.g. "grand_total".
      * @return string
      */
     public function formatPriceTxt($price)
@@ -2027,14 +2108,15 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (is_null($this->_baseCurrency)) {
             $this->_baseCurrency = Mage::getModel('directory/currency')->load($this->getBaseCurrencyCode());
         }
+
         return $this->_baseCurrency;
     }
 
     /**
      * Retrieve order website currency for working with base prices
-     * @deprecated  please use getBaseCurrency instead.
      *
      * @return Mage_Directory_Model_Currency
+     * @deprecated  please use getBaseCurrency instead
      */
     public function getStoreCurrency()
     {
@@ -2042,7 +2124,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     }
 
     /**
-     * @param float $price
+     * @param  float  $price
      * @return string
      */
     public function formatBasePrice($price)
@@ -2051,8 +2133,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     }
 
     /**
-     * @param float $price
-     * @param int $precision
+     * @param  float  $price
+     * @param  int    $precision
      * @return string
      */
     public function formatBasePricePrecision($price, $precision)
@@ -2093,8 +2175,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     }
 
     /**
-     * @param string $key
-     * @param int|string|null $index
+     * @param  string          $key
+     * @param  null|int|string $index
      * @return float|mixed
      */
     public function getData($key = '', $index = null)
@@ -2102,9 +2184,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($key == 'total_due') {
             return $this->getTotalDue();
         }
+
         if ($key == 'base_total_due') {
             return $this->getBaseTotalDue();
         }
+
         return parent::getData($key, $index);
     }
 
@@ -2125,6 +2209,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 }
             }
         }
+
         return $this->_invoices;
     }
 
@@ -2141,7 +2226,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Retrieve order shipments collection
      *
-     * @return Mage_Sales_Model_Resource_Order_Shipment_Collection|false
+     * @return false|Mage_Sales_Model_Resource_Order_Shipment_Collection
      */
     public function getShipmentsCollection()
     {
@@ -2154,13 +2239,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return false;
             }
         }
+
         return $this->_shipments;
     }
 
     /**
      * Retrieve order creditmemos collection
      *
-     * @return  Mage_Sales_Model_Resource_Order_Creditmemo_Collection|Mage_Sales_Model_Order_Creditmemo[]|false
+     * @return false|Mage_Sales_Model_Order_Creditmemo[]|Mage_Sales_Model_Resource_Order_Creditmemo_Collection
      */
     public function getCreditmemosCollection()
     {
@@ -2173,6 +2259,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 return false;
             }
         }
+
         return $this->_creditmemos;
     }
 
@@ -2191,6 +2278,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 $this->_tracks->load();
             }
         }
+
         return $this->_tracks;
     }
 
@@ -2214,8 +2302,9 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         $result = false;
         $shipmentsCollection = $this->getShipmentsCollection();
         if ($shipmentsCollection) {
-            $result = (bool)$shipmentsCollection->count();
+            return (bool) $shipmentsCollection->count();
         }
+
         return $result;
     }
 
@@ -2229,8 +2318,9 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         $result = false;
         $creditmemosCollection = $this->getCreditmemosCollection();
         if ($creditmemosCollection) {
-            $result = (bool)$creditmemosCollection->count();
+            return (bool) $creditmemosCollection->count();
         }
+
         return $result;
     }
 
@@ -2258,14 +2348,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         } else {
             $customerName = Mage::helper('sales')->__('Guest');
         }
+
         return $customerName;
     }
 
     /**
      * Add New object to related array
      *
-     * @param   Mage_Core_Model_Abstract $object
-     * @return  $this
+     * @return $this
      */
     public function addRelatedObject(Mage_Core_Model_Abstract $object)
     {
@@ -2276,8 +2366,8 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Get formatted order created date in store timezone
      *
-     * @param   string $format date format type (short|medium|long|full)
-     * @return  string
+     * @param  string $format date format type (short|medium|long|full)
+     * @return string
      */
     public function getCreatedAtFormated($format)
     {
@@ -2292,13 +2382,14 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getCustomerNoteNotify()) {
             return $this->getCustomerNote();
         }
+
         return '';
     }
 
     /**
      * Processing object before save data
      *
-     * @return Mage_Core_Model_Abstract
+     * @return $this
      */
     protected function _beforeSave()
     {
@@ -2330,9 +2421,11 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                     $itemsCount++;
                 }
             }
+
             // Set items count
             $this->setTotalItemCount($itemsCount);
         }
+
         if ($this->getCustomer()) {
             $this->setCustomerId($this->getCustomer()->getId());
         }
@@ -2346,7 +2439,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         }
 
         if (!$this->getId()) {
-            $this->setData('protect_code', substr(md5(uniqid(mt_rand(), true) . ':' . microtime(true)), 5, 6));
+            $this->setData('protect_code', Mage::helper('core')->getRandomString(16));
         }
 
         if ($this->getStatus() !== $this->getOrigData('status')) {
@@ -2392,6 +2485,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if ($this->getState() == self::STATE_NEW && $this->getIsInProcess()) {
             $this->setState(self::STATE_PROCESSING, true, '', $userNotification);
         }
+
         return $this;
     }
 
@@ -2421,18 +2515,23 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
                 $this->_getResource()->saveAttribute($this, $attributesForSave);
             }
         }
+
         if ($this->_items !== null) {
             $this->_items->save();
         }
+
         if ($this->_payments !== null) {
             $this->_payments->save();
         }
+
         if ($this->_statusHistory !== null) {
             $this->_statusHistory->save();
         }
+
         foreach ($this->getRelatedObjects() as $object) {
             $object->save();
         }
+
         return parent::_afterSave();
     }
 
@@ -2445,6 +2544,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
         if (is_null($storeId)) {
             return $this->getStoreName(1); // 0 - website name, 1 - store group name, 2 - store name
         }
+
         return $this->getStore()->getGroup()->getName();
     }
 
@@ -2493,7 +2593,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Create new invoice with maximum qty for invoice for each item
      *
-     * @param array $qtys
+     * @param  array                          $qtys
      * @return Mage_Sales_Model_Order_Invoice
      */
     public function prepareInvoice($qtys = [])
@@ -2504,7 +2604,7 @@ class Mage_Sales_Model_Order extends Mage_Sales_Model_Abstract
     /**
      * Create new shipment with maximum qty for shipping for each item
      *
-     * @param array $qtys
+     * @param  array                           $qtys
      * @return Mage_Sales_Model_Order_Shipment
      */
     public function prepareShipment($qtys = [])

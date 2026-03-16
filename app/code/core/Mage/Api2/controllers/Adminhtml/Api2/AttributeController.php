@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Api2
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * API2 attribute controller
  *
- * @category   Mage
  * @package    Mage_Api2
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Api2_Adminhtml_Api2_AttributeController extends Mage_Adminhtml_Controller_Action
 {
@@ -48,7 +40,7 @@ class Mage_Api2_Adminhtml_Api2_AttributeController extends Mage_Adminhtml_Contro
              ->_title($this->__('Web Services'))
              ->_title($this->__('REST Attributes'));
 
-        $this->loadLayout()->_setActiveMenu('system/services/attributes');
+        $this->loadLayout()->_setActiveMenu('system/api/rest_attributes');
 
         $this->_addBreadcrumb($this->__('Web services'), $this->__('Web services'))
             ->_addBreadcrumb($this->__('REST Attributes'), $this->__('REST Attributes'))
@@ -63,7 +55,7 @@ class Mage_Api2_Adminhtml_Api2_AttributeController extends Mage_Adminhtml_Contro
     public function editAction()
     {
         $this->loadLayout()
-            ->_setActiveMenu('system/services/attributes');
+            ->_setActiveMenu('system/api/rest_attributes');
 
         $type = $this->getRequest()->getParam('type');
 
@@ -96,7 +88,7 @@ class Mage_Api2_Adminhtml_Api2_AttributeController extends Mage_Adminhtml_Contro
 
         if (!$type) {
             $this->_getSession()->addError(
-                $this->__('User type "%s" no longer exists', $type)
+                $this->__('User type "%s" no longer exists', $type),
             );
             $this->_redirect('*/*/');
             return;
@@ -108,7 +100,7 @@ class Mage_Api2_Adminhtml_Api2_AttributeController extends Mage_Adminhtml_Contro
             /** @var Mage_Api2_Model_Acl_Global_Rule_Tree $ruleTree */
             $ruleTree = Mage::getSingleton(
                 'api2/acl_global_rule_tree',
-                ['type' => Mage_Api2_Model_Acl_Global_Rule_Tree::TYPE_ATTRIBUTE]
+                ['type' => Mage_Api2_Model_Acl_Global_Rule_Tree::TYPE_ATTRIBUTE],
             );
 
             /** @var Mage_Api2_Model_Acl_Filter_Attribute $attribute */

@@ -1,39 +1,30 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Class Mage_Sales_Model_Quote_Address_Total_Subtotal
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quote_Address_Total_Abstract
 {
     /**
      * Collect address subtotal
      *
-     * @param   Mage_Sales_Model_Quote_Address $address
-     * @return  Mage_Sales_Model_Quote_Address_Total_Subtotal
+     * @return Mage_Sales_Model_Quote_Address_Total_Subtotal
      */
     public function collect(Mage_Sales_Model_Quote_Address $address)
     {
         parent::collect($address);
         $address->setTotalQty(0);
-
-        $baseVirtualAmount = $virtualAmount = 0;
+        $baseVirtualAmount = 0;
+        $virtualAmount = 0;
 
         /**
          * Process address items
@@ -42,7 +33,7 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
         foreach ($items as $item) {
             if ($this->_initItem($address, $item) && $item->getQty() > 0) {
                 /**
-                 * Separatly calculate subtotal only for virtual products
+                 * Separately calculate subtotal only for virtual products
                  */
                 if ($item->getProduct()->isVirtual()) {
                     $virtualAmount += $item->getRowTotal();
@@ -67,8 +58,8 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
     /**
      * Address item initialization
      *
-     * @param Mage_Sales_Model_Quote_Address $address
-     * @param Mage_Sales_Model_Quote_Address_Item|Mage_Sales_Model_Quote_Item $item
+     * @param  Mage_Sales_Model_Quote_Address                                  $address
+     * @param  Mage_Sales_Model_Quote_Address_Item|Mage_Sales_Model_Quote_Item $item
      * @return bool
      */
     protected function _initItem($address, $item)
@@ -78,6 +69,7 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
         } else {
             $quoteItem = $item;
         }
+
         $product = $quoteItem->getProduct();
         $product->setCustomerGroupId($quoteItem->getQuote()->getCustomerGroupId());
 
@@ -88,10 +80,8 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
             if (!$product) {
                 return false;
             }
-        } else {
-            if (!$product || !$product->isVisibleInCatalog()) {
-                return false;
-            }
+        } elseif (!$product || !$product->isVisibleInCatalog()) {
+            return false;
         }
 
         if ($quoteItem->getParentItem() && $quoteItem->isChildrenCalculated()) {
@@ -99,7 +89,7 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
                 $quoteItem->getParentItem()->getProduct(),
                 $quoteItem->getParentItem()->getQty(),
                 $quoteItem->getProduct(),
-                $quoteItem->getQty()
+                $quoteItem->getQty(),
             );
             $item->setPrice($finalPrice)
                 ->setBaseOriginalPrice($finalPrice);
@@ -121,7 +111,7 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
      * Remove item
      *
      * @param  Mage_Sales_Model_Quote_Address $address
-     * @param  Mage_Core_Model_Abstract $item
+     * @param  Mage_Core_Model_Abstract       $item
      * @return $this
      */
     protected function _removeItem($address, $item)
@@ -144,15 +134,14 @@ class Mage_Sales_Model_Quote_Address_Total_Subtotal extends Mage_Sales_Model_Quo
     /**
      * Assign subtotal amount and label to address object
      *
-     * @param Mage_Sales_Model_Quote_Address $address
-     * @return  Mage_Sales_Model_Quote_Address_Total_Subtotal
+     * @return Mage_Sales_Model_Quote_Address_Total_Subtotal
      */
     public function fetch(Mage_Sales_Model_Quote_Address $address)
     {
         $address->addTotal([
             'code'  => $this->getCode(),
             'title' => Mage::helper('sales')->__('Subtotal'),
-            'value' => $address->getSubtotal()
+            'value' => $address->getSubtotal(),
         ]);
         return $this;
     }

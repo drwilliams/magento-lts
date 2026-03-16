@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Customer
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Customer address controller
  *
- * @category   Mage
  * @package    Mage_Customer
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
 {
@@ -41,6 +33,7 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
         if (!Mage::getSingleton('customer/session')->authenticate($this)) {
             $this->setFlag('', 'no-dispatch', true);
         }
+
         return $this;
     }
 
@@ -58,6 +51,7 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
             if ($block) {
                 $block->setRefererUrl($this->_getRefererUrl());
             }
+
             $this->renderLayout();
         } else {
             $this->getResponse()->setRedirect(Mage::getUrl('*/*/new'));
@@ -85,6 +79,7 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
         if ($navigationBlock) {
             $navigationBlock->setActive('customer/address');
         }
+
         $this->renderLayout();
     }
 
@@ -96,6 +91,7 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
         if (!$this->_validateFormKey()) {
             return $this->_redirect('*/*/');
         }
+
         // Save data
         if ($this->getRequest()->isPost()) {
             $customer = $this->_getSession()->getCustomer();
@@ -139,11 +135,11 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
                     $this->_getSession()->addSuccess($this->__('The address has been saved.'));
                     $this->_redirectSuccess(Mage::getUrl('*/*/index', ['_secure' => true]));
                     return;
-                } else {
-                    $this->_getSession()->setAddressFormData($this->getRequest()->getPost());
-                    foreach ($errors as $errorMessage) {
-                        $this->_getSession()->addError($errorMessage);
-                    }
+                }
+
+                $this->_getSession()->setAddressFormData($this->getRequest()->getPost());
+                foreach ($errors as $errorMessage) {
+                    $this->_getSession()->addError($errorMessage);
                 }
             } catch (Mage_Core_Exception $e) {
                 $this->_getSession()->setAddressFormData($this->getRequest()->getPost())
@@ -152,9 +148,11 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
                 $this->_getSession()->setAddressFormData($this->getRequest()->getPost())
                     ->addException($e, $this->__('Cannot save address.'));
             }
+
+            return $this->_redirectError(Mage::getUrl('*/*/edit', ['id' => $address->getId()]));
         }
 
-        return $this->_redirectError(Mage::getUrl('*/*/edit', ['id' => $address->getId()]));
+        $this->_redirectReferer();
     }
 
     /**
@@ -165,6 +163,7 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
         if (!$this->_validateFormKey()) {
             return $this->_redirect('*/*/');
         }
+
         $addressId = $this->getRequest()->getParam('id', false);
 
         if ($addressId) {
@@ -184,6 +183,7 @@ class Mage_Customer_AddressController extends Mage_Core_Controller_Front_Action
                 $this->_getSession()->addException($e, $this->__('An error occurred while deleting the address.'));
             }
         }
+
         $this->getResponse()->setRedirect(Mage::getUrl('*/*/index'));
     }
 }

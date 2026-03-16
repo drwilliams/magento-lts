@@ -1,32 +1,27 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Checkout
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Shopping cart abstract block
  *
- * @category   Mage
  * @package    Mage_Checkout
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Template
 {
     protected $_customer = null;
+
     protected $_checkout = null;
+
     protected $_quote    = null;
 
     protected $_totals;
+
     protected $_itemRenders = [];
 
     public function __construct()
@@ -38,17 +33,17 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
     /**
      * Add renderer for item product type
      *
-     * @param   string $productType
-     * @param   string $blockType
-     * @param   string $template
-     * @return  Mage_Checkout_Block_Cart_Abstract
+     * @param  string $productType
+     * @param  string $blockType
+     * @param  string $template
+     * @return $this
      */
     public function addItemRender($productType, $blockType, $template)
     {
         $this->_itemRenders[$productType] = [
             'block' => $blockType,
             'template' => $template,
-            'blockInstance' => null
+            'blockInstance' => null,
         ];
         return $this;
     }
@@ -56,10 +51,10 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
     /**
      * Get renderer information by product type code
      *
+     * @param  string $type
+     * @return array
      * @deprecated please use getItemRendererInfo() method instead
      * @see getItemRendererInfo()
-     * @param   string $type
-     * @return  array
      */
     public function getItemRender($type)
     {
@@ -69,8 +64,8 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
     /**
      * Get renderer information by product type code
      *
-     * @param   string $type
-     * @return  array
+     * @param  string $type
+     * @return array
      */
     public function getItemRendererInfo($type)
     {
@@ -80,14 +75,15 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
     /**
      * Get renderer block instance by product type code
      *
-     * @param   string $type
-     * @return  array
+     * @param  string $type
+     * @return array
      */
     public function getItemRenderer($type)
     {
         if (!isset($this->_itemRenders[$type])) {
             $type = 'default';
         }
+
         if (is_null($this->_itemRenders[$type]['blockInstance'])) {
             $this->_itemRenders[$type]['blockInstance'] = $this->getLayout()
                 ->createBlock($this->_itemRenders[$type]['block'])
@@ -108,6 +104,7 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
         if ($this->_customer === null) {
             $this->_customer = Mage::getSingleton('customer/session')->getCustomer();
         }
+
         return $this->_customer;
     }
 
@@ -121,6 +118,7 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
         if ($this->_checkout === null) {
             $this->_checkout = Mage::getSingleton('checkout/session');
         }
+
         return $this->_checkout;
     }
 
@@ -134,6 +132,7 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
         if ($this->_quote === null) {
             $this->_quote = $this->getCheckout()->getQuote();
         }
+
         return $this->_quote;
     }
 
@@ -150,8 +149,7 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
     /**
      * Get item row html
      *
-     * @param   Mage_Sales_Model_Quote_Item $item
-     * @return  string
+     * @return string
      */
     public function getItemHtml(Mage_Sales_Model_Quote_Item $item)
     {
@@ -176,6 +174,7 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
         if (empty($this->_totals)) {
             $this->_totals = $this->getQuote()->getTotals();
         }
+
         return $this->_totals;
     }
 
@@ -189,6 +188,7 @@ abstract class Mage_Checkout_Block_Cart_Abstract extends Mage_Core_Block_Templat
         if (!$this->getQuote()->hasCanApplyMsrp() && Mage::helper('catalog')->isMsrpEnabled()) {
             $this->getQuote()->collectTotals();
         }
+
         return $this->getQuote()->getCanApplyMsrp();
     }
 }

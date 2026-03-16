@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml system template edit form
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtml_Block_Widget_Form
 {
@@ -38,6 +30,7 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
                 ->addCss('lib/prototype/windows/themes/magento.css')
                 ->addItem('js', 'mage/adminhtml/variables.js');
         }
+
         return parent::_prepareLayout();
     }
 
@@ -52,7 +45,7 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
 
         $fieldset = $form->addFieldset('base_fieldset', [
             'legend' => Mage::helper('adminhtml')->__('Template Information'),
-            'class' => 'fieldset-wide'
+            'class' => 'fieldset-wide',
         ]);
 
         $templateId = $this->getEmailTemplate()->getId();
@@ -60,11 +53,11 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
             $fieldset->addField('used_currently_for', 'label', [
                 'label' => Mage::helper('adminhtml')->__('Used Currently For'),
                 'container_id' => 'used_currently_for',
-                'after_element_html' =>
-                    '<script type="text/javascript">' .
-                    (!$this->getEmailTemplate()->getSystemConfigPathsWhereUsedCurrently()
-                        ? '$(\'' . 'used_currently_for' . '\').hide(); ' : '') .
-                    '</script>',
+                'after_element_html'
+                    => '<script type="text/javascript">'
+                    . ($this->getEmailTemplate()->getSystemConfigPathsWhereUsedCurrently()
+                        ? '' : '$(\'used_currently_for\').hide(); ')
+                    . '</script>',
             ]);
         }
 
@@ -72,25 +65,25 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
             $fieldset->addField('used_default_for', 'label', [
                 'label' => Mage::helper('adminhtml')->__('Used as Default For'),
                 'container_id' => 'used_default_for',
-                'after_element_html' =>
-                    '<script type="text/javascript">' .
-                    (!(bool)$this->getEmailTemplate()->getOrigTemplateCode()
-                        ? '$(\'' . 'used_default_for' . '\').hide(); ' : '') .
-                    '</script>',
+                'after_element_html'
+                    => '<script type="text/javascript">'
+                    . ((bool) $this->getEmailTemplate()->getOrigTemplateCode()
+                        ? '' : '$(\'used_default_for\').hide(); ')
+                    . '</script>',
             ]);
         }
 
         $fieldset->addField('template_code', 'text', [
             'name' => 'template_code',
             'label' => Mage::helper('adminhtml')->__('Template Name'),
-            'required' => true
+            'required' => true,
 
         ]);
 
         $fieldset->addField('template_subject', 'text', [
             'name' => 'template_subject',
             'label' => Mage::helper('adminhtml')->__('Template Subject'),
-            'required' => true
+            'required' => true,
         ]);
 
         $fieldset->addField('orig_template_variables', 'hidden', [
@@ -99,7 +92,7 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
 
         $fieldset->addField('variables', 'hidden', [
             'name' => 'variables',
-            'value' => Zend_Json::encode($this->getVariables())
+            'value' => Zend_Json::encode($this->getVariables()),
         ]);
 
         $fieldset->addField('template_variables', 'hidden', [
@@ -110,11 +103,11 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
             ->createBlock('adminhtml/widget_button', '', [
                 'type' => 'button',
                 'label' => Mage::helper('adminhtml')->__('Insert Variable...'),
-                'onclick' => 'templateControl.openVariableChooser();return false;'
+                'onclick' => 'templateControl.openVariableChooser();return false;',
             ]);
 
         $fieldset->addField('insert_variable', 'note', [
-            'text' => $insertVariableButton->toHtml()
+            'text' => $insertVariableButton->toHtml(),
         ]);
 
         $fieldset->addField('template_text', 'textarea', [
@@ -129,7 +122,7 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
             $fieldset->addField('template_styles', 'textarea', [
                 'name' => 'template_styles',
                 'label' => Mage::helper('adminhtml')->__('Template Styles'),
-                'container_id' => 'field_template_styles'
+                'container_id' => 'field_template_styles',
             ]);
         }
 
@@ -171,11 +164,13 @@ class Mage_Adminhtml_Block_System_Email_Template_Edit_Form extends Mage_Adminhtm
         if ($customVariables) {
             $variables[] = $customVariables;
         }
+
         /** @var Mage_Core_Model_Email_Template $template */
         $template = Mage::registry('current_email_template');
         if ($template->getId() && $templateVariables = $template->getVariablesOptionArray(true)) {
             $variables[] = $templateVariables;
         }
+
         return $variables;
     }
 }

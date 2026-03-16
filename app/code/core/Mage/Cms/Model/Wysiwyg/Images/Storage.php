@@ -1,35 +1,31 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Cms
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2018-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+
+use Carbon\Carbon;
 
 /**
  * Wysiwyg Images model
  *
- * @category   Mage
  * @package    Mage_Cms
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
 {
     public const DIRECTORY_NAME_REGEXP = '/^[a-z0-9\-\_]+$/si';
+
     public const THUMBS_DIRECTORY_NAME = '.thumbs';
+
     public const THUMB_PLACEHOLDER_PATH_SUFFIX = 'images/placeholder/thumbnail.jpg';
 
     /**
      * Config object
      *
-     * @var Mage_Core_Model_Config_Element|Varien_Simplexml_Element|false
+     * @var Mage_Core_Model_Config_Element
      */
     protected $_config;
 
@@ -43,7 +39,7 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Return one-level child directories for specified path
      *
-     * @param string $path Parent directory path
+     * @param  string                            $path Parent directory path
      * @return Varien_Data_Collection_Filesystem
      */
     public function getDirsCollection($path)
@@ -63,9 +59,10 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         foreach ($this->getConfig()->dirs->exclude->children() as $dir) {
             $conditions[$dir->getAttribute('regexp') ? 'reg_exp' : 'plain'][(string) $dir] = true;
         }
+
         // "include" section takes precedence and can revoke directory exclusion
         foreach ($this->getConfig()->dirs->include->children() as $dir) {
-            unset($conditions['regexp'][(string) $dir], $conditions['plain'][(string) $dir]);
+            unset($conditions['reg_exp'][(string) $dir], $conditions['plain'][(string) $dir]);
         }
 
         $regExp = $conditions['reg_exp'] ? ('~' . implode('|', array_keys($conditions['reg_exp'])) . '~i') : null;
@@ -91,11 +88,11 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Return files
      *
-     * @param string $path Parent directory path
-     * @param string $type Type of storage, e.g. image, media etc.
+     * @param  string                            $path Parent directory path
+     * @param  string                            $type Type of storage, e.g. image, media etc.
      * @return Varien_Data_Collection_Filesystem
      *
-     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     * @SuppressWarnings("PHPMD.ErrorControlOperator")
      */
     public function getFilesCollection($path, $type = null)
     {
@@ -156,7 +153,7 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Storage collection
      *
-     * @param string $path Path to the directory
+     * @param  string                            $path Path to the directory
      * @return Varien_Data_Collection_Filesystem
      */
     public function getCollection($path = null)
@@ -165,22 +162,24 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if ($path !== null) {
             $collection->addTargetDir($path);
         }
+
         return $collection;
     }
 
     /**
      * Create new directory in storage
      *
-     * @param string $name New directory name
-     * @param string $path Parent directory path
+     * @param  string              $name New directory name
+     * @param  string              $path Parent directory path
+     * @return array               New directory info
      * @throws Mage_Core_Exception
-     * @return array New directory info
      */
     public function createDirectory($name, $path)
     {
         if (!preg_match(self::DIRECTORY_NAME_REGEXP, $name)) {
             Mage::throwException(Mage::helper('cms')->__('Invalid folder name. Please, use alphanumeric characters, underscores and dashes.'));
         }
+
         if (!is_dir($path) || !is_writable($path)) {
             $path = $this->getHelper()->getStorageRoot();
         }
@@ -202,9 +201,10 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
                 'name'          => $name,
                 'short_name'    => $this->getHelper()->getShortFilename($name),
                 'path'          => $newPath,
-                'id'            => $this->getHelper()->convertPathToId($newPath)
+                'id'            => $this->getHelper()->convertPathToId($newPath),
             ];
         }
+
         Mage::throwException(Mage::helper('cms')->__('Cannot create new directory.'));
     }
 
@@ -224,10 +224,11 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if ($rootCmp == $pathCmp) {
             Mage::throwException(Mage::helper('cms')->__(
                 'Cannot delete root directory %s.',
-                $io->getFilteredPath($path)
+                $io->getFilteredPath($path),
             ));
         }
-        if (strpos($pathCmp, chr(0)) !== false
+
+        if (str_contains($pathCmp, chr(0))
             || preg_match('#(^|[\\\\/])\.\.($|[\\\\/])#', $pathCmp)
         ) {
             throw new Exception('Detected malicious path or filename input.');
@@ -236,11 +237,12 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if (Mage::helper('core/file_storage_database')->checkDbUsage()) {
             Mage::getModel('core/file_storage_directory_database')->deleteDirectory($path);
         }
+
         if (!$io->rmdir($path, true)) {
             Mage::throwException(Mage::helper('cms')->__('Cannot delete directory %s.', $io->getFilteredPath($path)));
         }
 
-        if (strpos($pathCmp, $rootCmp) === 0) {
+        if (str_starts_with($pathCmp, $rootCmp)) {
             $io->rmdir($this->getThumbnailRoot() . DS . ltrim(substr($pathCmp, strlen($rootCmp)), '\\/'), true);
         }
     }
@@ -248,7 +250,7 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Delete file (and its thumbnail if exists) from storage
      *
-     * @param string $target File path to be deleted
+     * @param  string $target File path to be deleted
      * @return $this
      */
     public function deleteFile($target)
@@ -262,32 +264,35 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
             $io->rm($thumb);
             Mage::helper('core/file_storage_database')->deleteFile($thumb);
         }
+
         return $this;
     }
 
     /**
      * Upload and resize new file
      *
-     * @param string $targetPath Target directory
-     * @param string $type Type of storage, e.g. image, media etc.
+     * @param  string              $targetPath Target directory
+     * @param  string              $type       Type of storage, e.g. image, media etc.
      * @return array|bool|void
-     *@throws Mage_Core_Exception
+     * @throws Mage_Core_Exception
      */
     public function uploadFile($targetPath, $type = null)
     {
-        $uploader = new Mage_Core_Model_File_Uploader('image');
+        $uploader = Mage::getModel('core/file_uploader', 'image');
         if ($allowed = $this->getAllowedExtensions($type)) {
             $uploader->setAllowedExtensions($allowed);
         }
+
         $uploader->setAllowRenameFiles(true);
         $uploader->setFilesDispersion(false);
         if ($type == 'image') {
             $uploader->addValidateCallback(
                 Mage_Core_Model_File_Validator_Image::NAME,
                 Mage::getModel('core/file_validator_image'),
-                'validate'
+                'validate',
             );
         }
+
         $result = $uploader->save($targetPath);
 
         if (!$result) {
@@ -298,12 +303,13 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if ($type == 'image') {
             $this->resizeFile($targetPath . DS . $uploader->getUploadedFileName(), true);
         }
+
         $result['cookie'] = [
             'name'     => session_name(),
             'value'    => $this->getSession()->getSessionId(),
             'lifetime' => $this->getSession()->getCookieLifetime(),
             'path'     => $this->getSession()->getCookiePath(),
-            'domain'   => $this->getSession()->getCookieDomain()
+            'domain'   => $this->getSession()->getCookieDomain(),
         ];
 
         return $result;
@@ -312,15 +318,15 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Thumbnail path getter
      *
-     * @param  string $filePath original file path
-     * @param bool $checkFile OPTIONAL is it necessary to check file availability
-     * @return string | false
+     * @param  string       $filePath  original file path
+     * @param  bool         $checkFile OPTIONAL is it necessary to check file availability
+     * @return false|string
      */
     public function getThumbnailPath($filePath, $checkFile = false)
     {
         $mediaRootDir = $this->getHelper()->getStorageRoot();
 
-        if (strpos($filePath, $mediaRootDir) === 0) {
+        if (str_starts_with($filePath, $mediaRootDir)) {
             $thumbPath = $this->getThumbnailRoot() . DS . substr($filePath, strlen($mediaRootDir));
 
             if (!$checkFile || is_readable($thumbPath)) {
@@ -334,30 +340,31 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Thumbnail URL getter
      *
-     * @param  string $filePath original file path
-     * @param bool $checkFile OPTIONAL is it necessary to check file availability
-     * @return string|false
+     * @param  string       $filePath  original file path
+     * @param  bool         $checkFile OPTIONAL is it necessary to check file availability
+     * @return false|string
      */
     public function getThumbnailUrl($filePath, $checkFile = false)
     {
         $mediaRootDir = Mage::getConfig()->getOptions()->getMediaDir() . DS;
-        if (strpos($filePath, $mediaRootDir) === 0) {
+        if (str_starts_with($filePath, $mediaRootDir)) {
             $thumbSuffix = self::THUMBS_DIRECTORY_NAME . DS . substr($filePath, strlen($mediaRootDir));
             if (!$checkFile || is_readable($this->getHelper()->getStorageRoot() . $thumbSuffix)) {
-                $randomIndex = '?rand=' . time();
+                $randomIndex = '?rand=' . Carbon::now()->getTimestamp();
                 $thumbUrl = $this->getHelper()->getBaseUrl() . Mage_Cms_Model_Wysiwyg_Config::IMAGE_DIRECTORY
                     . DS . $thumbSuffix;
                 return str_replace('\\', '/', $thumbUrl) . $randomIndex;
             }
         }
+
         return false;
     }
 
     /**
      * Create thumbnail for image and save it to thumbnails directory
      *
-     * @param string $source Image path to be resized
-     * @param bool $keepRation Keep aspect ratio or not
+     * @param  string      $source     Image path to be resized
+     * @param  bool        $keepRation Keep aspect ratio or not
      * @return bool|string Resized filepath or false if errors were occurred
      */
     public function resizeFile($source, $keepRation = true)
@@ -371,11 +378,14 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if (!$io->isWriteable($targetDir)) {
             $io->mkdir($targetDir);
         }
+
         if (!$io->isWriteable($targetDir)) {
             return false;
         }
+
         $image = Varien_Image_Adapter::factory('GD2');
         $image->open($source);
+
         $width = $this->getConfigData('resize_width');
         $height = $this->getConfigData('resize_height');
 
@@ -385,6 +395,7 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
 
         $image->keepAspectRatio($keepRation);
         $image->resize($width, $height);
+
         $dest = $targetDir
             . DS
             . Mage_Core_Model_File_Uploader::getCorrectFileName(pathinfo($source, PATHINFO_BASENAME));
@@ -392,14 +403,15 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if (is_file($dest)) {
             return $dest;
         }
+
         return false;
     }
 
     /**
      * Resize images on the fly in controller action
      *
-     * @param string $filename File basename
-     * @return bool|string Thumbnail path or false for errors
+     * @param  string       $filename File basename
+     * @return false|string Thumbnail path or false for errors
      */
     public function resizeOnTheFly($filename)
     {
@@ -407,13 +419,14 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if (!$path) {
             $path = $this->getHelper()->getCurrentPath();
         }
+
         return $this->resizeFile($path . DS . $filename);
     }
 
     /**
      * Return thumbnails directory path for file/current directory
      *
-     * @param false|string $filePath Path to the file
+     * @param  false|string $filePath Path to the file
      * @return string
      */
     public function getThumbsPath($filePath = false)
@@ -421,7 +434,7 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         $mediaRootDir = Mage::getConfig()->getOptions()->getMediaDir();
         $thumbnailDir = $this->getThumbnailRoot();
 
-        if ($filePath && strpos($filePath, $mediaRootDir) === 0) {
+        if ($filePath && str_starts_with($filePath, $mediaRootDir)) {
             $thumbnailDir .= DS . dirname(substr($filePath, strlen($mediaRootDir)));
         }
 
@@ -478,8 +491,8 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Wysiwyg Config reader
      *
-     * @param string $key
-     * @param mixed $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     public function getConfigData($key, $default = false)
@@ -493,8 +506,8 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Prepare allowed_extensions config settings
      *
-     * @param string $type Type of storage, e.g. image, media etc.
-     * @return array Array of allowed file extensions
+     * @param  string $type Type of storage, e.g. image, media etc.
+     * @return array  Array of allowed file extensions
      */
     public function getAllowedExtensions($type = null)
     {
@@ -522,7 +535,7 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
     /**
      * Simple way to check whether file is image or not based on extension
      *
-     * @param string $filename
+     * @param  string $filename
      * @return bool
      */
     public function isImage($filename)
@@ -530,6 +543,7 @@ class Mage_Cms_Model_Wysiwyg_Images_Storage extends Varien_Object
         if (!$this->hasData('_image_extensions')) {
             $this->setData('_image_extensions', $this->getAllowedExtensions('image'));
         }
+
         $ext = strtolower(pathinfo($filename, PATHINFO_EXTENSION));
         return in_array($ext, $this->_getData('_image_extensions'));
     }

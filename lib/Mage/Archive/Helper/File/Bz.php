@@ -1,34 +1,27 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Archive
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2021-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
-* Helper class that simplifies bz2 files stream reading and writing
-*
-* @category    Mage
-* @package     Mage_Archive
-* @author      Magento Core Team <core@magentocommerce.com>
-*/
+ * Helper class that simplifies bz2 files stream reading and writing
+ *
+ * @category    Mage
+ * @package     Mage_Archive
+ */
 class Mage_Archive_Helper_File_Bz extends Mage_Archive_Helper_File
 {
     /**
      * Open bz archive file
      *
+     * @param  string         $mode
      * @throws Mage_Exception
-     * @param string $mode
      *
-     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     * @SuppressWarnings("PHPMD.ErrorControlOperator")
      */
     protected function _open($mode)
     {
@@ -42,10 +35,10 @@ class Mage_Archive_Helper_File_Bz extends Mage_Archive_Helper_File
     /**
      * Write data to bz archive
      *
+     * @param                 $data
      * @throws Mage_Exception
-     * @param $data
      *
-     * @SuppressWarnings(PHPMD.ErrorControlOperator)
+     * @SuppressWarnings("PHPMD.ErrorControlOperator")
      */
     protected function _write($data)
     {
@@ -59,9 +52,9 @@ class Mage_Archive_Helper_File_Bz extends Mage_Archive_Helper_File
     /**
      * Read data from bz archive
      *
-     * @throws Mage_Exception
-     * @param int $length
+     * @param  int            $length
      * @return string
+     * @throws Mage_Exception
      */
     protected function _read($length)
     {

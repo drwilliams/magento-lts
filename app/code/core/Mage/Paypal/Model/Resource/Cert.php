@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Paypal
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * PayPal resource model for certificate based authentication
  *
- * @category   Mage
  * @package    Mage_Paypal
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Paypal_Model_Resource_Cert extends Mage_Core_Model_Resource_Db_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('paypal/cert', 'cert_id');
@@ -30,7 +25,6 @@ class Mage_Paypal_Model_Resource_Cert extends Mage_Core_Model_Resource_Db_Abstra
     /**
      * Set date of last update
      *
-     * @param Mage_Core_Model_Abstract $object
      * @return Mage_Core_Model_Resource_Db_Abstract
      */
     protected function _beforeSave(Mage_Core_Model_Abstract $object)
@@ -42,8 +36,8 @@ class Mage_Paypal_Model_Resource_Cert extends Mage_Core_Model_Resource_Db_Abstra
     /**
      * Load model by website id
      *
-     * @param Mage_Paypal_Model_Cert $object
-     * @param bool $strictLoad
+     * @param  Mage_Paypal_Model_Cert $object
+     * @param  bool                   $strictLoad
      * @return Mage_Paypal_Model_Cert
      */
     public function loadByWebsite($object, $strictLoad = true)
@@ -63,6 +57,7 @@ class Mage_Paypal_Model_Resource_Cert extends Mage_Core_Model_Resource_Db_Abstra
         if ($data) {
             $object->setData($data);
         }
+
         return $object;
     }
 }

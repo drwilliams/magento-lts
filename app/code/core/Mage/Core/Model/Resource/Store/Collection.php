@@ -1,24 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Stores collection
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
+ *
+ * @method Mage_Core_Model_Store   getItemById(int $value)
+ * @method Mage_Core_Model_Store[] getItems()
  */
 class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
@@ -31,8 +26,7 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
     protected $_loadDefault    = false;
 
     /**
-     *  Define resource model
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -43,12 +37,12 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
     /**
      * Set flag for load default (admin) store
      *
-     * @param bool $loadDefault
+     * @param  bool  $loadDefault
      * @return $this
      */
     public function setLoadDefault($loadDefault)
     {
-        $this->setFlag('load_default_store', (bool)$loadDefault);
+        $this->setFlag('load_default_store', (bool) $loadDefault);
         return $this;
     }
 
@@ -77,7 +71,7 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
      * Add filter by group id.
      * Group id can be passed as one single value or array of values.
      *
-     * @param int|array $groupId
+     * @param  array|int $groupId
      * @return $this
      */
     public function addGroupFilter($groupId)
@@ -88,7 +82,7 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
     /**
      * Add store id(s) filter to collection
      *
-     * @param int|array $store
+     * @param  array|int $store
      * @return $this
      */
     public function addIdFilter($store)
@@ -99,7 +93,7 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
     /**
      * Add filter by website to collection
      *
-     * @param int|array $website
+     * @param  array|int $website
      * @return $this
      */
     public function addWebsiteFilter($website)
@@ -110,7 +104,7 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
     /**
      * Add root category id filter to store collection
      *
-     * @param int|array $category
+     * @param  array|int $category
      * @return $this
      */
     public function addCategoryFilter($category)
@@ -118,6 +112,7 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
         if (!is_array($category)) {
             $category = [$category];
         }
+
         return $this->loadByCategoryIds($category);
     }
 
@@ -155,13 +150,13 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
                 ->addOrder('main_table.sort_order', Varien_Db_Select::SQL_ASC)
                 ->addOrder('main_table.name', Varien_Db_Select::SQL_ASC);
         }
+
         return parent::load($printQuery, $logQuery);
     }
 
     /**
      * Add root category id filter to store collection
      *
-     * @param array $categories
      * @return $this
      */
     public function loadByCategoryIds(array $categories)
@@ -183,7 +178,7 @@ class Mage_Core_Model_Resource_Store_Collection extends Mage_Core_Model_Resource
             $this->getSelect()->join(
                 ['group_table' => $this->getTable('core/store_group')],
                 'main_table.group_id = group_table.group_id',
-                ['root_category_id']
+                ['root_category_id'],
             );
             $this->setFlag('core_store_group_table_joined', true);
         }

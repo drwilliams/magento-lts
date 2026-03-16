@@ -1,26 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Tag
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * List of products tagged by customer Block
  *
- * @category   Mage
  * @package    Mage_Tag
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method int getTagId()
+ * @method int   getTagId()
  * @method $this setTagId(int $value)
  */
 class Mage_Tag_Block_Customer_View extends Mage_Catalog_Block_Product_Abstract
@@ -28,20 +20,19 @@ class Mage_Tag_Block_Customer_View extends Mage_Catalog_Block_Product_Abstract
     /**
      * Tagged Product Collection
      *
-     * @var Mage_Tag_Model_Resource_Product_Collection|null
+     * @var null|Mage_Tag_Model_Resource_Product_Collection
      */
     protected $_collection;
 
     /**
      * Current Tag object
      *
-     * @var Mage_Tag_Model_Tag|null
+     * @var null|Mage_Tag_Model_Tag
      */
     protected $_tagInfo;
 
     /**
-     * Initialize block
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -60,6 +51,7 @@ class Mage_Tag_Block_Customer_View extends Mage_Catalog_Block_Product_Abstract
             $this->_tagInfo = Mage::getModel('tag/tag')
                 ->load($this->getTagId());
         }
+
         return $this->_tagInfo;
     }
 
@@ -86,7 +78,7 @@ class Mage_Tag_Block_Customer_View extends Mage_Catalog_Block_Product_Abstract
     /**
      * Retrieve Product Info URL
      *
-     * @param int $productId
+     * @param  int    $productId
      * @return string
      */
     public function getReviewUrl($productId)
@@ -150,6 +142,7 @@ class Mage_Tag_Block_Customer_View extends Mage_Catalog_Block_Product_Abstract
             Mage::getSingleton('catalog/product_visibility')
                 ->addVisibleInSiteFilterToCollection($this->_collection);
         }
+
         return $this->_collection;
     }
 }

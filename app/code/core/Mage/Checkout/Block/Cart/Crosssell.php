@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Checkout
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Cart crosssell list
  *
- * @category   Mage
  * @package    Mage_Checkout
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abstract
 {
@@ -44,11 +36,10 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
                 $lastAdded = (int) $this->_getLastAddedProductId();
                 if ($lastAdded) {
                     $collection = $this->_getCollection()
-                        ->addProductFilter($lastAdded);
-                    if (!empty($ninProductIds)) {
-                        $collection->addExcludeProductFilter($ninProductIds);
-                    }
-                    $collection->setPositionOrder()->load();
+                        ->addProductFilter($lastAdded)
+                        ->addExcludeProductFilter($ninProductIds)
+                        ->setPositionOrder()
+                        ->load();
 
                     /** @var Mage_Catalog_Model_Product_Link $item */
                     foreach ($collection as $item) {
@@ -74,6 +65,7 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
 
             $this->setData('items', $items);
         }
+
         return $items;
     }
 
@@ -102,8 +94,10 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
                     $ids[] = $product->getId();
                 }
             }
+
             $this->setData('_cart_product_ids', $ids);
         }
+
         return $ids;
     }
 
@@ -132,7 +126,7 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
     /**
      * Get last product ID that was added to cart and remove this information from session
      *
-     * @return int
+     * @return null|int|string
      */
     protected function _getLastAddedProductId()
     {
@@ -161,7 +155,7 @@ class Mage_Checkout_Block_Cart_Crosssell extends Mage_Catalog_Block_Product_Abst
             ->setStoreId(Mage::app()->getStore()->getId())
             ->addStoreFilter()
             ->addAttributeToFilter('status', [
-                'in' => Mage::getSingleton('catalog/product_status')->getSaleableStatusIds()
+                'in' => Mage::getSingleton('catalog/product_status')->getSaleableStatusIds(),
             ])
             ->setPageSize($this->_maxItemCount);
         $this->_addProductAttributesAndPrices($collection);

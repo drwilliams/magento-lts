@@ -1,32 +1,28 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Report Products Review collection
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Reports_Model_Resource_Review_Product_Collection extends Mage_Catalog_Model_Resource_Product_Collection
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         parent::_construct();
         $this->_useAnalyticFunction = true;
     }
+
     /**
      * Join review table to result
      *
@@ -51,13 +47,13 @@ class Mage_Reports_Model_Resource_Review_Product_Collection extends Mage_Catalog
                 [
                     'review_cnt'    => new Zend_Db_Expr(sprintf('(%s)', $subSelect)),
                     'last_created'  => new Zend_Db_Expr('MAX(r.created_at)'),
-                ]
+                ],
             )
             ->group('e.entity_id');
 
         $joinCondition      = [
             'e.entity_id = table_rating.entity_pk_value',
-            $this->getConnection()->quoteInto('table_rating.store_id > ?', 0)
+            $this->getConnection()->quoteInto('table_rating.store_id > ?', 0),
         ];
 
         $percentField       = $this->getConnection()->quoteIdentifier('table_rating.percent');
@@ -72,7 +68,7 @@ class Mage_Reports_Model_Resource_Review_Product_Collection extends Mage_Catalog
                 [
                     'avg_rating'          => new Zend_Db_Expr("$sumPercentField / $countRatingId"),
                     'avg_rating_approved' => new Zend_Db_Expr("$sumPercentApproved / $countRatingId"),
-                ]
+                ],
             );
 
         return $this;
@@ -112,7 +108,7 @@ class Mage_Reports_Model_Resource_Review_Product_Collection extends Mage_Catalog
 
         $countSelect = clone $select;
         $countSelect->reset();
-        $countSelect->from($select, "COUNT(*)");
+        $countSelect->from($select, 'COUNT(*)');
 
         return $countSelect;
     }

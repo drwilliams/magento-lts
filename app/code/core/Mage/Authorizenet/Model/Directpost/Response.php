@@ -1,34 +1,26 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Authorizenet
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Authorize.net response model for DirectPost model.
  *
- * @category   Mage
  * @package    Mage_Authorizenet
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Authorizenet_Model_Directpost_Response extends Varien_Object
 {
     /**
      * Generates an Md5 hash to compare against AuthNet's.
      *
-     * @param string $merchantMd5
-     * @param string $merchantApiLogin
-     * @param string $amount
-     * @param string $transactionId
+     * @param  string $merchantMd5
+     * @param  string $merchantApiLogin
+     * @param  string $amount
+     * @param  string $transactionId
      * @return string
      */
     public function generateHash($merchantMd5, $merchantApiLogin, $amount, $transactionId)
@@ -39,8 +31,8 @@ class Mage_Authorizenet_Model_Directpost_Response extends Varien_Object
     /**
      * Return if is valid order id.
      *
-     * @param string $storedHash
-     * @param string $merchantApiLogin
+     * @param  string $storedHash
+     * @param  string $merchantApiLogin
      * @return bool
      */
     public function isValidHash($storedHash, $merchantApiLogin)
@@ -55,7 +47,9 @@ class Mage_Authorizenet_Model_Directpost_Response extends Varien_Object
         if (!empty($xSHA2Hash)) {
             $hash = $this->generateSha2Hash($storedHash);
             return $hash == $this->getData('x_SHA2_Hash');
-        } elseif (!empty($xMD5Hash)) {
+        }
+
+        if (!empty($xMD5Hash)) {
             $hash = $this->generateHash($storedHash, $merchantApiLogin, $this->getXAmount(), $this->getXTransId());
             return $hash == $this->getData('x_MD5_Hash');
         }
@@ -76,7 +70,7 @@ class Mage_Authorizenet_Model_Directpost_Response extends Varien_Object
     /**
      * Generates an SHA2 hash to compare against AuthNet's.
      *
-     * @param string $signatureKey
+     * @param  string $signatureKey
      * @return string
      * @see https://support.authorize.net/s/article/MD5-Hash-End-of-Life-Signature-Key-Replacement
      */
@@ -130,6 +124,7 @@ class Mage_Authorizenet_Model_Directpost_Response extends Varien_Object
                 ->setXFax((string) $billing->getFax())
                 ->setXEmail((string) $order->getCustomerEmail());
         }
+
         $shipping = $order->getShippingAddress();
         if (!empty($shipping)) {
             $this->setXShipToFirstName((string) $shipping->getFirstname())

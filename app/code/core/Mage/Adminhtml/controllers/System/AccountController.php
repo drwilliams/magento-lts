@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml account controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_Action
 {
@@ -33,7 +25,7 @@ class Mage_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_
         $this->_title($this->__('System'))->_title($this->__('My Account'));
 
         $this->loadLayout();
-        $this->_setActiveMenu('system/account');
+        $this->_setActiveMenu('system/myaccount');
         $this->_addContent($this->getLayout()->createBlock('adminhtml/system_account_edit'));
         $this->renderLayout();
     }
@@ -44,9 +36,7 @@ class Mage_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_
     public function saveAction()
     {
         $userId = Mage::getSingleton('admin/session')->getUser()->getId();
-        $pwd    = null;
-
-        $user = Mage::getModel("admin/user")->load($userId);
+        $user = Mage::getModel('admin/user')->load($userId);
 
         $user->setId($userId)
             ->setUsername($this->getRequest()->getParam('username', false))
@@ -61,6 +51,11 @@ class Mage_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_
             $user->setPasswordConfirmation($this->getRequest()->getParam('password_confirmation', false));
         }
 
+        $backendLocale = $this->getRequest()->getParam('backend_locale', false);
+        $backendLocale = $backendLocale == 0 ? null : $backendLocale;
+
+        $user->setBackendLocale($backendLocale);
+
         //Validate current admin password
         $currentPassword = $this->getRequest()->getParam('current_password', null);
         $this->getRequest()->setParam('current_password', null);
@@ -69,11 +64,13 @@ class Mage_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_
         if (!is_array($result)) {
             $result = $user->validate();
         }
+
         if (is_array($result)) {
             foreach ($result as $error) {
                 Mage::getSingleton('adminhtml/session')->addError($error);
             }
-            $this->getResponse()->setRedirect($this->getUrl("*/*/"));
+
+            $this->getResponse()->setRedirect($this->getUrl('*/*/'));
             return;
         }
 
@@ -82,9 +79,10 @@ class Mage_Adminhtml_System_AccountController extends Mage_Adminhtml_Controller_
             Mage::getSingleton('adminhtml/session')->addSuccess(Mage::helper('adminhtml')->__('The account has been saved.'));
         } catch (Mage_Core_Exception $e) {
             Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
-        } catch (Exception $e) {
+        } catch (Exception) {
             Mage::getSingleton('adminhtml/session')->addError(Mage::helper('adminhtml')->__('An error occurred while saving account.'));
         }
-        $this->getResponse()->setRedirect($this->getUrl("*/*/"));
+
+        $this->getResponse()->setRedirect($this->getUrl('*/*/'));
     }
 }

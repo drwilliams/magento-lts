@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Reports Product Index Abstract Resource Model
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_Core_Model_Resource_Db_Abstract
 {
@@ -32,7 +24,6 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
     /**
      * Update Customer from visitor (Customer logged in)
      *
-     * @param Mage_Reports_Model_Product_Index_Abstract $object
      * @return Mage_Reports_Model_Resource_Product_Index_Abstract
      */
     public function updateCustomerFromVisitor(Mage_Reports_Model_Product_Index_Abstract $object)
@@ -43,6 +34,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
         if (!$object->getCustomerId() || !$object->getVisitorId()) {
             return $this;
         }
+
         $adapter = $this->_getWriteAdapter();
         $select  = $adapter->select()
             ->from($this->getMainTable())
@@ -77,19 +69,19 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
                 $data  = [
                     'customer_id'   => $object->getCustomerId(),
                     'store_id'      => $object->getStoreId(),
-                    'added_at'      => Varien_Date::now()
+                    'added_at'      => Varien_Date::now(),
                 ];
             }
 
             $adapter->update($this->getMainTable(), $data, $where);
         }
+
         return $this;
     }
 
     /**
      * Purge visitor data by customer (logout)
      *
-     * @param Mage_Reports_Model_Product_Index_Abstract $object
      * @return Mage_Reports_Model_Resource_Product_Index_Abstract
      */
     public function purgeVisitorByCustomer(Mage_Reports_Model_Product_Index_Abstract $object)
@@ -102,7 +94,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
         }
 
         $bind   = ['visitor_id'      => null];
-        $where  = ['customer_id = ?' => (int)$object->getCustomerId()];
+        $where  = ['customer_id = ?' => (int) $object->getCustomerId()];
         $this->_getWriteAdapter()->update($this->getMainTable(), $bind, $where);
 
         return $this;
@@ -111,7 +103,6 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
     /**
      * Save Product Index data (forced save)
      *
-     * @param Mage_Core_Model_Abstract|Mage_Reports_Model_Product_Index_Abstract  $object
      * @return Mage_Reports_Model_Resource_Product_Index_Abstract
      * @throws Mage_Core_Exception
      */
@@ -135,7 +126,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
         $helper->mergeVisitorProductIndex(
             $this->getMainTable(),
             $data,
-            $matchFields
+            $matchFields,
         );
 
         $this->unserializeFields($object);
@@ -157,7 +148,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
                 ->joinLeft(
                     ['visitor_table' => $this->getTable('log/visitor')],
                     'main_table.visitor_id = visitor_table.visitor_id',
-                    []
+                    [],
                 )
                 ->where('main_table.visitor_id > ?', 0)
                 ->where('visitor_table.visitor_id IS NULL')
@@ -170,18 +161,17 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
 
             $this->_getWriteAdapter()->delete(
                 $this->getMainTable(),
-                $this->_getWriteAdapter()->quoteInto($this->getIdFieldName() . ' IN(?)', $indexIds)
+                $this->_getWriteAdapter()->quoteInto($this->getIdFieldName() . ' IN(?)', $indexIds),
             );
         }
+
         return $this;
     }
 
     /**
      * Add information about product ids to visitor/customer
      *
-     *
-     * @param Mage_Reports_Model_Product_Index_Abstract|Varien_Object $object
-     * @param array $productIds
+     * @param  array                                              $productIds
      * @return Mage_Reports_Model_Resource_Product_Index_Abstract
      */
     public function registerIds(Varien_Object $object, $productIds)
@@ -200,6 +190,7 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
                 $row['added_at']   = Varien_Date::formatDate($addedAt);
                 $data[] = $row;
             }
+
             $addedAt -= ($addedAt > 0) ? 1 : 0;
         }
 
@@ -211,9 +202,10 @@ abstract class Mage_Reports_Model_Resource_Product_Index_Abstract extends Mage_C
             $helper->mergeVisitorProductIndex(
                 $this->getMainTable(),
                 $row,
-                $matchFields
+                $matchFields,
             );
         }
+
         return $this;
     }
 }

@@ -1,24 +1,15 @@
 <?php
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Inline Translations PHP part
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Model_Translate_Inline
 {
@@ -39,7 +30,7 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Is enabled and allowed inline translates flags
      *
-     * @var bool|null
+     * @var null|bool
      */
     protected $_isAllowed;
 
@@ -121,7 +112,7 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Is enabled and allowed Inline Translates
      *
-     * @param mixed $store
+     * @param  mixed $store
      * @return bool
      */
     public function isAllowed($store = null)
@@ -152,7 +143,7 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Parse and save edited translate
      *
-     * @param array $translate
+     * @param  array $translate
      * @return $this
      */
     public function processAjaxPost($translate)
@@ -183,6 +174,7 @@ class Mage_Core_Model_Translate_Inline
      * Strip inline translations from text
      *
      * @param array|string $body
+     * @param-out null|array|string $body
      * @return $this
      */
     public function stripInlineTranslations(&$body)
@@ -201,6 +193,7 @@ class Mage_Core_Model_Translate_Inline
      * Replace translate templates to HTML fragments
      *
      * @param array|string $body
+     * @param-out null|array|string $body
      * @return $this
      */
     public function processResponseBody(&$body)
@@ -240,10 +233,10 @@ class Mage_Core_Model_Translate_Inline
         }
 
         $baseJsUrl = Mage::getBaseUrl('js');
-        $url_prefix = Mage::app()->getStore()->isAdmin() ? 'adminhtml' : 'core';
+        $urlPrefix = Mage::app()->getStore()->isAdmin() ? 'adminhtml' : 'core';
         $ajaxUrl = Mage::getUrl(
-            $url_prefix . '/ajax/translate',
-            ['_secure' => Mage::app()->getStore()->isCurrentlySecure()]
+            $urlPrefix . '/ajax/translate',
+            ['_secure' => Mage::app()->getStore()->isCurrentlySecure()],
         );
         $trigImg = Mage::getDesign()->getSkinUrl('images/fam_book_open.png');
 
@@ -273,7 +266,7 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Escape Translate data
      *
-     * @param string $string
+     * @param  string $string
      * @return string
      */
     protected function _escape($string)
@@ -284,8 +277,8 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Get attribute location
      *
-     * @param array $matches
-     * @param array $options
+     * @param  array  $matches
+     * @param  array  $options
      * @return string
      */
     protected function _getAttributeLocation($matches, $options)
@@ -296,8 +289,8 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Get tag location
      *
-     * @param array $matches
-     * @param array $options
+     * @param  array  $matches
+     * @param  array  $options
      * @return string
      */
     protected function _getTagLocation($matches, $options)
@@ -310,10 +303,10 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Get translate data by regexp
      *
-     * @param string $regexp
-     * @param string $text
-     * @param string|array $locationCallback
-     * @param array $options
+     * @param  string       $regexp
+     * @param  string       $text
+     * @param  array|string $locationCallback
+     * @param  array        $options
      * @return array
      */
     protected function _getTranslateData($regexp, &$text, $locationCallback, $options = [])
@@ -336,7 +329,6 @@ class Mage_Core_Model_Translate_Inline
 
     /**
      * Prepare tags inline translates
-     *
      */
     protected function _tagAttributes()
     {
@@ -390,9 +382,8 @@ class Mage_Core_Model_Translate_Inline
     {
         if ($this->getIsJson()) {
             return '\"';
-        } else {
-            return '"';
         }
+        return '"';
     }
 
     /**
@@ -407,9 +398,9 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Format translate for special tags
      *
-     * @param string $tagHtml
-     * @param string  $tagName
-     * @param array $trArr
+     * @param  string $tagHtml
+     * @param  string $tagName
+     * @param  array  $trArr
      * @return string
      */
     protected function _applySpecialTagsFormat($tagHtml, $tagName, $trArr)
@@ -425,9 +416,9 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Format translate for simple tags
      *
-     * @param string $tagHtml
-     * @param string  $tagName
-     * @param array $trArr
+     * @param  string $tagHtml
+     * @param  string $tagName
+     * @param  array  $trArr
      * @return string
      */
     protected function _applySimpleTagsFormat($tagHtml, $tagName, $trArr)
@@ -442,10 +433,10 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Prepare simple tags
      *
-     * @param string $content
-     * @param array $tagsList
-     * @param string|array $formatCallback
-     * @param bool $isNeedTranslateAttributes
+     * @param string       $content
+     * @param array        $tagsList
+     * @param array|string $formatCallback
+     * @param bool         $isNeedTranslateAttributes
      */
     protected function _translateTags(&$content, $tagsList, $formatCallback, $isNeedTranslateAttributes)
     {
@@ -456,7 +447,7 @@ class Mage_Core_Model_Translate_Inline
         $tagMatch = [];
         while (preg_match($tagRegExp, $content, $tagMatch, PREG_OFFSET_CAPTURE, $nextTag)) {
             $tagName  = strtolower($tagMatch[1][0]);
-            if (substr($tagMatch[0][0], -2) == '/>') {
+            if (str_ends_with($tagMatch[0][0], '/>')) {
                 $tagClosurePos = $tagMatch[0][1] + strlen($tagMatch[0][0]);
             } else {
                 $tagClosurePos = $this->findEndOfTag($content, $tagName, $tagMatch[0][1]);
@@ -481,8 +472,8 @@ class Mage_Core_Model_Translate_Inline
                 [$this, '_getTagLocation'],
                 [
                     'tagName' => $tagName,
-                    'tagList' => $tagsList
-                ]
+                    'tagList' => $tagsList,
+                ],
             );
 
             if (!empty($trArr)) {
@@ -498,11 +489,12 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Find end of tag
      *
-     * @param string $body
-     * @param string $tagName
-     * @param int $from
+     * @param  string    $body
+     * @param  string    $tagName
+     * @param  int       $from
      * @return false|int return false if end of tag is not found
      */
+    // phpcs:ignore Ecg.PHP.PrivateClassMember.PrivateClassMemberError
     private function findEndOfTag($body, $tagName, $from)
     {
         $openTag = '<' . $tagName;
@@ -517,11 +509,10 @@ class Mage_Core_Model_Translate_Inline
             }
             $length = $end - $from  + $tagLength + 3;
         }
-        if (preg_match('#<\\\\?\/' . $tagName . '\s*?>#i', $body, $tagMatch, null, $end)) {
+        if (preg_match('#<\\\\?\/' . $tagName . '\s*?>#i', $body, $tagMatch, 0, $end)) {
             return $end + strlen($tagMatch[0]);
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -556,24 +547,24 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Check is a Request contain Json flag
      *
-     * @deprecated 1.3.2.2
      * @return bool
+     * @deprecated 1.3.2.2
      */
     public function getIsAjaxRequest()
     {
-        return (bool)Mage::app()->getRequest()->getQuery('isAjax');
+        return (bool) Mage::app()->getRequest()->getQuery('isAjax');
     }
 
     /**
      * Set is a Request contain Json flag
      *
-     * @param bool $flag
-     * @deprecated 1.3.2.2
+     * @param  bool  $flag
      * @return $this
+     * @deprecated 1.3.2.2
      */
     public function setIsAjaxRequest($flag)
     {
-        Mage::app()->getRequest()->setQuery('isAjax', (int) (bool)$flag);
+        Mage::app()->getRequest()->setQuery('isAjax', (int) (bool) $flag);
         return $this;
     }
 
@@ -590,12 +581,12 @@ class Mage_Core_Model_Translate_Inline
     /**
      * Set flag about parsed content is Json
      *
-     * @param bool $flag
+     * @param  bool  $flag
      * @return $this
      */
     public function setIsJson($flag)
     {
-        $this->_isJson = (bool)$flag;
+        $this->_isJson = (bool) $flag;
         return $this;
     }
 }

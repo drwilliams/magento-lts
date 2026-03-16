@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Item option collection
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
@@ -37,8 +29,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
     protected $_optionsByProduct     = [];
 
     /**
-     * Define resource model for collection
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -63,6 +54,7 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
             } else {
                 $this->_optionsByItem[$itemId] = [$optionId];
             }
+
             if (isset($this->_optionsByProduct[$productId])) {
                 $this->_optionsByProduct[$productId][] = $optionId;
             } else {
@@ -76,15 +68,15 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
     /**
      * Apply quote item(s) filter to collection
      *
-     * @param int | array $item
+     * @param  array|int|Mage_Sales_Model_Quote_Item $item
      * @return $this
+     * @throws Mage_Core_Exception
      */
     public function addItemFilter($item)
     {
         if (empty($item)) {
             $this->_totalRecords = 0;
             $this->_setIsLoaded(true);
-        //$this->addFieldToFilter('item_id', '');
         } elseif (is_array($item)) {
             $this->addFieldToFilter('item_id', ['in' => $item]);
         } elseif ($item instanceof Mage_Sales_Model_Quote_Item) {
@@ -111,8 +103,9 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
     /**
      * Get all option for item
      *
-     * @param mixed $item
+     * @param  int|Mage_Sales_Model_Quote_Item|string $item
      * @return array
+     * @throws Mage_Core_Exception
      */
     public function getOptionsByItem($item)
     {
@@ -137,8 +130,9 @@ class Mage_Sales_Model_Resource_Quote_Item_Option_Collection extends Mage_Core_M
     /**
      * Get all option for item
      *
-     * @param int | Mage_Catalog_Model_Product $product
+     * @param  int|Mage_Catalog_Model_Product $product
      * @return array
+     * @throws Mage_Core_Exception
      */
     public function getOptionsByProduct($product)
     {

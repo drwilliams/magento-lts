@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Class Mage_Adminhtml_Permissions_BlockController
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controller_Action
 {
@@ -34,7 +26,7 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
     protected function _initAction()
     {
         $this->loadLayout()
-            ->_setActiveMenu('system/acl')
+            ->_setActiveMenu('system/acl/blocks')
             ->_addBreadcrumb($this->__('System'), $this->__('System'))
             ->_addBreadcrumb($this->__('Permissions'), $this->__('Permissions'))
             ->_addBreadcrumb($this->__('Blocks'), $this->__('Blocks'));
@@ -67,6 +59,8 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
 
     /**
      * Edit action
+     *
+     * @throws Mage_Core_Exception
      */
     public function editAction()
     {
@@ -96,11 +90,12 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
 
         Mage::register('permissions_block', $model);
 
-        if (isset($id)) {
+        if ($id) {
             $breadcrumb = $this->__('Edit Block');
         } else {
             $breadcrumb = $this->__('New Block');
         }
+
         $this->_initAction()
             ->_addBreadcrumb($breadcrumb, $breadcrumb);
 
@@ -114,6 +109,7 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
      * Save action
      *
      * @return $this|void
+     * @throws Mage_Core_Exception
      */
     public function saveAction()
     {
@@ -130,6 +126,7 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
             if ($id) {
                 $model->setId($id);
             }
+
             $result = $model->validate();
 
             if (is_array($result)) {
@@ -137,9 +134,11 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
                 foreach ($result as $message) {
                     Mage::getSingleton('adminhtml/session')->addError($message);
                 }
+
                 $this->_redirect('*/*/edit', ['block_id' => $id]);
                 return $this;
             }
+
             try {
                 $model->save();
                 Mage::getSingleton('adminhtml/session')->addSuccess($this->__('The block has been saved.'));
@@ -148,9 +147,9 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
 
                 $this->_redirect('*/*/');
                 return;
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
                 // display error message
-                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+                Mage::getSingleton('adminhtml/session')->addError($exception->getMessage());
                 // save data in session
                 Mage::getSingleton('adminhtml/session')->setFormData($data);
                 // redirect to edit form
@@ -158,6 +157,7 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
                 return;
             }
         }
+
         $this->_redirect('*/*/');
     }
 
@@ -175,12 +175,13 @@ class Mage_Adminhtml_Permissions_BlockController extends Mage_Adminhtml_Controll
                 Mage::getSingleton('adminhtml/session')->addSuccess($this->__('Block has been deleted.'));
                 $this->_redirect('*/*/');
                 return;
-            } catch (Exception $e) {
-                Mage::getSingleton('adminhtml/session')->addError($e->getMessage());
+            } catch (Exception $exception) {
+                Mage::getSingleton('adminhtml/session')->addError($exception->getMessage());
                 $this->_redirect('*/*/edit', ['block_id' => $id]);
                 return;
             }
         }
+
         Mage::getSingleton('adminhtml/session')->addError($this->__('Unable to find a block to delete.'));
         $this->_redirect('*/*/');
     }

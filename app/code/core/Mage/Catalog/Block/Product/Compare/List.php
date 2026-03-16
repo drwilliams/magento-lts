@@ -1,38 +1,30 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog products compare block
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product_Compare_Abstract
 {
     /**
      * Product Compare items collection
      *
-     * @var Mage_Catalog_Model_Resource_Product_Compare_Item_Collection|null
+     * @var null|Mage_Catalog_Model_Resource_Product_Compare_Item_Collection
      */
     protected $_items;
 
     /**
      * Compare Products comparable attributes cache
      *
-     * @var array|null
+     * @var null|array
      */
     protected $_attributes;
 
@@ -60,7 +52,7 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
     /**
      * Retrieve url for adding product to wishlist with params
      *
-     * @param Mage_Catalog_Model_Product $product
+     * @param  Mage_Catalog_Model_Product $product
      * @return string
      */
     public function getAddToWishlistUrl($product)
@@ -79,6 +71,7 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
         if ($headBlock) {
             $headBlock->setTitle(Mage::helper('catalog')->__('Products Comparison List') . ' - ' . $headBlock->getDefaultTitle());
         }
+
         return parent::_prepareLayout();
     }
 
@@ -93,7 +86,7 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
             Mage::helper('catalog/product_compare')->setAllowUsedFlat(false);
 
             $this->_items = Mage::getResourceModel('catalog/product_compare_item_collection')
-                ->useProductItem(true)
+                ->useProductItem()
                 ->setStoreId(Mage::app()->getStore()->getId());
 
             if (Mage::getSingleton('customer/session')->isLoggedIn()) {
@@ -120,7 +113,7 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
     /**
      * Retrieve Product Compare Attributes
      *
-     * @return array
+     * @return Mage_Eav_Model_Entity_Attribute_Abstract[]
      */
     public function getAttributes()
     {
@@ -134,8 +127,8 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
     /**
      * Retrieve Product Attribute Value
      *
-     * @param Mage_Catalog_Model_Product $product
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     * @param  Mage_Catalog_Model_Product                $product
+     * @param  Mage_Catalog_Model_Resource_Eav_Attribute $attribute
      * @return string
      */
     public function getProductAttributeValue($product, $attribute)
@@ -152,7 +145,8 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
         } else {
             $value = $product->getData($attribute->getAttributeCode());
         }
-        return ((string)$value == '') ? Mage::helper('catalog')->__('No') : $value;
+
+        return ((string) $value == '') ? Mage::helper('catalog')->__('No') : $value;
     }
 
     /**
@@ -168,7 +162,7 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
     /**
      * Setter for customer id
      *
-     * @param int $id
+     * @param  int   $id
      * @return $this
      */
     public function setCustomerId($id)
@@ -180,15 +174,15 @@ class Mage_Catalog_Block_Product_Compare_List extends Mage_Catalog_Block_Product
     /**
      * Retrieve url for adding product to wishlist with params with or without Form Key
      *
-     * @param Mage_Catalog_Model_Product $product
-     * @param bool $addFormKey
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  bool                       $addFormKey
      * @return string
      */
     public function getAddToWishlistUrlCustom($product, $addFormKey = true)
     {
         $continueUrl = Mage::helper('core')->urlEncode($this->getUrl('customer/account'));
         $params = [
-            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $continueUrl
+            Mage_Core_Controller_Front_Action::PARAM_NAME_URL_ENCODED => $continueUrl,
         ];
 
         /** @var Mage_Wishlist_Helper_Data $helper */

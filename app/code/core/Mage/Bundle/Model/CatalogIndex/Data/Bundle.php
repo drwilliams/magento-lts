@@ -1,36 +1,28 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Bundle
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Bundle product data retriever
  *
- * @category   Mage
  * @package    Mage_Bundle
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Bundle_Model_CatalogIndex_Data_Bundle extends Mage_CatalogIndex_Model_Data_Simple
 {
     /**
      * Defines when product type has children
      *
-     * @var bool
+     * @var array
      */
     protected $_haveChildren = [
-                        Mage_CatalogIndex_Model_Retreiver::CHILDREN_FOR_TIERS => false,
-                        Mage_CatalogIndex_Model_Retreiver::CHILDREN_FOR_PRICES => false,
-                        Mage_CatalogIndex_Model_Retreiver::CHILDREN_FOR_ATTRIBUTES => true,
+        Mage_CatalogIndex_Model_Retreiver::CHILDREN_FOR_TIERS => false,
+        Mage_CatalogIndex_Model_Retreiver::CHILDREN_FOR_PRICES => false,
+        Mage_CatalogIndex_Model_Retreiver::CHILDREN_FOR_ATTRIBUTES => true,
     ];
 
     protected $_haveParents = false;
@@ -55,19 +47,19 @@ class Mage_Bundle_Model_CatalogIndex_Data_Bundle extends Mage_CatalogIndex_Model
         return [
             'table' => 'bundle/selection',
             'parent_field' => 'parent_product_id',
-            'child_field' => 'product_id'
+            'child_field' => 'product_id',
         ];
     }
 
     /**
      * Prepare select statement before 'fetchLinkInformation' function result fetch
      *
-     * @param int $store
+     * @param int    $store
      * @param string $table
      * @param string $idField
      * @param string $whereField
-     * @param int $id
-     * @param array $additionalWheres
+     * @param int    $id
+     * @param array  $additionalWheres
      */
     protected function _prepareLinkFetchSelect($store, $table, $idField, $whereField, $id, $additionalWheres = [])
     {

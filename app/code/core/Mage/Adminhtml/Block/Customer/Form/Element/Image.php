@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Customer Widget Form Image File Element Block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Customer_Form_Element_Image extends Mage_Adminhtml_Block_Customer_Form_Element_File
 {
@@ -57,7 +49,7 @@ class Mage_Adminhtml_Block_Customer_Form_Element_Image extends Mage_Adminhtml_Bl
                 'class'  => 'small-image-preview v-middle',
                 'height' => 22,
                 'width'  => 22,
-                'id'     => $imageId
+                'id'     => $imageId,
             ];
             $link    = [
                 'href'      => $url,
@@ -67,21 +59,23 @@ class Mage_Adminhtml_Block_Customer_Form_Element_Image extends Mage_Adminhtml_Bl
             $html = sprintf(
                 '%s%s</a> ',
                 $this->_drawElementHtml('a', $link, false),
-                $this->_drawElementHtml('img', $image)
+                $this->_drawElementHtml('img', $image),
             );
         }
+
         return $html;
     }
 
     /**
      * Return Image URL
-     * @return string|false
+     * @return false|string
      */
     protected function _getPreviewUrl()
     {
         if (is_array($this->getValue())) {
             return false;
         }
+
         return Mage::helper('adminhtml')->getUrl('adminhtml/customer/viewfile', [
             'image'      => Mage::helper('core')->urlEncode($this->getValue()),
         ]);

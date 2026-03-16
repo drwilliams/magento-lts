@@ -1,24 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml sales order create sidebar block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
+ *
+ * @method string getDataId()
+ * @method $this  setDataId(string $value)
  */
 class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract extends Mage_Adminhtml_Block_Sales_Order_Create_Abstract
 {
@@ -70,8 +65,8 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract extends Mage_Admi
     /**
      * Retrieve identifier of block item
      *
-     * @param   Varien_Object $item
-     * @return  int
+     * @param  Varien_Object $item
+     * @return int
      */
     public function getIdentifierId($item)
     {
@@ -81,8 +76,8 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract extends Mage_Admi
     /**
      * Retrieve item identifier of block item
      *
-     * @param   mixed $item
-     * @return  int
+     * @param  mixed $item
+     * @return int
      */
     public function getItemId($item)
     {
@@ -92,8 +87,8 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract extends Mage_Admi
     /**
      * Retrieve product identifier linked with item
      *
-     * @param   mixed $item
-     * @return  int
+     * @param  mixed $item
+     * @return int
      */
     public function getProductId($item)
     {
@@ -112,6 +107,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract extends Mage_Admi
             $count = count($this->getItems());
             $this->setData('item_count', $count);
         }
+
         return $count;
     }
 
@@ -152,6 +148,7 @@ class Mage_Adminhtml_Block_Sales_Order_Create_Sidebar_Abstract extends Mage_Admi
                         }
                     }
                 }
+
                 if (!isset($productTypes[$type])) {
                     unset($items[$key]);
                 }

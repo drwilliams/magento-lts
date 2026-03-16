@@ -1,30 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml billing agreement controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Controller_Action
 {
     /**
      * Billing agreements
-     *
      */
     public function indexAction()
     {
@@ -38,7 +29,6 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
 
     /**
      * Ajax action for billing agreements
-     *
      */
     public function gridAction()
     {
@@ -48,7 +38,6 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
 
     /**
      * View billing agreement action
-     *
      */
     public function viewAction()
     {
@@ -57,7 +46,7 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
         if ($agreementModel) {
             $this->_title($this->__('Sales'))
                 ->_title($this->__('Billing Agreements'))
-                ->_title(sprintf("#%s", $agreementModel->getReferenceId()));
+                ->_title(sprintf('#%s', $agreementModel->getReferenceId()));
 
             $this->loadLayout()
                 ->_setActiveMenu('sales/billing_agreement')
@@ -70,7 +59,6 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
 
     /**
      * Related orders ajax action
-     *
      */
     public function ordersGridAction()
     {
@@ -81,7 +69,6 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
 
     /**
      * Cutomer billing agreements ajax action
-     *
      */
     public function customerGridAction()
     {
@@ -92,7 +79,6 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
 
     /**
      * Cancel billing agreement action
-     *
      */
     public function cancelAction()
     {
@@ -110,8 +96,10 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
                 $this->_getSession()->addError($this->__('Failed to cancel the billing agreement.'));
                 Mage::logException($e);
             }
+
             $this->_redirect('*/*/view', ['_current' => true]);
         }
+
         return $this->_redirect('*/*/');
     }
 
@@ -134,15 +122,17 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
                 $this->_getSession()->addError($this->__('Failed to delete the billing agreement.'));
                 Mage::logException($e);
             }
+
             $this->_redirect('*/*/view', ['_current' => true]);
         }
+
         $this->_redirect('*/*/');
     }
 
     /**
      * Initialize billing agreement by ID specified in request
      *
-     * @return Mage_Sales_Model_Billing_Agreement | false
+     * @return false|Mage_Sales_Model_Billing_Agreement
      */
     protected function _initBillingAgreement()
     {
@@ -192,16 +182,12 @@ class Mage_Adminhtml_Sales_Billing_AgreementController extends Mage_Adminhtml_Co
     protected function _isAllowed()
     {
         $action = strtolower($this->getRequest()->getActionName());
-        switch ($action) {
-            case 'index':
-            case 'grid':
-            case 'view':
-                return Mage::getSingleton('admin/session')->isAllowed('sales/billing_agreement/actions/view');
-            case 'cancel':
-            case 'delete':
-                return Mage::getSingleton('admin/session')->isAllowed('sales/billing_agreement/actions/manage');
-            default:
-                return Mage::getSingleton('admin/session')->isAllowed('sales/billing_agreement');
-        }
+        $aclPath = match ($action) {
+            'index', 'grid', 'view' => 'sales/billing_agreement/actions/view',
+            'cancel', 'delete' => 'sales/billing_agreement/actions/manage',
+            default => 'sales/billing_agreement',
+        };
+
+        return Mage::getSingleton('admin/session')->isAllowed($aclPath);
     }
 }

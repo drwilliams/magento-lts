@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Recurring profile orders grid
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Block_Adminhtml_Recurring_Profile_View_Tab_Orders extends Mage_Adminhtml_Block_Widget_Grid implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -67,9 +59,7 @@ class Mage_Sales_Block_Adminhtml_Recurring_Profile_View_Tab_Orders extends Mage_
         if (!Mage::app()->isSingleStoreMode()) {
             $this->addColumn('store_id', [
                 'header'    => Mage::helper('sales')->__('Purchased From (Store)'),
-                'index'     => 'store_id',
                 'type'      => 'store',
-                'store_view' => true,
                 'display_deleted' => true,
             ]);
         }
@@ -116,23 +106,19 @@ class Mage_Sales_Block_Adminhtml_Recurring_Profile_View_Tab_Orders extends Mage_
             $this->addColumn(
                 'action',
                 [
-                    'header'    => Mage::helper('sales')->__('Action'),
-                    'width'     => '50px',
                     'type'      => 'action',
                     'getter'     => 'getId',
                     'actions'   => [
                         [
                             'caption' => Mage::helper('sales')->__('View'),
                             'url'     => ['base' => '*/sales_order/view'],
-                            'field'   => 'order_id'
-                        ]
+                            'field'   => 'order_id',
+                        ],
                     ],
-                    'filter'    => false,
-                    'sortable'  => false,
                     'index'     => 'stores',
                     'is_system' => true,
                     'data-column' => 'action',
-                ]
+                ],
             );
         }
 
@@ -140,10 +126,8 @@ class Mage_Sales_Block_Adminhtml_Recurring_Profile_View_Tab_Orders extends Mage_
     }
 
     /**
-     * Return row url for js event handlers
-     *
+     * @inheritDoc
      * @param Varien_Object $row
-     * @return string
      */
     public function getRowUrl($row)
     {

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Sales Adminhtml report filter form for coupons report
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Block_Adminhtml_Report_Filter_Form_Coupon extends Mage_Sales_Block_Adminhtml_Report_Filter_Form
 {
@@ -37,12 +29,12 @@ class Mage_Sales_Block_Adminhtml_Report_Filter_Form_Coupon extends Mage_Sales_Bl
         /** @var Varien_Data_Form_Element_Fieldset $fieldset */
         $fieldset = $this->getForm()->getElement('base_fieldset');
 
-        if (is_object($fieldset) && $fieldset instanceof Varien_Data_Form_Element_Fieldset) {
+        if ($fieldset instanceof Varien_Data_Form_Element_Fieldset) {
             $fieldset->addField('price_rule_type', 'select', [
                 'name'    => 'price_rule_type',
                 'options' => [
                     Mage::helper('reports')->__('Any'),
-                    Mage::helper('reports')->__('Specified')
+                    Mage::helper('reports')->__('Specified'),
                 ],
                 'label'   => Mage::helper('reports')->__('Shopping Cart Price Rule'),
             ]);
@@ -55,14 +47,14 @@ class Mage_Sales_Block_Adminhtml_Report_Filter_Form_Coupon extends Mage_Sales_Bl
                 $rulesListOptions[] = [
                     'label' => $ruleName,
                     'value' => $key,
-                    'title' => $ruleName
+                    'title' => $ruleName,
                 ];
             }
 
             $fieldset->addField('rules_list', 'multiselect', [
                 'name'      => 'rules_list',
                 'values'    => $rulesListOptions,
-                'display'   => 'none'
+                'display'   => 'none',
             ], 'price_rule_type');
 
             /** @var Mage_Adminhtml_Block_Widget_Form_Element_Dependence $block */

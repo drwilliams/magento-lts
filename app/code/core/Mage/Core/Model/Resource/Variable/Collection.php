@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * Custom variabel collection
+ * Custom variable collection
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Model_Resource_Variable_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
@@ -30,8 +22,7 @@ class Mage_Core_Model_Resource_Variable_Collection extends Mage_Core_Model_Resou
     protected $_storeId    = 0;
 
     /**
-     *  Define resource model
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -42,7 +33,7 @@ class Mage_Core_Model_Resource_Variable_Collection extends Mage_Core_Model_Resou
     /**
      * Setter
      *
-     * @param int $storeId
+     * @param  int   $storeId
      * @return $this
      */
     public function setStoreId($storeId)
@@ -72,7 +63,7 @@ class Mage_Core_Model_Resource_Variable_Collection extends Mage_Core_Model_Resou
             ->join(
                 ['value_table' => $this->getTable('core/variable_value')],
                 'value_table.variable_id = main_table.variable_id',
-                ['value_table.plain_value', 'value_table.html_value']
+                ['value_table.plain_value', 'value_table.html_value'],
             );
         $this->addFieldToFilter('value_table.store_id', ['eq' => $this->getStoreId()]);
         return $this;

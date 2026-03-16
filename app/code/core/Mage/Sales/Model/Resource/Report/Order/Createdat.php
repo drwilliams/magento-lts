@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Order entity resource model with aggregation by created at
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_Resource_Report_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('sales/order_aggregated_created', 'id');
@@ -30,8 +25,8 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
     /**
      * Aggregate Orders data by order created at
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     public function aggregate($from = null, $to = null)
@@ -42,11 +37,11 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
     /**
      * Aggregate Orders data by custom field
      *
-     * @throws Exception
-     * @param string $aggregationField
-     * @param mixed $from
-     * @param mixed $to
+     * @param  string    $aggregationField
+     * @param  mixed     $from
+     * @param  mixed     $to
      * @return $this
+     * @throws Exception
      */
     protected function _aggregateByField($aggregationField, $from, $to)
     {
@@ -65,18 +60,19 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
                     $aggregationField,
                     $aggregationField,
                     $from,
-                    $to
+                    $to,
                 );
             } else {
                 $subSelect = null;
             }
+
             $this->_clearTableByDateRange($this->getMainTable(), $from, $to, $subSelect);
 
             $periodExpr = $adapter->getDatePartSql($this->getStoreTZOffsetQuery(
                 ['o' => $this->getTable('sales/order')],
                 'o.' . $aggregationField,
                 $from,
-                $to
+                $to,
             ));
             // Columns list
             $columns = [
@@ -92,8 +88,8 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
                         'SUM((%s - %s) * %s)',
                         $adapter->getIfNullSql('o.base_grand_total', 0),
                         $adapter->getIfNullSql('o.base_total_canceled', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_revenue_amount'           => new Zend_Db_Expr(
                     sprintf(
@@ -104,8 +100,8 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
                         $adapter->getIfNullSql('o.base_total_refunded', 0),
                         $adapter->getIfNullSql('o.base_tax_refunded', 0),
                         $adapter->getIfNullSql('o.base_shipping_refunded', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_profit_amount'            => new Zend_Db_Expr(
                     sprintf(
@@ -117,85 +113,85 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
                         $adapter->getIfNullSql('o.base_shipping_invoiced', 0),
                         $adapter->getIfNullSql('o.base_shipping_refunded', 0),
                         $adapter->getIfNullSql('o.base_total_invoiced_cost', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_invoiced_amount'          => new Zend_Db_Expr(
                     sprintf(
                         'SUM(%s * %s)',
                         $adapter->getIfNullSql('o.base_total_invoiced', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_canceled_amount'          => new Zend_Db_Expr(
                     sprintf(
                         'SUM(%s * %s)',
                         $adapter->getIfNullSql('o.base_total_canceled', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_paid_amount'              => new Zend_Db_Expr(
                     sprintf(
                         'SUM(%s * %s)',
                         $adapter->getIfNullSql('o.base_total_paid', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_refunded_amount'          => new Zend_Db_Expr(
                     sprintf(
                         'SUM(%s * %s)',
                         $adapter->getIfNullSql('o.base_total_refunded', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_tax_amount'               => new Zend_Db_Expr(
                     sprintf(
                         'SUM((%s - %s) * %s)',
                         $adapter->getIfNullSql('o.base_tax_amount', 0),
                         $adapter->getIfNullSql('o.base_tax_canceled', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_tax_amount_actual'        => new Zend_Db_Expr(
                     sprintf(
                         'SUM((%s -%s) * %s)',
                         $adapter->getIfNullSql('o.base_tax_invoiced', 0),
                         $adapter->getIfNullSql('o.base_tax_refunded', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_shipping_amount'          => new Zend_Db_Expr(
                     sprintf(
                         'SUM((%s - %s) * %s)',
                         $adapter->getIfNullSql('o.base_shipping_amount', 0),
                         $adapter->getIfNullSql('o.base_shipping_canceled', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_shipping_amount_actual'   => new Zend_Db_Expr(
                     sprintf(
                         'SUM((%s - %s) * %s)',
                         $adapter->getIfNullSql('o.base_shipping_invoiced', 0),
                         $adapter->getIfNullSql('o.base_shipping_refunded', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_discount_amount'          => new Zend_Db_Expr(
                     sprintf(
                         'SUM((ABS(%s) - %s) * %s)',
                         $adapter->getIfNullSql('o.base_discount_amount', 0),
                         $adapter->getIfNullSql('o.base_discount_canceled', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
                 ),
                 'total_discount_amount_actual'   => new Zend_Db_Expr(
                     sprintf(
                         'SUM((%s - %s) * %s)',
                         $adapter->getIfNullSql('o.base_discount_invoiced', 0),
                         $adapter->getIfNullSql('o.base_discount_refunded', 0),
-                        $adapter->getIfNullSql('o.base_to_global_rate', 0)
-                    )
-                )
+                        $adapter->getIfNullSql('o.base_to_global_rate', 0),
+                    ),
+                ),
             ];
 
             $select          = $adapter->select();
@@ -215,7 +211,7 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
                 ->join(['oi' => $selectOrderItem], 'oi.order_id = o.entity_id', [])
                 ->where('o.state NOT IN (?)', [
                     Mage_Sales_Model_Order::STATE_PENDING_PAYMENT,
-                    Mage_Sales_Model_Order::STATE_NEW
+                    Mage_Sales_Model_Order::STATE_NEW,
                 ]);
 
             if ($subSelect !== null) {
@@ -231,11 +227,12 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
             $adapter->query($select->insertFromSelect($this->getMainTable(), array_keys($columns)));
 
             // setup all columns to select SUM() except period, store_id and order_status
-            foreach ($columns as $k => $v) {
+            foreach (array_keys($columns) as $k) {
                 $columns[$k] = new Zend_Db_Expr('SUM(' . $k . ')');
             }
+
             $columns['period']         = 'period';
-            $columns['store_id']       = new Zend_Db_Expr(Mage_Core_Model_App::ADMIN_STORE_ID);
+            $columns['store_id']       = new Zend_Db_Expr((string) Mage_Core_Model_App::ADMIN_STORE_ID);
             $columns['order_status']   = 'order_status';
 
             $select->reset();
@@ -248,13 +245,13 @@ class Mage_Sales_Model_Resource_Report_Order_Createdat extends Mage_Sales_Model_
 
             $select->group([
                 'period',
-                'order_status'
+                'order_status',
             ]);
             $adapter->query($select->insertFromSelect($this->getMainTable(), array_keys($columns)));
             $adapter->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $adapter->rollBack();
-            throw $e;
+            throw $exception;
         }
 
         return $this;

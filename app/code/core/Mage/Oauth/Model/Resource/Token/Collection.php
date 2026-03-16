@@ -1,29 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Oauth
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * OAuth token resource collection model
  *
- * @category   Mage
  * @package    Mage_Oauth
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
     /**
-     * Initialize collection model
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -43,7 +35,7 @@ class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resourc
         $select->joinLeft(
             ['c' => $this->getTable('oauth/consumer')],
             'c.entity_id = main_table.consumer_id',
-            'name'
+            'name',
         );
 
         return $this;
@@ -52,7 +44,7 @@ class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resourc
     /**
      * Add filter by admin ID
      *
-     * @param int $adminId
+     * @param  int   $adminId
      * @return $this
      */
     public function addFilterByAdminId($adminId)
@@ -64,7 +56,7 @@ class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resourc
     /**
      * Add filter by customer ID
      *
-     * @param int $customerId
+     * @param  int   $customerId
      * @return $this
      */
     public function addFilterByCustomerId($customerId)
@@ -76,7 +68,7 @@ class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resourc
     /**
      * Add filter by consumer ID
      *
-     * @param int $consumerId
+     * @param  int   $consumerId
      * @return $this
      */
     public function addFilterByConsumerId($consumerId)
@@ -88,7 +80,7 @@ class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resourc
     /**
      * Add filter by type
      *
-     * @param string $type
+     * @param  string $type
      * @return $this
      */
     public function addFilterByType($type)
@@ -100,7 +92,7 @@ class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resourc
     /**
      * Add filter by ID
      *
-     * @param array|int $id
+     * @param  array|int $id
      * @return $this
      */
     public function addFilterById($id)
@@ -112,7 +104,7 @@ class Mage_Oauth_Model_Resource_Token_Collection extends Mage_Core_Model_Resourc
     /**
      * Add filter by "Is Revoked" status
      *
-     * @param bool|int $flag
+     * @param  bool|int $flag
      * @return $this
      */
     public function addFilterByRevoked($flag)

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2018-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml help url mapper
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Adminhtml_Helper_Help_Mapping extends Mage_Core_Helper_Abstract
 {
@@ -198,20 +190,20 @@ abstract class Mage_Adminhtml_Helper_Help_Mapping extends Mage_Core_Helper_Abstr
             'export' => 'store-operations/data-export.html',
         ],
         'Mage_Connect_Adminhtml' => [
-            'extension_custom/edit' => 'magento/magento-connect.html'
+            'extension_custom/edit' => 'magento/magento-connect.html',
         ],
         'Mage_Index_Adminhtml' => [
-            'process/list' => 'system-operations/index-management.html'
+            'process/list' => 'system-operations/index-management.html',
         ],
     ];
 
     /**
      * Compose reconstructed URL using mapping
      *
-     * @param string $frontModule
-     * @param string $controllerName
-     * @param string $actionName
-     * @return string|bool
+     * @param  string      $frontModule
+     * @param  string      $controllerName
+     * @param  string      $actionName
+     * @return bool|string
      */
     protected function findInMapping($frontModule, $controllerName, $actionName)
     {
@@ -220,6 +212,7 @@ abstract class Mage_Adminhtml_Helper_Help_Mapping extends Mage_Core_Helper_Abstr
         } else {
             $targetToFind = $controllerName . '/' . $actionName;
         }
+
         if (isset($this->_moduleMappings[$frontModule])
             && isset($this->_moduleMappings[$frontModule][$targetToFind])
         ) {
@@ -232,7 +225,7 @@ abstract class Mage_Adminhtml_Helper_Help_Mapping extends Mage_Core_Helper_Abstr
     /**
      * Determine which version of docs should target onto
      *
-     * @return string
+     * @return false|Mage_Core_Model_Config_Element|Varien_Simplexml_Element
      */
     protected function getHelpTargetVersion()
     {

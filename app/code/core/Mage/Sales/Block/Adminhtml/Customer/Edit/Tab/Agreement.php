@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml customer billing agreement tab
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Block_Adminhtml_Customer_Edit_Tab_Agreement extends Mage_Sales_Block_Adminhtml_Billing_Agreement_Grid implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -31,12 +23,11 @@ class Mage_Sales_Block_Adminhtml_Customer_Edit_Tab_Agreement extends Mage_Sales_
         'customer_email',
         'customer_firstname',
         'customer_middlename',
-        'customer_lastname'
+        'customer_lastname',
     ];
 
     /**
      * Disable filters and paging
-     *
      */
     public function __construct()
     {
@@ -72,7 +63,7 @@ class Mage_Sales_Block_Adminhtml_Customer_Edit_Tab_Agreement extends Mage_Sales_
     public function canShowTab()
     {
         $customer = Mage::registry('current_customer');
-        return (bool)$customer->getId();
+        return (bool) $customer->getId();
     }
 
     /**
@@ -106,7 +97,7 @@ class Mage_Sales_Block_Adminhtml_Customer_Edit_Tab_Agreement extends Mage_Sales_
     /**
      * Prepare collection for grid
      *
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return $this|Mage_Adminhtml_Block_Widget_Grid
      */
     protected function _prepareCollection()
     {
@@ -120,17 +111,18 @@ class Mage_Sales_Block_Adminhtml_Customer_Edit_Tab_Agreement extends Mage_Sales_
     /**
      * Remove some columns and make other not sortable
      *
-     * @return Mage_Adminhtml_Block_Widget_Grid
+     * @return $this
      */
     protected function _prepareColumns()
     {
         $result = parent::_prepareColumns();
 
-        foreach ($this->_columns as $key => $value) {
+        foreach (array_keys($this->_columns) as $key) {
             if (in_array($key, $this->_columnsToRemove)) {
                 unset($this->_columns[$key]);
             }
         }
+
         return $result;
     }
 }

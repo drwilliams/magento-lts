@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Eav
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2018-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Entity/Attribute/Model - attribute selection source abstract
  *
- * @category   Mage
  * @package    Mage_Eav
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Eav_Model_Entity_Attribute_Source_Abstract implements Mage_Eav_Model_Entity_Attribute_Source_Interface
 {
@@ -32,14 +24,14 @@ abstract class Mage_Eav_Model_Entity_Attribute_Source_Abstract implements Mage_E
     /**
      * Options array
      *
-     * @var array|null
+     * @var null|array
      */
     protected $_options = null;
 
     /**
      * Set attribute instance
      *
-     * @param Mage_Eav_Model_Entity_Attribute_Abstract $attribute
+     * @param  Mage_Eav_Model_Entity_Attribute_Abstract $attribute
      * @return $this
      */
     public function setAttribute($attribute)
@@ -61,8 +53,8 @@ abstract class Mage_Eav_Model_Entity_Attribute_Source_Abstract implements Mage_E
     /**
      * Get a text for option value
      *
-     * @param  string|int $value
-     * @return string|bool
+     * @param  int|string  $value
+     * @return bool|string
      */
     public function getOptionText($value)
     {
@@ -75,38 +67,42 @@ abstract class Mage_Eav_Model_Entity_Attribute_Source_Abstract implements Mage_E
                 }
             } // End
         }
+
         return $options[$value] ?? false;
     }
 
     /**
-     * @param string $value
-     * @return string|null
+     * @param  string      $value
+     * @return null|string
      */
     public function getOptionId($value)
     {
-        $bc_warning = false;
+        $bcWarning = false;
         foreach ($this->getAllOptions() as $option) {
             if (strcasecmp($option['label'], $value) == 0) {
                 return $option['value'];
             }
+
             if ($option['value'] == $value) {
-                $bc_warning = true;
+                $bcWarning = true;
             }
         }
-        if ($bc_warning) {
+
+        if ($bcWarning) {
             Mage::log(
                 'Mage_Eav_Model_Entity_Attribute_Source_Abstract::getOptionId() no longer accepts option_id as param',
-                Zend_Log::WARN
+                \Monolog\Level::Warning,
             );
         }
+
         return null;
     }
 
     /**
      * Add Value Sort To Collection Select
      *
-     * @param Mage_Eav_Model_Entity_Collection_Abstract $collection
-     * @param string $dir direction
+     * @param  Mage_Eav_Model_Entity_Collection_Abstract $collection
+     * @param  string                                    $dir        direction
      * @return $this
      */
     public function addValueSortToCollection($collection, $dir = Varien_Data_Collection::SORT_ORDER_DESC)
@@ -137,8 +133,8 @@ abstract class Mage_Eav_Model_Entity_Attribute_Source_Abstract implements Mage_E
     /**
      * Retrieve Select For Flat Attribute update
      *
-     * @param int $store
-     * @return Varien_Db_Select|null
+     * @param  int                   $store
+     * @return null|Varien_Db_Select
      */
     public function getFlatUpdateSelect($store)
     {
@@ -148,8 +144,8 @@ abstract class Mage_Eav_Model_Entity_Attribute_Source_Abstract implements Mage_E
     /**
      * Get a text for index option value
      *
-     * @param string|int $value
-     * @return string|bool
+     * @param  int|string  $value
+     * @return bool|string
      */
     public function getIndexOptionText($value)
     {

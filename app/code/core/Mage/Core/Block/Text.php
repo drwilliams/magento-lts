@@ -1,38 +1,30 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Base html block
  *
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method array getLiParams()
- * @method $this setLiParams(array $value)
- * @method array getAParams()
- * @method $this setAParams(array $value)
- * @method string getInnerText()
- * @method $this setInnerText(string $value)
  * @method string getAfterText()
- * @method $this setAfterText(string $value)
+ * @method array  getAParams()
+ * @method string getInnerText()
+ * @method array  getLiParams()
+ * @method $this  setAfterText(string $value)
+ * @method $this  setAParams(array $value)
+ * @method $this  setInnerText(string $value)
+ * @method $this  setLiParams(array $value)
  */
 class Mage_Core_Block_Text extends Mage_Core_Block_Abstract
 {
     /**
-     * @param string $text
+     * @param  string $text
      * @return $this
      */
     public function setText($text)
@@ -51,7 +43,7 @@ class Mage_Core_Block_Text extends Mage_Core_Block_Abstract
 
     /**
      * @param string $text
-     * @param bool $before
+     * @param bool   $before
      */
     public function addText($text, $before = false)
     {

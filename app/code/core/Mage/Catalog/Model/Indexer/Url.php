@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -22,9 +16,7 @@
  *  - Store group save (changed root category or group website) - require reindex all data
  *  - Seo config settings change - require reindex all data
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
 {
@@ -41,23 +33,23 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
      */
     protected $_matchedEntities = [
         Mage_Catalog_Model_Product::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Catalog_Model_Category::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Core_Model_Store::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Core_Model_Store_Group::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Core_Model_Config_Data::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Catalog_Model_Convert_Adapter_Product::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
-        ]
+            Mage_Index_Model_Event::TYPE_SAVE,
+        ],
     ];
 
     protected $_relatedConfigSettings = [
@@ -90,7 +82,6 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
      * Check if event can be matched by process.
      * Overwrote for specific config save, store and store groups save matching
      *
-     * @param Mage_Index_Model_Event $event
      * @return bool
      */
     public function matchEvent(Mage_Index_Model_Event $event)
@@ -136,7 +127,6 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
     /**
      * Register data required by process in event object
      *
-     * @param Mage_Index_Model_Event $event
      * @return Mage_Catalog_Model_Indexer_Url
      */
     protected function _registerEvent(Mage_Index_Model_Event $event)
@@ -163,13 +153,12 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
                 $process->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
                 break;
         }
+
         return $this;
     }
 
     /**
      * Register event data during product save process
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerProductEvent(Mage_Index_Model_Event $event)
     {
@@ -185,8 +174,6 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
 
     /**
      * Register event data during category save process
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerCategoryEvent(Mage_Index_Model_Event $event)
     {
@@ -195,6 +182,7 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
             if ($category->dataHasChangedFor('url_key') || $category->getIsChangedProductList()) {
                 $event->addNewData('rewrite_category_ids', [$category->getId()]);
             }
+
             /**
              * Check if category has another affected category ids (category move result)
              */
@@ -206,8 +194,6 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
 
     /**
      * Process event
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _processEvent(Mage_Index_Model_Event $event)
     {
@@ -251,9 +237,9 @@ class Mage_Catalog_Model_Indexer_Url extends Mage_Index_Model_Indexer_Abstract
         try {
             Mage::getSingleton('catalog/url')->refreshRewrites();
             $resourceModel->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $resourceModel->rollBack();
-            throw $e;
+            throw $exception;
         }
     }
 }

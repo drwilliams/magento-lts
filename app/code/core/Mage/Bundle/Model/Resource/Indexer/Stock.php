@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Bundle
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Bundle Stock Status Indexer Resource Model
  *
- * @category   Mage
  * @package    Mage_Bundle
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Model_Resource_Indexer_Stock_Default
 {
     /**
      * Reindex temporary (price result data) for defined product(s)
      *
-     * @param int|array $entityIds
+     * @param  array|int $entityIds
      * @return $this
      */
     public function reindexEntity($entityIds)
@@ -48,8 +40,8 @@ class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Mod
     /**
      * Prepare stock status per Bundle options, website and stock
      *
-     * @param int|array $entityIds
-     * @param bool $usePrimaryTable use primary or temporary index table
+     * @param  array|int $entityIds
+     * @param  bool      $usePrimaryTable use primary or temporary index table
      * @return $this
      */
     protected function _prepareBundleOptionStockData($entityIds = null, $usePrimaryTable = false)
@@ -60,34 +52,34 @@ class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Mod
         $select   = $adapter->select()
             ->from(['bo' => $this->getTable('bundle/option')], ['parent_id']);
         $this->_addWebsiteJoinToSelect($select, false);
-        $status = new Zend_Db_Expr('MAX(' .
-                $adapter->getCheckSql('e.required_options = 0', 'i.stock_status', '0') . ')');
+        $status = new Zend_Db_Expr('MAX('
+                . $adapter->getCheckSql('e.required_options = 0', 'i.stock_status', '0') . ')');
         $select->columns('website_id', 'cw')
             ->join(
                 ['cis' => $this->getTable('cataloginventory/stock')],
                 '',
-                ['stock_id']
+                ['stock_id'],
             )
             ->joinLeft(
                 ['bs' => $this->getTable('bundle/selection')],
                 'bs.option_id = bo.option_id',
-                []
+                [],
             )
             ->joinLeft(
                 ['i' => $idxTable],
                 'i.product_id = bs.product_id AND i.website_id = cw.website_id AND i.stock_id = cis.stock_id',
-                []
+                [],
             )
             ->joinLeft(
                 ['e' => $this->getTable('catalog/product')],
                 'e.entity_id = bs.product_id',
-                []
+                [],
             )
             ->where('cw.website_id != 0')
             ->group(['bo.parent_id', 'cw.website_id', 'cis.stock_id', 'bo.option_id'])
             ->columns([
                 'option_id' => 'bo.option_id',
-                'status'    => $status
+                'status'    => $status,
             ]);
 
         if (!is_null($entityIds)) {
@@ -112,8 +104,8 @@ class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Mod
     /**
      * Get the select object for get stock status by product ids
      *
-     * @param int|array $entityIds
-     * @param bool $usePrimaryTable use primary or temporary index table
+     * @param  array|int        $entityIds
+     * @param  bool             $usePrimaryTable use primary or temporary index table
      * @return Varien_Db_Select
      */
     protected function _getStockStatusSelect($entityIds = null, $usePrimaryTable = false)
@@ -129,17 +121,17 @@ class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Mod
             ->join(
                 ['cis' => $this->getTable('cataloginventory/stock')],
                 '',
-                ['stock_id']
+                ['stock_id'],
             )
             ->joinLeft(
                 ['cisi' => $this->getTable('cataloginventory/stock_item')],
                 'cisi.stock_id = cis.stock_id AND cisi.product_id = e.entity_id',
-                []
+                [],
             )
             ->joinLeft(
                 ['o' => $this->_getBundleOptionTable()],
                 'o.entity_id = e.entity_id AND o.website_id = cw.website_id AND o.stock_id = cis.stock_id',
-                []
+                [],
             )
             ->columns(['qty' => new Zend_Db_Expr('0')])
             ->where('cw.website_id != 0')
@@ -154,13 +146,13 @@ class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Mod
             $statusExpr = $adapter->getCheckSql(
                 'cisi.use_config_manage_stock = 0 AND cisi.manage_stock = 0',
                 '1',
-                'cisi.is_in_stock'
+                'cisi.is_in_stock',
             );
         } else {
             $statusExpr = $adapter->getCheckSql(
                 'cisi.use_config_manage_stock = 0 AND cisi.manage_stock = 1',
                 'cisi.is_in_stock',
-                '1'
+                '1',
             );
         }
 
@@ -179,7 +171,7 @@ class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Mod
     /**
      * Prepare stock status data in temporary index table
      *
-     * @param int|array $entityIds  the product limitation
+     * @param  array|int $entityIds the product limitation
      * @return $this
      */
     protected function _prepareIndexTable($entityIds = null)
@@ -193,7 +185,7 @@ class Mage_Bundle_Model_Resource_Indexer_Stock extends Mage_CatalogInventory_Mod
     /**
      * Update Stock status index by product ids
      *
-     * @param array|int $entityIds
+     * @param  array|int $entityIds
      * @return $this
      */
     protected function _updateIndex($entityIds)

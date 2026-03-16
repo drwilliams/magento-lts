@@ -1,26 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Reports Recently Products Abstract Block
  *
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method int getCustomerId()
+ * @method int   getCustomerId()
  * @method array getProductIds()
  */
 abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Product_Abstract
@@ -28,21 +20,21 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
     /**
      * Product Index model name
      *
-     * @var string|null
+     * @var null|string
      */
     protected $_indexName;
 
     /**
      * Product Index model instance
      *
-     * @var Mage_Core_Model_Abstract|Mage_Reports_Model_Product_Index_Abstract|null
+     * @var null|Mage_Core_Model_Abstract|Mage_Reports_Model_Product_Index_Abstract
      */
     protected $_indexModel;
 
     /**
      * Product Index Collection
      *
-     * @var Mage_Reports_Model_Resource_Product_Index_Collection_Abstract|null
+     * @var null|Mage_Reports_Model_Resource_Product_Index_Collection_Abstract
      */
     protected $_collection;
 
@@ -70,6 +62,7 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
         if ($this->hasData('page_size')) {
             return $this->getData('page_size');
         }
+
         return 5;
     }
 
@@ -143,6 +136,7 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
             } else {
                 $this->_collection->addFilterByIds($ids);
             }
+
             $this->_collection->setAddedAtOrder();
             if ($this-> _useProductIdsOrder && is_array($ids)) {
                 $this->_collection->setSortIds($ids);
@@ -158,8 +152,8 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
     /**
      * Set flag that defines whether products ids order should be used
      *
-     * @param bool $use
-     * @return Mage_Reports_Block_Product_Abstract
+     * @param  bool  $use
+     * @return $this
      */
     public function useProductIdsOrder($use = true)
     {
@@ -177,6 +171,7 @@ abstract class Mage_Reports_Block_Product_Abstract extends Mage_Catalog_Block_Pr
         if (!$this->_getModel()->getCount()) {
             return 0;
         }
+
         return $this->getItemsCollection()->count();
     }
 

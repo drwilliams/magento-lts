@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_ImportExport
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Import entity abstract product type model
  *
- * @category   Mage
  * @package    Mage_ImportExport
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
 {
@@ -84,7 +76,6 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
     /**
      * Object constructor.
      *
-     * @param array $params
      * @throws Exception
      */
     final public function __construct(array $params)
@@ -95,6 +86,7 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
             ) {
                 Mage::throwException(Mage::helper('importexport')->__('Invalid parameters'));
             }
+
             $this->_entityModel = $params[0];
             $this->_type        = $params[1];
 
@@ -113,8 +105,8 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
     /**
      * Add attribute parameters to appropriate attribute set.
      *
-     * @param string $attrSetName Name of attribute set.
-     * @param array $attrParams Refined attribute parameters.
+     * @param  string                                                      $attrSetName name of attribute set
+     * @param  array                                                       $attrParams  refined attribute parameters
      * @return Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
      */
     protected function _addAttributeParams($attrSetName, array $attrParams)
@@ -122,22 +114,23 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
         if (!$attrParams['apply_to'] || in_array($this->_type, $attrParams['apply_to'])) {
             $this->_attributes[$attrSetName][$attrParams['code']] = $attrParams;
         }
+
         return $this;
     }
 
     /**
      * Return product attributes for its attribute set specified in row data.
      *
-     * @param array|string $attrSetData Product row data or simply attribute set name.
+     * @param  array|string $attrSetData product row data or simply attribute set name
      * @return array
      */
     protected function _getProductAttributes($attrSetData)
     {
         if (is_array($attrSetData)) {
             return $this->_attributes[$attrSetData[Mage_ImportExport_Model_Import_Entity_Product::COL_ATTR_SET]];
-        } else {
-            return $this->_attributes[$attrSetData];
         }
+
+        return $this->_attributes[$attrSetData];
     }
 
     /**
@@ -173,23 +166,25 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
                             'is_static'        => $attribute->isStatic(),
                             'apply_to'         => $attribute->getApplyTo(),
                             'type'             => Mage_ImportExport_Model_Import::getAttributeType($attribute),
-                            'default_value'    => strlen($attribute->getDefaultValue())
+                            'default_value'    => strlen($attribute->getDefaultValue() ?? '')
                                                   ? $attribute->getDefaultValue() : null,
                             'options'          => $this->_entityModel
-                                                      ->getAttributeOptions($attribute, $this->_indexValueAttributes)
+                                                      ->getAttributeOptions($attribute, $this->_indexValueAttributes),
                         ];
                     }
+
                     $this->_addAttributeParams($attributeSet->getAttributeSetName(), $attributesCache[$attributeId]);
                 }
             }
         }
+
         return $this;
     }
 
     /**
      * Have we check attribute for is_required? Used as last chance to disable this type of check.
      *
-     * @param string $attrCode
+     * @param  string $attrCode
      * @return bool
      */
     protected function _isAttributeRequiredCheckNeeded($attrCode)
@@ -200,8 +195,7 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
     /**
      * Validate particular attributes columns.
      *
-     * @param array $rowData
-     * @param int $rowNum
+     * @param  int  $rowNum
      * @return bool
      */
     protected function _isParticularAttributesValid(array $rowData, $rowNum)
@@ -212,7 +206,7 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
     /**
      * Check price correction value validity (signed integer or float with or without percentage sign).
      *
-     * @param string $value
+     * @param  string $value
      * @return int
      */
     protected function _isPriceCorr($value)
@@ -233,9 +227,8 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
     /**
      * Validate row attributes. Pass VALID row data ONLY as argument.
      *
-     * @param array $rowData
-     * @param int $rowNum
-     * @param bool $isNewProduct OPTIONAL.
+     * @param  int  $rowNum
+     * @param  bool $isNewProduct OPTIONAL
      * @return bool
      */
     public function isRowValid(array $rowData, $rowNum, $isNewProduct = true)
@@ -253,19 +246,20 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
                 ) {
                     // For the default scope - if this is a new product or
                     // for an old product, if the imported doc has the column present for the attrCode
-                    if (Mage_ImportExport_Model_Import_Entity_Product::SCOPE_DEFAULT == $rowScope &&
-                            ($isNewProduct || array_key_exists($attrCode, $rowData))
+                    if (Mage_ImportExport_Model_Import_Entity_Product::SCOPE_DEFAULT == $rowScope
+                            && ($isNewProduct || array_key_exists($attrCode, $rowData))
                     ) {
                         $this->_entityModel->addRowError(
                             Mage_ImportExport_Model_Import_Entity_Product::ERROR_VALUE_IS_REQUIRED,
                             $rowNum,
-                            $attrCode
+                            $attrCode,
                         );
                         $error = true;
                     }
                 }
             }
         }
+
         $error |= !$this->_isParticularAttributesValid($rowData, $rowNum);
 
         return !$error;
@@ -284,8 +278,7 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
     /**
      * Prepare attributes values for save: remove non-existent, remove empty values, remove static.
      *
-     * @param array $rowData
-     * @param bool $withDefaultValue
+     * @param  bool  $withDefaultValue
      * @return array
      */
     public function prepareAttributesForSave(array $rowData, $withDefaultValue = true)
@@ -295,8 +288,8 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
         foreach ($this->_getProductAttributes($rowData) as $attrCode => $attrParams) {
             if (!$attrParams['is_static']) {
                 if (isset($rowData[$attrCode]) && strlen($rowData[$attrCode])) {
-                    $resultAttrs[$attrCode] =
-                        ($attrParams['type'] == 'select' || $attrParams['type'] == 'multiselect')
+                    $resultAttrs[$attrCode]
+                        = ($attrParams['type'] == 'select' || $attrParams['type'] == 'multiselect')
                         ? $attrParams['options'][strtolower($rowData[$attrCode])]
                         : $rowData[$attrCode];
                 } elseif ($withDefaultValue && $attrParams['default_value'] !== null) {
@@ -304,6 +297,7 @@ abstract class Mage_ImportExport_Model_Import_Entity_Product_Type_Abstract
                 }
             }
         }
+
         return $resultAttrs;
     }
 

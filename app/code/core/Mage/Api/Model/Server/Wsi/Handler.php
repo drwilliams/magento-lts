@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Api
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Webservices server handler WSI
  *
- * @category   Mage
  * @package    Mage_Api
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Abstract
 {
@@ -27,9 +19,11 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
     /**
      * Interceptor for all interfaces
      *
-     * @param string $function
-     * @param array $args
+     * @param  string              $function
+     * @param  array               $args
      * @return stdClass
+     * @throws Mage_Api_Exception
+     * @throws ReflectionException
      */
     public function __call($function, $args)
     {
@@ -39,6 +33,7 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
         $helper = Mage::helper('api/data');
 
         $helper->wsiArrayUnpacker($args);
+
         $args = get_object_vars($args);
 
         if (isset($args['sessionId'])) {
@@ -53,13 +48,13 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
         $nodes = Mage::getSingleton('api/config')->getNode('v2/resources_function_prefix')->children();
         foreach ($nodes as $resource => $prefix) {
             $prefix = $prefix->asArray();
-            if (strpos($function, $prefix) !== false) {
+            if (str_contains($function, $prefix)) {
                 $method = substr($function, strlen($prefix));
                 $apiKey = $resource . '.' . strtolower($method[0]) . substr($method, 1);
             }
         }
 
-        list($modelName, $methodName) = $this->_getResourceName($apiKey);
+        [$modelName, $methodName] = $this->_getResourceName($apiKey);
         $methodParams = $this->getMethodParams($modelName, $methodName);
 
         $args = $this->prepareArgs($methodParams, $args);
@@ -76,8 +71,8 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
     /**
      * Login user and Retrieve session id
      *
-     * @param string $username
-     * @param string $apiKey
+     * @param  string      $username
+     * @param  null|string $apiKey
      * @return stdClass
      */
     public function login($username, $apiKey = null)
@@ -87,6 +82,9 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
             $username = $username->username;
         }
 
+        $username = new Mage_Core_Model_Security_Obfuscated($username);
+        $apiKey   = is_null($apiKey) ? null : new Mage_Core_Model_Security_Obfuscated($apiKey);
+
         $stdObject = new stdClass();
         $stdObject->result = parent::login($username, $apiKey);
         return $stdObject;
@@ -95,15 +93,16 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
     /**
      * Return called class and method names
      *
-     * @param String $apiPath
-     * @return array
+     * @param  String     $apiPath
+     * @return array|void
      */
     protected function _getResourceName($apiPath)
     {
-        list($resourceName, $methodName) = explode('.', $apiPath);
+        [$resourceName, $methodName] = explode('.', $apiPath);
 
         if (empty($resourceName) || empty($methodName)) {
-            return $this->_fault('resource_path_invalid');
+            $this->_fault('resource_path_invalid');
+            return;
         }
 
         $resourcesAlias = $this->_getConfig()->getResourcesAlias();
@@ -123,9 +122,10 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
     /**
      * Return an array of parameters for the callable method.
      *
-     * @param String $modelName
-     * @param String $methodName
-     * @return array of ReflectionParameter
+     * @param  String              $modelName
+     * @param  String              $methodName
+     * @return array               of ReflectionParameter
+     * @throws ReflectionException
      */
     public function getMethodParams($modelName, $methodName)
     {
@@ -137,9 +137,10 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
     /**
      * Prepares arguments for the method calling. Sort in correct order, set default values for omitted parameters.
      *
-     * @param array $params
-     * @param array $args
+     * @param  array               $params
+     * @param  array               $args
      * @return array
+     * @throws ReflectionException
      */
     public function prepareArgs($params, $args)
     {
@@ -150,28 +151,27 @@ class Mage_Api_Model_Server_Wsi_Handler extends Mage_Api_Model_Server_Handler_Ab
             $pName = $parameter->getName();
             if (isset($args[$pName])) {
                 $callArgs[$pName] = $args[$pName];
+            } elseif ($parameter->isOptional()) {
+                $callArgs[$pName] = $parameter->getDefaultValue();
             } else {
-                if ($parameter->isOptional()) {
-                    $callArgs[$pName] = $parameter->getDefaultValue();
-                } else {
-                    Mage::logException(new Exception("Required parameter \"$pName\" is missing.", 0));
-                    $this->_fault('invalid_request_param');
-                }
+                Mage::logException(new Exception("Required parameter \"$pName\" is missing.", 0));
+                $this->_fault('invalid_request_param');
             }
         }
+
         return $callArgs;
     }
 
     /**
      * End web service session
      *
-     * @param stdClass $request
+     * @param  stdClass|string $sessionId
      * @return stdClass
      */
-    public function endSession($request)
+    public function endSession($sessionId)
     {
         $stdObject = new stdClass();
-        $stdObject->result = parent::endSession($request->sessionId);
+        $stdObject->result = parent::endSession($sessionId->sessionId);
         return $stdObject;
     }
 }

@@ -1,74 +1,56 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Tax
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Tax Rule Model
  *
- * @category   Mage
  * @package    Mage_Tax
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method Mage_Tax_Model_Resource_Calculation_Rule _getResource()
- * @method Mage_Tax_Model_Resource_Calculation_Rule getResource()
+ * @method Mage_Tax_Model_Resource_Calculation_Rule            _getResource()
+ * @method string                                              getCode()
  * @method Mage_Tax_Model_Resource_Calculation_Rule_Collection getCollection()
- *
- * @method $this setCalculateSubtotal(float $value)
- * @method string getCode()
- * @method $this setCode(string $value)
- * @method int getPriority()
- * @method $this setPriority(int $value)
- * @method int getPosition()
- * @method $this setPosition(int $value)
- * @method float getTaxRate()
- * @method string getTaxCustomerClass()
- * @method string getTaxProductClass()
+ * @method int                                                 getPosition()
+ * @method int                                                 getPriority()
+ * @method Mage_Tax_Model_Resource_Calculation_Rule            getResource()
+ * @method Mage_Tax_Model_Resource_Calculation_Rule_Collection getResourceCollection()
+ * @method string                                              getTaxCustomerClass()
+ * @method string                                              getTaxProductClass()
+ * @method float                                               getTaxRate()
+ * @method $this                                               setCalculateSubtotal(float $value)
+ * @method $this                                               setCode(string $value)
+ * @method $this                                               setPosition(int $value)
+ * @method $this                                               setPriority(int $value)
  */
 class Mage_Tax_Model_Calculation_Rule extends Mage_Core_Model_Abstract
 {
     /**
      * No references found in the project. Variable kept for backward compatibility
-     *
-     * @var null
      */
     protected $_ctcs                = null;
 
     /**
      * No references found in the project. Variable kept for backward compatibility
-     *
-     * @var null
      */
     protected $_ptcs                = null;
 
     /**
      * No references found in the project. Variable kept for backward compatibility
-     *
-     * @var null
      */
     protected $_rates               = null;
 
     /**
      * No references found in the project. Variable kept for backward compatibility
-     *
-     * @var null
      */
     protected $_ctcModel            = null;
 
     /**
      * No references found in the project. Variable kept for backward compatibility
-     *
-     * @var null
      */
     protected $_ptcModel            = null;
 
@@ -82,12 +64,12 @@ class Mage_Tax_Model_Calculation_Rule extends Mage_Core_Model_Abstract
     /**
      * Holds the tax Calculation model
      *
-     * @var Mage_Tax_Model_Calculation|null
+     * @var null|Mage_Tax_Model_Calculation
      */
     protected $_calculationModel    = null;
 
     /**
-     * Varien model constructor
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -146,13 +128,14 @@ class Mage_Tax_Model_Calculation_Rule extends Mage_Core_Model_Abstract
     }
 
     /**
-     * @return Mage_Core_Model_Abstract|Mage_Tax_Model_Calculation|null
+     * @return null|Mage_Core_Model_Abstract|Mage_Tax_Model_Calculation
      */
     public function getCalculationModel()
     {
         if (is_null($this->_calculationModel)) {
             $this->_calculationModel = Mage::getSingleton('tax/calculation');
         }
+
         return $this->_calculationModel;
     }
 
@@ -184,9 +167,9 @@ class Mage_Tax_Model_Calculation_Rule extends Mage_Core_Model_Abstract
      * Fetches rules by rate, customer tax class and product tax class
      * and product tax class combination
      *
-     * @param array $rateId
-     * @param array $customerTaxClassId
-     * @param array $productTaxClassId
+     * @param  array $rateId
+     * @param  array $customerTaxClassId
+     * @param  array $productTaxClassId
      * @return array
      */
     public function fetchRuleCodes($rateId, $customerTaxClassId, $productTaxClassId)

@@ -1,31 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Authorizenet
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * DirectPost form block
  *
- * @category   Mage
  * @package    Mage_Authorizenet
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Authorizenet_Block_Directpost_Form extends Mage_Payment_Block_Form_Cc
 {
     /**
      * Internal constructor
      * Set info template for payment step
-     *
      */
     protected function _construct()
     {
@@ -37,7 +28,7 @@ class Mage_Authorizenet_Block_Directpost_Form extends Mage_Payment_Block_Form_Cc
      * Render block HTML
      * If method is not directpost - nothing to return
      *
-     * @return string|null
+     * @return null|string
      */
     protected function _toHtml()
     {

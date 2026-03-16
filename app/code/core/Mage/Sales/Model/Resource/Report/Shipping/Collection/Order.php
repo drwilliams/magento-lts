@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Sales report shipping collection
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Resource_Report_Shipping_Collection_Order extends Mage_Sales_Model_Resource_Report_Collection_Abstract
 {
     /**
      * Period format
      *
-     * @var string
+     * @var Zend_Db_Expr
      */
     protected $_periodFormat;
 
@@ -38,7 +30,6 @@ class Mage_Sales_Model_Resource_Report_Shipping_Collection_Order extends Mage_Sa
 
     /**
      * Initialize custom resource model
-     *
      */
     public function __construct()
     {
@@ -94,20 +85,22 @@ class Mage_Sales_Model_Resource_Report_Shipping_Collection_Order extends Mage_Sa
     {
         $this->getSelect()->from(
             $this->getResource()->getMainTable(),
-            $this->_getSelectedColumns()
+            $this->_getSelectedColumns(),
         );
 
         if (!$this->isTotals() && !$this->isSubTotals()) {
             $this->getSelect()->group([
                 $this->_periodFormat,
-                'shipping_description'
+                'shipping_description',
             ]);
         }
+
         if ($this->isSubTotals()) {
             $this->getSelect()->group([
-                $this->_periodFormat
+                $this->_periodFormat,
             ]);
         }
+
         return $this;
     }
 }

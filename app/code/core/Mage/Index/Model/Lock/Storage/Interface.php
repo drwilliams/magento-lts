@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Index
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract lock storage
  *
- * @category   Mage
  * @package    Mage_Index
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 interface Mage_Index_Model_Lock_Storage_Interface
 {
     /**
      * Set named lock
      *
-     * @param string $lockName
+     * @param  string $lockName
      * @return bool
      */
     public function setLock($lockName);
@@ -33,7 +25,7 @@ interface Mage_Index_Model_Lock_Storage_Interface
     /**
      * Release named lock
      *
-     * @param string $lockName
+     * @param  string $lockName
      * @return bool
      */
     public function releaseLock($lockName);
@@ -41,7 +33,7 @@ interface Mage_Index_Model_Lock_Storage_Interface
     /**
      * Check whether the lock exists
      *
-     * @param string $lockName
+     * @param  string $lockName
      * @return bool
      */
     public function isLockExists($lockName);

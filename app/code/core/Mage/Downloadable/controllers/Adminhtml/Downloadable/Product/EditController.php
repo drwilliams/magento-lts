@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Downloadable
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 require_once 'Mage/Adminhtml/controllers/Catalog/ProductController.php';
@@ -18,12 +12,13 @@ require_once 'Mage/Adminhtml/controllers/Catalog/ProductController.php';
 /**
  * Adminhtml downloadable product edit
  *
- * @category   Mage
  * @package    Mage_Downloadable
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Downloadable_Adminhtml_Downloadable_Product_EditController extends Mage_Adminhtml_Catalog_ProductController
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->setUsedModuleName('Mage_Downloadable');
@@ -31,14 +26,13 @@ class Mage_Downloadable_Adminhtml_Downloadable_Product_EditController extends Ma
 
     /**
      * Load downloadable tab fieldsets
-     *
      */
     public function formAction()
     {
         $this->_initProduct();
         $this->getResponse()->setBody(
             $this->getLayout()->createBlock('downloadable/adminhtml_catalog_product_edit_tab_downloadable', 'admin.product.downloadable.information')
-                ->toHtml()
+                ->toHtml(),
         );
     }
 
@@ -85,6 +79,7 @@ class Mage_Downloadable_Adminhtml_Downloadable_Product_EditController extends Ma
     /**
      * Download link action
      *
+     * @SuppressWarnings("PHPMD.ExitExpression")
      */
     public function linkAction()
     {
@@ -99,16 +94,18 @@ class Mage_Downloadable_Adminhtml_Downloadable_Product_EditController extends Ma
             } elseif ($link->getLinkType() == Mage_Downloadable_Helper_Download::LINK_TYPE_FILE) {
                 $resource = Mage::helper('downloadable/file')->getFilePath(
                     Mage_Downloadable_Model_Link::getBasePath(),
-                    $link->getLinkFile()
+                    $link->getLinkFile(),
                 );
                 $resourceType = Mage_Downloadable_Helper_Download::LINK_TYPE_FILE;
             }
+
             try {
                 $this->_processDownload($resource, $resourceType);
-            } catch (Mage_Core_Exception $e) {
+            } catch (Mage_Core_Exception) {
                 $this->_getSession()->addError(Mage::helper('downloadable')->__('An error occurred while getting the requested content.'));
             }
         }
+
         exit(0);
     }
 }

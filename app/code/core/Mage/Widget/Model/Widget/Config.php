@@ -1,40 +1,32 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Widget
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Widgets Insertion Plugin Config for Editor HTML Element
  *
- * @category   Mage
  * @package    Mage_Widget
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Widget_Model_Widget_Config extends Varien_Object
 {
     /**
      * Return config settings for widgets insertion plugin based on editor element config
      *
-     * @param Varien_Object $config
+     * @param  Varien_Object $config
      * @return array
      */
     public function getPluginSettings($config)
     {
         return [
-            'widget_plugin_src'   => Mage::getBaseUrl('js') . 'mage/adminhtml/wysiwyg/tiny_mce/plugins/magentowidget/editor_plugin.js',
+            'widget_plugin_src'   => Mage::getBaseUrl('js') . 'mage/adminhtml/wysiwyg/tinymce/plugins/openmagewidget.js',
             'widget_images_url'   => $this->getPlaceholderImagesBaseUrl(),
             'widget_placeholders' => $this->getAvailablePlaceholderFilenames(),
-            'widget_window_url'   => $this->getWidgetWindowUrl($config)
+            'widget_window_url'   => $this->getWidgetWindowUrl($config),
         ];
     }
 
@@ -84,7 +76,7 @@ class Mage_Widget_Model_Widget_Config extends Varien_Object
     /**
      * Return Widgets Insertion Plugin Window URL
      *
-     * @param Varien_Object $config Editor element config
+     * @param  Varien_Object $config Editor element config
      * @return string
      */
     public function getWidgetWindowUrl($config)
@@ -103,16 +95,17 @@ class Mage_Widget_Model_Widget_Config extends Varien_Object
             }
         }
 
-        if (count($skipped) > 0) {
+        if ($skipped !== []) {
             $params['skip_widgets'] = $this->encodeWidgetsToQuery($skipped);
         }
+
         return Mage::getSingleton('adminhtml/url')->getUrl('*/widget/index', $params);
     }
 
     /**
      * Encode list of widget types into query param
      *
-     * @param array $widgets List of widgets
+     * @param  array  $widgets List of widgets
      * @return string Query param value
      */
     public function encodeWidgetsToQuery($widgets)
@@ -125,8 +118,8 @@ class Mage_Widget_Model_Widget_Config extends Varien_Object
     /**
      * Decode URL query param and return list of widgets
      *
-     * @param string $queryParam Query param value to decode
-     * @return array Array of widget types
+     * @param  string $queryParam Query param value to decode
+     * @return array  Array of widget types
      */
     public function decodeWidgetsFromQuery($queryParam)
     {

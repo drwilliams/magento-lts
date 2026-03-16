@@ -1,30 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Wishlist
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Wishlist block customer items
  *
- * @category   Mage
  * @package    Mage_Wishlist
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Wishlist_Block_Share_Email_Items extends Mage_Wishlist_Block_Abstract
 {
     /**
      * Initialize template
-     *
      */
     public function __construct()
     {
@@ -35,8 +26,8 @@ class Mage_Wishlist_Block_Share_Email_Items extends Mage_Wishlist_Block_Abstract
     /**
      * Retrieve Product View URL
      *
-     * @param Mage_Catalog_Model_Product $product
-     * @param array $additional
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  array                      $additional
      * @return string
      */
     public function getProductUrl($product, $additional = [])
@@ -48,8 +39,8 @@ class Mage_Wishlist_Block_Share_Email_Items extends Mage_Wishlist_Block_Abstract
     /**
      * Retrieve URL for add product to shopping cart
      *
-     * @param Mage_Catalog_Model_Product $product
-     * @param array $additional
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  array                      $additional
      * @return string
      */
     public function getAddToCartUrl($product, $additional = [])
@@ -58,9 +49,9 @@ class Mage_Wishlist_Block_Share_Email_Items extends Mage_Wishlist_Block_Abstract
     }
 
     /**
-     * Check whether whishlist item has description
+     * Check whether wishlist item has description
      *
-     * @param Mage_Wishlist_Model_Item $item
+     * @param  Mage_Wishlist_Model_Item $item
      * @return bool
      */
     public function hasDescription($item)
@@ -69,15 +60,16 @@ class Mage_Wishlist_Block_Share_Email_Items extends Mage_Wishlist_Block_Abstract
         if ($hasDescription) {
             return ($item->getDescription() !== Mage::helper('wishlist')->defaultCommentString());
         }
+
         return $hasDescription;
     }
 
     /**
      * Retrieve URL for add product to shopping cart with or without Form Key
      *
-     * @param Mage_Catalog_Model_Product $product
-     * @param array $additional
-     * @param bool $addFormKey
+     * @param  Mage_Catalog_Model_Product $product
+     * @param  array                      $additional
+     * @param  bool                       $addFormKey
      * @return string
      */
     public function getAddToCartUrlCustom($product, $additional = [], $addFormKey = true)

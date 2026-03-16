@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Dataflow
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -18,9 +12,7 @@
  *
  * Instances of this class are used as actions in profile
  *
- * @category   Mage
  * @package    Mage_Dataflow
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataflow_Model_Convert_Action_Interface
 {
@@ -54,8 +46,8 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
     /**
      * Get action parameter
      *
-     * @param string $key
-     * @param mixed $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     public function getParam($key, $default = null)
@@ -66,8 +58,8 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
     /**
      * Set action parameter
      *
-     * @param string $key
-     * @param mixed $value
+     * @param  string                                      $key
+     * @param  mixed                                       $value
      * @return Mage_Dataflow_Model_Convert_Action_Abstract
      */
     public function setParam($key, $value = null)
@@ -77,6 +69,7 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
         } else {
             $this->_params[$key] = $value;
         }
+
         return $this;
     }
 
@@ -93,7 +86,7 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
     /**
      * Set all action parameters
      *
-     * @param array $params
+     * @param  array                                       $params
      * @return Mage_Dataflow_Model_Convert_Action_Abstract
      */
     public function setParams($params)
@@ -115,7 +108,7 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
     /**
      * Set profile instance the action belongs to
      *
-     * @param Mage_Dataflow_Model_Convert_Profile_Abstract $profile
+     * @param  Mage_Dataflow_Model_Convert_Profile_Abstract $profile
      * @return Mage_Dataflow_Model_Convert_Action_Abstract
      */
     public function setProfile(Mage_Dataflow_Model_Convert_Profile_Interface $profile)
@@ -124,11 +117,12 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
         return $this;
     }
 
-    public function addAction(Mage_Dataflow_Model_Convert_Action_Interface $action = null)
+    public function addAction(?Mage_Dataflow_Model_Convert_Action_Interface $action = null)
     {
         if (is_null($action)) {
             $action = new $this->_actionDefaultClass();
         }
+
         $this->_actions[] = $action;
         $action->setProfile($this->getProfile());
         return $action;
@@ -137,7 +131,6 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
     /**
      * Set action's container
      *
-     * @param Mage_Dataflow_Model_Convert_Container_Interface $container
      * @return Mage_Dataflow_Model_Convert_Action_Abstract
      */
     public function setContainer(Mage_Dataflow_Model_Convert_Container_Interface $container)
@@ -151,7 +144,7 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
     /**
      * Get action's container
      *
-     * @param string $name
+     * @param  string                                         $name
      * @return Mage_Dataflow_Model_Convert_Container_Abstract
      */
     public function getContainer($name = null)
@@ -164,28 +157,32 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
             $class = $this->getParam('class');
             $this->setContainer(new $class());
         }
+
         return $this->_container;
     }
 
     public function importXml(Varien_Simplexml_Element $actionNode)
     {
         foreach ($actionNode->attributes() as $key => $value) {
-            $this->setParam($key, (string)$value);
+            $this->setParam($key, (string) $value);
         }
 
         if ($actionNode['use']) {
-            $container = $this->getProfile()->getContainer((string)$actionNode['use']);
+            $container = $this->getProfile()->getContainer((string) $actionNode['use']);
         } else {
-            $this->setParam('class', $this->getClassNameByType((string)$actionNode['type']));
+            $this->setParam('class', $this->getClassNameByType((string) $actionNode['type']));
             $container = $action->getContainer();
         }
+
         $this->setContainer($container);
         if ($this->getParam('name')) {
             $this->getProfile()->addContainer($this->getParam('name'), $container);
         }
+
         foreach ($actionNode->var as $varNode) {
-            $container->setVar((string)$varNode['name'], (string)$varNode);
+            $container->setVar((string) $varNode['name'], (string) $varNode);
         }
+
         foreach ($actionNode->action as $actionSubnode) {
             $action = $this->addAction();
             $action->importXml($actionSubnode);
@@ -205,11 +202,11 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
             if (!method_exists($this->getContainer(), $method)) {
                 $this->getContainer()->addException(
                     'Unable to run action method: ' . $method,
-                    Mage_Dataflow_Model_Convert_Exception::FATAL
+                    Mage_Dataflow_Model_Convert_Exception::FATAL,
                 );
             }
 
-            $this->getContainer()->addException('Starting ' . get_class($this->getContainer()) . ' :: ' . $method);
+            $this->getContainer()->addException('Starting ' . $this->getContainer()::class . ' :: ' . $method);
 
             if ($this->getParam('from')) {
                 $this->getContainer()->setData($this->getContainer($this->getParam('from'))->getData());
@@ -223,6 +220,7 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
         } else {
             $this->getContainer()->addException('No method specified', Mage_Dataflow_Model_Convert_Exception::FATAL);
         }
+
         return $this;
     }
 
@@ -231,9 +229,11 @@ abstract class Mage_Dataflow_Model_Convert_Action_Abstract implements Mage_Dataf
         if (empty($this->_actions)) {
             return $this;
         }
+
         foreach ($this->_actions as $action) {
             $action->run($args);
         }
+
         return $this;
     }
 }

@@ -8,6 +8,7 @@
  * @category    Mage
  * @package     js
  * @copyright   Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
+ * @copyright   Copyright (c) 2022-2023 The OpenMage Contributors (https://www.openmage.org)
  * @license     https://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 
@@ -19,20 +20,6 @@ TranslateInline.prototype = {
 
         this.trigTimer = null;
         this.trigContentEl = null;
-        if (Prototype.Browser.IE) {
-            $$('*[data-translate]').each(this.initializeElement.bind(this));
-            var scope = this;
-            Ajax.Responders.register({ onComplete: function() {
-                window.setTimeout(scope.reinitElements.bind(scope), 50);
-            }
-            });
-            var ElementNode = (typeof HTMLElement != 'undefined' ? HTMLElement : Element);
-            var ElementUpdate = ElementNode.prototype.update;
-            ElementNode.prototype.update = function() {
-                ElementUpdate.apply(this, arguments);
-                $(this).select('*[data-translate]').each(scope.initializeElement.bind(scope));
-            };
-        }
         this.trigEl = $(trigEl);
         this.trigEl.observe('click', this.formShow.bind(this));
 

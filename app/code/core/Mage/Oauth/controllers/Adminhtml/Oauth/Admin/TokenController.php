@@ -1,16 +1,10 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Oauth
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
@@ -18,9 +12,7 @@
  *
  * Applications for logged admin user
  *
- * @category   Mage
  * @package    Mage_Oauth
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Oauth_Adminhtml_Oauth_Admin_TokenController extends Mage_Adminhtml_Controller_Action
 {
@@ -44,6 +36,7 @@ class Mage_Oauth_Adminhtml_Oauth_Admin_TokenController extends Mage_Adminhtml_Co
     public function indexAction()
     {
         $this->loadLayout();
+        $this->_setActiveMenu('system/api/oauth_admin_token');
         $this->renderLayout();
     }
 
@@ -95,11 +88,13 @@ class Mage_Oauth_Adminhtml_Oauth_Admin_TokenController extends Mage_Adminhtml_Co
                 $item->load($item->getId());
                 $item->setRevoked($status)->save();
             }
+
             if ($status) {
                 $message = $this->__('Selected entries revoked.');
             } else {
                 $message = $this->__('Selected entries enabled.');
             }
+
             $this->_getSession()->addSuccess($message);
         } catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError($e->getMessage());
@@ -107,6 +102,7 @@ class Mage_Oauth_Adminhtml_Oauth_Admin_TokenController extends Mage_Adminhtml_Co
             $this->_getSession()->addError($this->__('An error occurred on update revoke status.'));
             Mage::logException($e);
         }
+
         $this->_redirect('*/*/index');
     }
 
@@ -139,6 +135,7 @@ class Mage_Oauth_Adminhtml_Oauth_Admin_TokenController extends Mage_Adminhtml_Co
             foreach ($collection as $item) {
                 $item->delete();
             }
+
             $this->_getSession()->addSuccess($this->__('Selected entries has been deleted.'));
         } catch (Mage_Core_Exception $e) {
             $this->_getSession()->addError($e->getMessage());
@@ -146,6 +143,7 @@ class Mage_Oauth_Adminhtml_Oauth_Admin_TokenController extends Mage_Adminhtml_Co
             $this->_getSession()->addError($this->__('An error occurred on delete action.'));
             Mage::logException($e);
         }
+
         $this->_redirect('*/*/index');
     }
 
@@ -156,6 +154,6 @@ class Mage_Oauth_Adminhtml_Oauth_Admin_TokenController extends Mage_Adminhtml_Co
     {
         /** @var Mage_Admin_Model_Session $session */
         $session = Mage::getSingleton('admin/session');
-        return $session->isAllowed('system/acl/admin_token');
+        return $session->isAllowed('system/api/oauth_admin_token');
     }
 }

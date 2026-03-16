@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml tagginf customers grid block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Tag_Model_Resource_Customer_Collection getCollection()
  */
@@ -39,6 +31,7 @@ class Mage_Adminhtml_Block_Tag_Grid_Customers extends Mage_Adminhtml_Block_Widge
         if ($productId = $this->getRequest()->getParam('product_id')) {
             $collection->addProductFilter($productId);
         }
+
         if ($tagId = $this->getRequest()->getParam('tag_id')) {
             $collection->addTagFilter($tagId);
         }
@@ -56,9 +49,7 @@ class Mage_Adminhtml_Block_Tag_Grid_Customers extends Mage_Adminhtml_Block_Widge
     {
         $this->addColumn('entity_id', [
             'header'   => Mage::helper('tag')->__('ID'),
-            'width'    => '40px',
             'align'    => 'center',
-            'sortable' => true,
             'index'    => 'entity_id',
         ]);
         $this->addColumn('firstname', [
@@ -81,12 +72,10 @@ class Mage_Adminhtml_Block_Tag_Grid_Customers extends Mage_Adminhtml_Block_Widge
             'renderer' => 'adminhtml/tag_grid_column_renderer_tags',
         ]);
         $this->addColumn('action', [
-            'header'    => Mage::helper('tag')->__('Action'),
+            'type'      => 'action',
             'align'     => 'center',
-            'width'     => '120px',
+            'width'     => '120',
             'format'    => '<a href="' . $this->getUrl('*/*/products/customer_id/$entity_id') . '">' . Mage::helper('tag')->__('View Products') . '</a>',
-            'filter'    => false,
-            'sortable'  => false,
             'is_system' => true,
         ]);
 
@@ -100,7 +89,7 @@ class Mage_Adminhtml_Block_Tag_Grid_Customers extends Mage_Adminhtml_Block_Widge
     }
 
     /**
-     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param  Mage_Adminhtml_Block_Widget_Grid_Column $column
      * @return $this
      */
     protected function _addColumnFilterToCollection($column)
@@ -108,6 +97,7 @@ class Mage_Adminhtml_Block_Tag_Grid_Customers extends Mage_Adminhtml_Block_Widge
         if ($this->getCollection() && $column->getFilter()->getValue()) {
             $this->getCollection()->addAttributeToFilter($column->getIndex(), $column->getFilter()->getCondition());
         }
+
         return $this;
     }
 }

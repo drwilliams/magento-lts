@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_SalesRule
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Class Mage_SalesRule_Model_Rule_Action_Collection
  *
- * @category   Mage
  * @package    Mage_SalesRule
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method $this setType(string $value)
  */
@@ -36,9 +28,8 @@ class Mage_SalesRule_Model_Rule_Action_Collection extends Mage_Rule_Model_Action
     public function getNewChildSelectOptions()
     {
         $actions = parent::getNewChildSelectOptions();
-        $actions = array_merge_recursive($actions, [
+        return array_merge_recursive($actions, [
             ['value' => 'salesrule/rule_action_product', 'label' => Mage::helper('salesrule')->__('Update the Product')],
         ]);
-        return $actions;
     }
 }

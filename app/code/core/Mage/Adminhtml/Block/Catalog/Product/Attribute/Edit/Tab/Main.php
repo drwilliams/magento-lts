@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product attribute add/edit form main tab
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_Eav_Block_Adminhtml_Attribute_Edit_Main_Abstract
 {
@@ -39,28 +31,28 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_
             ->searchById('attribute_code')
             ->setData(
                 'class',
-                'validate-code-event ' . $fieldset->getElements()->searchById('attribute_code')->getData('class')
+                'validate-code-event ' . $fieldset->getElements()->searchById('attribute_code')->getData('class'),
             )->setData(
                 'note',
                 $fieldset->getElements()->searchById('attribute_code')->getData('note')
-                . Mage::helper('eav')->__('. Do not use "event" for an attribute code, it is a reserved keyword.')
+                . Mage::helper('eav')->__('. Do not use "event" for an attribute code, it is a reserved keyword.'),
             );
 
         $frontendInputElm = $form->getElement('frontend_input');
         $additionalTypes = [
             [
                 'value' => 'price',
-                'label' => Mage::helper('catalog')->__('Price')
+                'label' => Mage::helper('catalog')->__('Price'),
             ],
             [
                 'value' => 'media_image',
-                'label' => Mage::helper('catalog')->__('Media Image')
-            ]
+                'label' => Mage::helper('catalog')->__('Media Image'),
+            ],
         ];
         if ($attributeObject->getFrontendInput() == 'gallery') {
             $additionalTypes[] = [
                 'value' => 'gallery',
-                'label' => Mage::helper('catalog')->__('Gallery')
+                'label' => Mage::helper('catalog')->__('Gallery'),
             ];
         }
 
@@ -74,10 +66,12 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_
             if (isset($type['hide_fields'])) {
                 $_hiddenFields[$type['value']] = $type['hide_fields'];
             }
+
             if (isset($type['disabled_types'])) {
                 $_disabledTypes[$type['value']] = $type['disabled_types'];
             }
         }
+
         Mage::register('attribute_type_hidden_fields', $_hiddenFields);
         Mage::register('attribute_type_disabled_types', $_disabledTypes);
 
@@ -103,7 +97,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_
             'label' => Mage::helper('catalog')->__('Scope'),
             'title' => Mage::helper('catalog')->__('Scope'),
             'note'  => Mage::helper('catalog')->__('Declare attribute value saving scope'),
-            'values' => $scopes
+            'values' => $scopes,
         ], 'attribute_code');
 
         $fieldset->addField('apply_to', 'apply', [
@@ -112,9 +106,9 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_
             'values'      => Mage_Catalog_Model_Product_Type::getOptions(),
             'mode_labels' => [
                 'all'     => Mage::helper('catalog')->__('All Product Types'),
-                'custom'  => Mage::helper('catalog')->__('Selected Product Types')
+                'custom'  => Mage::helper('catalog')->__('Selected Product Types'),
             ],
-            'required'    => true
+            'required'    => true,
         ], 'frontend_class');
 
         $fieldset->addField('is_configurable', 'select', [
@@ -149,7 +143,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_
 
         $fieldset->addField('is_filterable', 'select', [
             'name' => 'is_filterable',
-            'label' => Mage::helper('catalog')->__("Use In Layered Navigation"),
+            'label' => Mage::helper('catalog')->__('Use In Layered Navigation'),
             'title' => Mage::helper('catalog')->__('Can be used only with catalog input type Dropdown, Multiple Select and Price'),
             'note' => Mage::helper('catalog')->__('Can be used only with catalog input type Dropdown, Multiple Select and Price'),
             'values' => [
@@ -161,7 +155,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_
 
         $fieldset->addField('is_filterable_in_search', 'select', [
             'name' => 'is_filterable_in_search',
-            'label' => Mage::helper('catalog')->__("Use In Search Results Layered Navigation"),
+            'label' => Mage::helper('catalog')->__('Use In Search Results Layered Navigation'),
             'title' => Mage::helper('catalog')->__('Can be used only with catalog input type Dropdown, Multiple Select and Price'),
             'note' => Mage::helper('catalog')->__('Can be used only with catalog input type Dropdown, Multiple Select and Price'),
             'values' => $yesnoSource,
@@ -234,15 +228,15 @@ class Mage_Adminhtml_Block_Catalog_Product_Attribute_Edit_Tab_Main extends Mage_
         /** @var Mage_Adminhtml_Block_Widget_Form_Element_Dependence $block */
         $block = $this->getLayout()->createBlock('adminhtml/widget_form_element_dependence');
         $this->setChild('form_after', $block
-            ->addFieldMap("is_wysiwyg_enabled", 'wysiwyg_enabled')
-            ->addFieldMap("is_html_allowed_on_front", 'html_allowed_on_front')
-            ->addFieldMap("frontend_input", 'frontend_input_type')
+            ->addFieldMap('is_wysiwyg_enabled', 'wysiwyg_enabled')
+            ->addFieldMap('is_html_allowed_on_front', 'html_allowed_on_front')
+            ->addFieldMap('frontend_input', 'frontend_input_type')
             ->addFieldDependence('wysiwyg_enabled', 'frontend_input_type', 'textarea')
             ->addFieldDependence('html_allowed_on_front', 'wysiwyg_enabled', '0'));
 
         Mage::dispatchEvent('adminhtml_catalog_product_attribute_edit_prepare_form', [
             'form'      => $form,
-            'attribute' => $attributeObject
+            'attribute' => $attributeObject,
         ]);
 
         return $this;

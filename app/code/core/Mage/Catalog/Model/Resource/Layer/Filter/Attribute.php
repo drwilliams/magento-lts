@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog Layer Attribute Filter Resource Model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Resource_Layer_Filter_Attribute extends Mage_Core_Model_Resource_Db_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('catalog/product_index_eav', 'entity_id');
@@ -30,8 +25,8 @@ class Mage_Catalog_Model_Resource_Layer_Filter_Attribute extends Mage_Core_Model
     /**
      * Apply attribute filter to product collection
      *
-     * @param Mage_Catalog_Model_Layer_Filter_Attribute $filter
-     * @param int $value
+     * @param  Mage_Catalog_Model_Layer_Filter_Attribute $filter
+     * @param  int                                       $value
      * @return $this
      */
     public function applyFilterToCollection($filter, $value)
@@ -44,13 +39,13 @@ class Mage_Catalog_Model_Resource_Layer_Filter_Attribute extends Mage_Core_Model
             "{$tableAlias}.entity_id = e.entity_id",
             $connection->quoteInto("{$tableAlias}.attribute_id = ?", $attribute->getAttributeId()),
             $connection->quoteInto("{$tableAlias}.store_id = ?", $collection->getStoreId()),
-            $connection->quoteInto("{$tableAlias}.value = ?", $value)
+            $connection->quoteInto("{$tableAlias}.value = ?", $value),
         ];
 
         $collection->getSelect()->join(
             [$tableAlias => $this->getMainTable()],
             implode(' AND ', $conditions),
-            []
+            [],
         );
 
         return $this;
@@ -59,7 +54,7 @@ class Mage_Catalog_Model_Resource_Layer_Filter_Attribute extends Mage_Core_Model
     /**
      * Retrieve array with products counts per attribute option
      *
-     * @param Mage_Catalog_Model_Layer_Filter_Attribute $filter
+     * @param  Mage_Catalog_Model_Layer_Filter_Attribute $filter
      * @return array
      */
     public function getCount($filter)
@@ -85,7 +80,7 @@ class Mage_Catalog_Model_Resource_Layer_Filter_Attribute extends Mage_Core_Model
             ->join(
                 [$tableAlias => $this->getMainTable()],
                 implode(' AND ', $conditions),
-                ['value', 'count' => new Zend_Db_Expr("COUNT({$tableAlias}.entity_id)")]
+                ['value', 'count' => new Zend_Db_Expr("COUNT({$tableAlias}.entity_id)")],
             )
             ->group("{$tableAlias}.value");
 

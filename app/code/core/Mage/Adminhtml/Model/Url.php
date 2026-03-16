@@ -1,25 +1,17 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method bool getNoSecret()
- * @method $this setNoSecret(bool $avlue)
+ * @method bool  getNoSecret()
+ * @method $this setNoSecret(bool $value)
  */
 class Mage_Adminhtml_Model_Url extends Mage_Core_Model_Url
 {
@@ -38,6 +30,7 @@ class Mage_Adminhtml_Model_Url extends Mage_Core_Model_Url
         if ($this->hasData('secure_is_forced')) {
             return $this->getData('secure');
         }
+
         return Mage::getStoreConfigFlag(Mage_Core_Model_Store::XML_PATH_SECURE_IN_ADMINHTML);
     }
 
@@ -61,8 +54,8 @@ class Mage_Adminhtml_Model_Url extends Mage_Core_Model_Url
     /**
      * Custom logic to retrieve Urls
      *
-     * @param string $routePath
-     * @param array $routeParams
+     * @param  string $routePath
+     * @param  array  $routeParams
      * @return string
      */
     public function getUrl($routePath = null, $routeParams = null)
@@ -78,32 +71,34 @@ class Mage_Adminhtml_Model_Url extends Mage_Core_Model_Url
             return $result;
         }
 
-        $_route = $this->getRouteName() ? $this->getRouteName() : '*';
-        $_controller = $this->getControllerName() ? $this->getControllerName() : $this->getDefaultControllerName();
-        $_action = $this->getActionName() ? $this->getActionName() : $this->getDefaultActionName();
+        $route = $this->getRouteName() ? $this->getRouteName() : '*';
+        $controller = $this->getControllerName() ? $this->getControllerName() : $this->getDefaultControllerName();
+        $action = $this->getActionName() ? $this->getActionName() : $this->getDefaultActionName();
 
         if ($cacheSecretKey) {
-            $secret = [self::SECRET_KEY_PARAM_NAME => "\${$_controller}/{$_action}\$"];
+            $secret = [self::SECRET_KEY_PARAM_NAME => "\${$controller}/{$action}\$"];
         } else {
-            $secret = [self::SECRET_KEY_PARAM_NAME => $this->getSecretKey($_controller, $_action)];
+            $secret = [self::SECRET_KEY_PARAM_NAME => $this->getSecretKey($controller, $action)];
         }
+
         if (is_array($routeParams)) {
             $routeParams = array_merge($secret, $routeParams);
         } else {
             $routeParams = $secret;
         }
+
         if (is_array($this->getRouteParams())) {
             $routeParams = array_merge($this->getRouteParams(), $routeParams);
         }
 
-        return parent::getUrl("{$_route}/{$_controller}/{$_action}", $routeParams);
+        return parent::getUrl("{$route}/{$controller}/{$action}", $routeParams);
     }
 
     /**
      * Generate secret key for controller and action based on form key
      *
-     * @param string $controller Controller name
-     * @param string $action Action name
+     * @param  string $controller Controller name
+     * @param  string $action     Action name
      * @return string
      */
     public function getSecretKey($controller = null, $action = null)
@@ -112,10 +107,11 @@ class Mage_Adminhtml_Model_Url extends Mage_Core_Model_Url
 
         $p = explode('/', trim($this->getRequest()->getOriginalPathInfo(), '/'));
         if (!$controller) {
-            $controller = !empty($p[1]) ? $p[1] : $this->getRequest()->getControllerName();
+            $controller = empty($p[1]) ? $this->getRequest()->getControllerName() : $p[1];
         }
+
         if (!$action) {
-            $action = !empty($p[2]) ? $p[2] : $this->getRequest()->getActionName();
+            $action = empty($p[2]) ? $this->getRequest()->getActionName() : $p[2];
         }
 
         $secret = $controller . $action . $salt;

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Report Sold Products Grid Block
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Report_Product_Sold_Grid extends Mage_Adminhtml_Block_Report_Grid
 {
@@ -31,7 +23,6 @@ class Mage_Adminhtml_Block_Report_Product_Sold_Grid extends Mage_Adminhtml_Block
 
     /**
      * Initialize Grid settings
-     *
      */
     public function __construct()
     {
@@ -61,16 +52,15 @@ class Mage_Adminhtml_Block_Report_Product_Sold_Grid extends Mage_Adminhtml_Block
     {
         $this->addColumn('name', [
             'header'    => Mage::helper('reports')->__('Product Name'),
-            'index'     => 'order_items_name'
+            'index'     => 'order_items_name',
         ]);
 
         $this->addColumn('ordered_qty', [
             'header'    => Mage::helper('reports')->__('Quantity Ordered'),
             'width'     => '120px',
-            'align'     => 'right',
             'index'     => 'ordered_qty',
             'total'     => 'sum',
-            'type'      => 'number'
+            'type'      => 'number',
         ]);
 
         $this->addExportType('*/*/exportSoldCsv', Mage::helper('reports')->__('CSV'));

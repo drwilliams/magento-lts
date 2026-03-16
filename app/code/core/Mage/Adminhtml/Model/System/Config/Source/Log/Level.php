@@ -1,24 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+
+use Monolog\Level;
 
 /**
  * Log Levels Source Model
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Model_System_Config_Source_Log_Level
 {
@@ -27,14 +21,14 @@ class Mage_Adminhtml_Model_System_Config_Source_Log_Level
         $helper = Mage::helper('adminhtml');
 
         return [
-            Zend_Log::EMERG  => $helper->__('Emergency'),
-            Zend_Log::ALERT  => $helper->__('Alert'),
-            Zend_Log::CRIT   => $helper->__('Critical'),
-            Zend_Log::ERR    => $helper->__('Error'),
-            Zend_Log::WARN   => $helper->__('Warning'),
-            Zend_Log::NOTICE => $helper->__('Notice'),
-            Zend_Log::INFO   => $helper->__('Informational'),
-            Zend_Log::DEBUG  => $helper->__('Debug'),
+            Level::Emergency->value => $helper->__('Emergency'),
+            Level::Alert->value     => $helper->__('Alert'),
+            Level::Critical->value  => $helper->__('Critical'),
+            Level::Error->value     => $helper->__('Error'),
+            Level::Warning->value   => $helper->__('Warning'),
+            Level::Notice->value    => $helper->__('Notice'),
+            Level::Info->value      => $helper->__('Informational'),
+            Level::Debug->value     => $helper->__('Debug'),
         ];
     }
 }

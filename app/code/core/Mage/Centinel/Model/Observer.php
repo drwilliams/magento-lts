@@ -1,31 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Centinel
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * 3D Secure Validation Model
  *
- * @category   Mage
  * @package    Mage_Centinel
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Centinel_Model_Observer extends Varien_Object
 {
     /**
      * Set cmpi data to payment
      *
-     * @param Varien_Object $observer
+     * @param  Varien_Object $observer
      * @return $this
      */
     public function salesEventConvertQuoteToOrder($observer)
@@ -36,13 +28,14 @@ class Mage_Centinel_Model_Observer extends Varien_Object
             $to = [$payment, 'setAdditionalInformation'];
             $payment->getMethodInstance()->getCentinelValidator()->exportCmpiData($to);
         }
+
         return $this;
     }
 
     /**
      * Add cmpi data to info block
      *
-     * @param Varien_Object $observer
+     * @param  Varien_Object $observer
      * @return $this
      */
     public function paymentInfoBlockPrepareSpecificInformation($observer)
@@ -60,20 +53,21 @@ class Mage_Centinel_Model_Observer extends Varien_Object
             Mage_Centinel_Model_Service::CMPI_ENROLLED,
             Mage_Centinel_Model_Service::CMPI_ECI,
             Mage_Centinel_Model_Service::CMPI_CAVV,
-            Mage_Centinel_Model_Service::CMPI_XID
+            Mage_Centinel_Model_Service::CMPI_XID,
         ];
         foreach ($info as $key) {
             if ($value = $payment->getAdditionalInformation($key)) {
                 $transport->setData($helper->getCmpiLabel($key), $helper->getCmpiValue($key, $value));
             }
         }
+
         return $this;
     }
 
     /**
      * Add centinel logo block into payment form
      *
-     * @param Varien_Object $observer
+     * @param  Varien_Object $observer
      * @return $this
      */
     public function paymentFormBlockToHtmlBefore($observer)
@@ -84,16 +78,17 @@ class Mage_Centinel_Model_Observer extends Varien_Object
         if ($method && $method->getIsCentinelValidationEnabled()) {
             $paymentFormBlock->setChild(
                 'payment.method.' . $method->getCode() . 'centinel.logo',
-                Mage::helper('centinel')->getMethodFormBlock($method)
+                Mage::helper('centinel')->getMethodFormBlock($method),
             );
         }
+
         return $this;
     }
 
     /**
      * Reset validation data
      *
-     * @param Varien_Object $observer
+     * @param  Varien_Object $observer
      * @return $this
      */
     public function checkoutSubmitAllAfter($observer)
@@ -111,15 +106,16 @@ class Mage_Centinel_Model_Observer extends Varien_Object
         if ($method && $method->getIsCentinelValidationEnabled()) {
             $method->getCentinelValidator()->reset();
         }
+
         return $this;
     }
 
     /**
      * Reset validation data
-     * @deprecated back compatibility alias for checkoutSubmitAllAfter
      *
-     * @param Varien_Object $observer
+     * @param  Varien_Object $observer
      * @return $this
+     * @deprecated back compatibility alias for checkoutSubmitAllAfter
      */
     public function salesOrderPaymentPlaceEnd($observer)
     {

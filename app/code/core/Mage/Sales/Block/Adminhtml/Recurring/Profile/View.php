@@ -1,28 +1,20 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
  * Recurring profile view page
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method string getDestElementId()
- * @method $this setViewHtml(string $value)
+ * @method $this  setViewHtml(string $value)
  */
 class Mage_Sales_Block_Adminhtml_Recurring_Profile_View extends Mage_Adminhtml_Block_Widget_Container
 {
@@ -46,7 +38,7 @@ class Mage_Sales_Block_Adminhtml_Recurring_Profile_View extends Mage_Adminhtml_B
             $this->_addButton('cancel', [
                 'label'     => Mage::helper('sales')->__('Cancel'),
                 'onclick'   => Mage::helper('core/js')->getConfirmSetLocationJs(
-                    $this->getUrl('*/*/updateState', ['profile' => $profile->getId(), 'action' => 'cancel'])
+                    $this->getUrl('*/*/updateState', ['profile' => $profile->getId(), 'action' => 'cancel']),
                 ),
                 'class'     => 'delete',
             ]);
@@ -57,7 +49,7 @@ class Mage_Sales_Block_Adminhtml_Recurring_Profile_View extends Mage_Adminhtml_B
             $this->_addButton('suspend', [
                 'label'     => Mage::helper('sales')->__('Suspend'),
                 'onclick'   => Mage::helper('core/js')->getConfirmSetLocationJs(
-                    $this->getUrl('*/*/updateState', ['profile' => $profile->getId(), 'action' => 'suspend'])
+                    $this->getUrl('*/*/updateState', ['profile' => $profile->getId(), 'action' => 'suspend']),
                 ),
                 'class'     => 'delete',
             ]);
@@ -68,7 +60,7 @@ class Mage_Sales_Block_Adminhtml_Recurring_Profile_View extends Mage_Adminhtml_B
             $this->_addButton('activate', [
                 'label'     => Mage::helper('sales')->__('Activate'),
                 'onclick'   => Mage::helper('core/js')->getConfirmSetLocationJs(
-                    $this->getUrl('*/*/updateState', ['profile' => $profile->getId(), 'action' => 'activate'])
+                    $this->getUrl('*/*/updateState', ['profile' => $profile->getId(), 'action' => 'activate']),
                 ),
                 'class'     => 'add',
             ]);
@@ -79,7 +71,7 @@ class Mage_Sales_Block_Adminhtml_Recurring_Profile_View extends Mage_Adminhtml_B
             $this->_addButton('update', [
                 'label'     => Mage::helper('sales')->__('Get Update'),
                 'onclick'   => Mage::helper('core/js')->getConfirmSetLocationJs(
-                    $this->getUrl('*/*/updateProfile', ['profile' => $profile->getId()])
+                    $this->getUrl('*/*/updateProfile', ['profile' => $profile->getId()]),
                 ),
                 'class'     => 'add',
             ]);

@@ -1,12 +1,9 @@
-<p align="center">
-<!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-<a href="#contributors-"><img src="https://img.shields.io/badge/all_contributors-152-orange.svg" alt="All Contributors"></a>
-<!-- ALL-CONTRIBUTORS-BADGE:END -->
-<a href="https://packagist.org/packages/openmage/magento-lts"><img src="https://poser.pugx.org/openmage/magento-lts/d/total.svg" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/openmage/magento-lts"><img src="https://poser.pugx.org/openmage/magento-lts/license.svg" alt="License"></a>
-<a href="https://github.com/openmage/magento-lts/actions/workflows/security-php.yml"><img src="https://github.com/openmage/magento-lts/actions/workflows/security-php.yml/badge.svg" alt="PHP Security workflow Badge" /></a>
-<a href="https://github.com/OpenMage/magento-lts/actions/workflows/workflow.yml"><img src="https://github.com/OpenMage/magento-lts/actions/workflows/workflow.yml/badge.svg" alt="CI workflow Badge" /></a>
-</p>
+[![All Contributors](https://img.shields.io/github/all-contributors/openmage/magento-lts?color=ee8449)](#contributors)
+![https://packagist.org/packages/openmage/magento-lts](https://poser.pugx.org/openmage/magento-lts/license.svg)
+![https://packagist.org/packages/openmage/magento-lts](https://poser.pugx.org/openmage/magento-lts/d/total.svg)
+![https://github.com/openmage/magento-lts/actions/workflows/security-php.yml](https://github.com/openmage/magento-lts/actions/workflows/security-php.yml/badge.svg)
+![https://github.com/OpenMage/magento-lts/actions/workflows/workflow.yml](https://github.com/OpenMage/magento-lts/actions/workflows/workflow.yml/badge.svg)
+![https://www.php-fig.org/per/coding-style/](https://img.shields.io/badge/Code-PER2.0-white.svg)
 
 # Magento - Long Term Support
 
@@ -18,326 +15,15 @@ level of backwards compatibility to the official releases.
 
 ---
 
-## Table of contents
+## Documentation
 
-- [Requirements](#requirements)
-- [Installation](#installation)
-  - [Manual Install](#manual-install)
-  - [Composer](#composer)
-  - [Git](#git)
-- [Secure your installation](#secure-your-installation)
-  - [Apache .htaccess](#apache-htaccess)
-  - [Nginx](#nginx)
-- [Changes](#changes)
-  - [Between Magento 1.9.4.5 and OpenMage 19.x](#between-magento-1945-and-openmage-19x)
-  - [Between OpenMage 19.4.18 / 20.0.16 and 19.4.19 / 20.0.17](#between-openmage-19418--20016-and-19419--20017)
-  - [Since OpenMage 19.5.0 / 20.1.0](#since-openmage-1950--2010)
-  - [New Config Options](#new-config-options)
-  - [New Events](#new-events)
-  - [Changes to SOAP/WSDL](#changes-to-soapwsdl)
-- [Development Environment with ddev](#development-environment-with-ddev)
-- [Development with PHP 8.1+](#development-with-php-81)
-- [PhpStorm Factory Helper](#phpstorm-factory-helper)
-- [Versioning](#versioning)
-- [Public Communication](#public-communication)
-- [Maintainers](#maintainers)
-- [License](#license)
-- [Contributors](#contributors-)
+See: https://docs.openmage.org/
 
-## Requirements
+---
 
-- PHP 7.4+ (PHP 8.0 is supported, PHP 8.1 supported but some warnings may be shown/logged, PHP 8.2 is usable but still being tested)
-- MySQL 5.6+ (8.0+ recommended) or MariaDB
-- optional: Redis 5.x, 6.x and 7.0.x are supported
+## Sponsorship
 
-
-- PHP extension `intl` <small>since 1.9.4.19 & 20.0.17</small>
-- Command `patch` 2.7+ (or `gpatch` on MacOS/HomeBrew) <small>since 1.9.5.0 & 20.1.0</small>
-
-## Installation
-
-### Manual Install
-
-Download the latest [release archive](https://github.com/OpenMage/magento-lts/releases) and extract it over your existing install. **Important:** you must download the ZIP file from a tagged version on the releases page, otherwise there will be missing dependencies.
-
-### Composer
-
-Step 1: Create a new composer project:
-
-```bash
-composer init
-```
-
-Step 2: Configure composer. **The below options are required.** You can see all options [here](https://github.com/AydinHassan/magento-core-composer-installer#configuration).
-
-```bash
-# Allow composer to apply patches to dependencies of magento-lts
-composer config --json extra.enable-patching true
-
-# Configure Magento core composer installer to use magento-lts as the Magento source package
-composer config extra.magento-core-package-type magento-source
-
-# Configure the root directory that magento-lts will be installed to, such as "pub", "htdocs", or "www"
-composer config extra.magento-root-dir pub
-```
-
-Step 3: Require `magento-core-composer-installer`:
-
-``` bash
-# PHP 7
-composer require "aydin-hassan/magento-core-composer-installer":"~2.0.0"
-
-# PHP 8
-composer require "aydin-hassan/magento-core-composer-installer":"^2.1.0"
-```
-
-<small>Note: be sure to select `y` if composer asks you to trust `aydin-hassan/magento-core-composer-installer`.</small>
-
-Step 4: Require `magento-lts`:
-
-```bash
-# OpenMage v19
-composer require "openmage/magento-lts":"^19.4.0"
-
-# OpenMage v20
-composer require "openmage/magento-lts":"^20.0.0"
-```
-
-<small>Note: be sure to select `y` if composer asks you to trust `magento-hackathon/magento-composer-installer` or `cweagans/composer-patches`.</small>
-
-To install the latest development version (may be unstable):
-
-```bash
-# OpenMage v19
-composer require "openmage/magento-lts":"1.9.4.x-dev"
-
-# OpenMage v20
-composer require "openmage/magento-lts":"20.0.x-dev"
-```
-
-When deploying to a production environment, it's recommended to optimize Composer's autoloader to speed up classes lookup time:
-
-```bash
-composer dump-autoload --optimize
-```
-
-### Git
-
-If you want to contribute to the project:
-
-```bash
-git init
-git remote add origin https://github.com/<YOUR GIT USERNAME>/magento-lts
-git pull origin main
-git remote add upstream https://github.com/OpenMage/magento-lts
-git pull upstream 1.9.4.x
-git add -A && git commit
-```
-
-[More Information](http://openmage.github.io/magento-lts/install.html)
-
-## Secure your installation
-
-Don't use common paths like /admin for OpenMage Backend URL. Don't use the path in _robots.txt_ and keep it secret. You can change it from Backend (System / Configuration / Admin / Admin Base Url) or by editing _app/etc/local.xml_:
-
-```xml
-<config>
-    <admin>
-        <routers>
-            <adminhtml>
-                <args>
-                    <frontName><![CDATA[admin]]></frontName>
-                </args>
-            </adminhtml>
-        </routers>
-    </admin>
-</config>
-```
-
-Don't use common file names like api.php for OpenMage API URLs to prevent attacks. Don't use the new file name in _robots.txt_ and keep it secret with your partners. After renaming the file you must update the webserver configuration as follows:
-
-### Apache .htaccess
-```
-RewriteRule ^api/rest api.php?type=rest [QSA,L]
-```
-
-### Nginx
-```
-rewrite ^/api/(\w+).*$ /api.php?type=$1 last;`
-```
-
-## Changes
-
-Most important changes will be listed here, all other changes since `19.4.0` can be found in
-[release](https://github.com/OpenMage/magento-lts/releases) notes.
-
-### Between Magento 1.9.4.5 and OpenMage 19.x
-
-- bug fixes and PHP 7.x, 8.0, 8.1 and 8.2 compatibility
-- added config cache for system.xml ([#1916](https://github.com/OpenMage/magento-lts/pull/1916))
-- added frontend_type color ([#2945](https://github.com/OpenMage/magento-lts/pull/2945))
-- search for "NULL" in backend grids ([#1203](https://github.com/OpenMage/magento-lts/pull/1203))
-- removed `lib/flex` containing unused ActionScript "file uploader" files ([#2271](https://github.com/OpenMage/magento-lts/pull/2271))
-- Mage_Catalog_Model_Resource_Abstract::getAttributeRawValue() now returns `'0'` instead of `false` if the value stored in the database is `0` ([#572](https://github.com/OpenMage/magento-lts/pull/572))
-- PHP extension `intl` is required
-- Deprecation errors are not suppressed anymore
-- removed modules:
-  - `Mage_Backup` ([#2811](https://github.com/OpenMage/magento-lts/pull/2811))
-  - `Mage_Compiler`
-  - `Mage_GoogleBase`
-  - `Mage_PageCache` ([#2258](https://github.com/OpenMage/magento-lts/pull/2258))
-  - `Mage_Xmlconnect`
-  - `Phoenix_Moneybookers`
-
-_If you rely on those modules you can reinstall them with composer:_
-- `Mage_Backup`: `composer require openmage/module-mage-backup`
-- `Mage_PageCache`: `composer require openmage/module-mage-pagecache`
-- `Legacy frontend themes`: `composer require openmage/legacy-frontend-themes`
-
-### Between OpenMage 19.x and 20.x
-
-Do not use 20.x.x if you need IE support.
-
-- removed IE conditional comments, IE styles, IE scripts and IE eot files ([#1073](https://github.com/OpenMage/magento-lts/pull/1073))
-- removed frontend default themes (default, modern, iphone, german, french, blank, blue) ([#1600](https://github.com/OpenMage/magento-lts/pull/1600))
-- fixed incorrect datetime in customer block (`$useTimezone` parameter) ([#1525](https://github.com/OpenMage/magento-lts/pull/1525))
-- added redis as a valid option for `global/session_save` ([#1513](https://github.com/OpenMage/magento-lts/pull/1513))
-- reduce needless saves by avoiding setting `_hasDataChanges` flag ([#2066](https://github.com/OpenMage/magento-lts/pull/2066))
-- removed support for `global/sales/old_fields_map` defined in XML ([#921](https://github.com/OpenMage/magento-lts/pull/921))
-- enabled website level config cache ([#2355](https://github.com/OpenMage/magento-lts/pull/2355))
-- made overrides of Mage_Core_Model_Resource_Db_Abstract::delete respect parent api ([#1257](https://github.com/OpenMage/magento-lts/pull/1257))
-- rewrote Mage_Eav_Model_Config as cache for all eav entity and attribute reads ([#2993](https://github.com/OpenMage/magento-lts/pull/2993))
-- removed module Mage_Poll ([3098](https://github.com/OpenMage/magento-lts/pull/3098), you can install it with `composer require openmage/module-mage-poll`)
-
-For full list of changes, you can [compare tags](https://github.com/OpenMage/magento-lts/compare/1.9.4.x...20.0).
-
-### Since OpenMage 19.5.0 / 20.1.0
-
-PHP 7.4 is now the minimum required version.
-
-Most of the 3rd party libraries/modules that were bundled in our repository were removed and migrated to composer dependencies.
-This allows for better maintenance and upgradability.
-
-Specifically:
-- `phpseclib`, `mcrypt_compat`, `Cm_RedisSession`, `Cm_Cache_Backend_Redis`, `Pelago_Emogrifier` ([#2411](https://github.com/OpenMage/magento-lts/pull/2411))
-- Zend Framework 1 ([#2827](https://github.com/OpenMage/magento-lts/pull/2827))
-
-If your project uses OpenMage through composer then all dependencies will be managed automatically.  
-If you just extracted the release zip/tarball in your project's main folder then be sure to:
-- remove the old copy of aforementioned libraries from your project, you can do that with this command:
-  ```bash
-  rm -rf app/code/core/Zend lib/Cm lib/Credis lib/mcryptcompat lib/Pelago lib/phpseclib lib/Zend
-  ```
-
-- download the new release zip file that is named `openmage-VERSIONNUMBER.zip`, this one is built to contain the `vendor`
-  folder generated by composer, with all the dependencies in it
-- extract the zip file in your project's repository as you always did
-
-We also decided to remove our Zend_DB patches (that were stored in `app/code/core/Zend`) because they were very old and
-not compatible with the new implementations made by ZF1-Future, which is much more advanced and feature rich.
-This may generate a problem with `Zend_Db_Select' statements that do not use 'Zend_Db_Expr' to quote expressions.
-If you see SQL errors after upgrading please remember to check for this specific issue in your code.
-
-### New Config Options
-
-- `admin/design/use_legacy_theme`
-- `admin/global_search/enable`
-- `admin/emails/admin_notification_email_template`
-- `catalog/product_image/progressive_threshold`
-- `catalog/search/search_separator`
-- `dev/log/max_level`
-- `newsletter/security/enable_form_key`
-- `sitemap/category/lastmod`
-- `sitemap/page/lastmod`
-- `sitemap/product/lastmod`
-
-### New Events
-
-- `adminhtml_block_widget_form_init_form_values_after`
-- `adminhtml_block_widget_tabs_html_before`
-- `adminhtml_sales_order_create_save_before`
-- `checkout_cart_product_add_before`
-- `sitemap_cms_pages_generating_before`
-- `sitemap_urlset_generating_before`
-
-[Full list of events](docs/EVENTS.md)
-
-### Changes to SOAP/WSDL
-
-Since `19.4.17`/`20.0.15` we changed the `targetNamespace` of all the WSDL files (used in the API modules), from `Magento` to `OpenMage`.
-If your custom modules extends OpenMage's APIs with a custom WSDL file and there are some hardcoded `targetNamespace="urn:Magento"` strings, your APIs may stop working.
-
-Please replace all occurrences of 
-
-```
-targetNamespace="urn:Magento"
-```
-with
-```
-targetNamespace="urn:OpenMage"
-```
-or alternatively 
-```
-targetNamespace="urn:{{var wsdl.name}}"
-```
- to avoid any problem.
-
-To find which files need the modification you can run this command from the root directory of your project.
-```bash
-grep -rn 'urn:Magento' --include \*.xml
-```
-
-## Development Environment with DDEV
-
-- Install [ddev](https://ddev.com/get-started/)
-- Clone the repository as described in installation ([Git](#git))
-- Create a ddev config, defaults should be good for you
-  ```bash
-  ddev config
-  ```
-- Open `.ddev/config.yaml` and change the php version to your needs
-- Download and start the containers
-  ```bash
-  ddev start
-  ```
-- Open your site in browser
-  ```bash
-  ddev launch
-  ``` 
-
-## PhpStorm Factory Helper
-
-This repo includes class maps for the core Magento files in `.phpstorm.meta.php`.
-To add class maps for installed extensions, you have to install [N98-magerun](https://github.com/netz98/n98-magerun)
-and run command:
-
-```bash
-n98-magerun.phar dev:ide:phpstorm:meta
-```
-
-You can add additional meta files in this directory to cover your own project files. See
-[PhpStorm advanced metadata](https://www.jetbrains.com/help/phpstorm/ide-advanced-metadata.html)
-for more information.
-
-## Versioning
-
-Though Magento does __not__ follow [Semantic Versioning](http://semver.org/) we aim to provide a workable system for
-dependency definition.
-
-## Public Communication
-
-* [Discord](https://discord.gg/EV8aNbU) (maintained by Flyingmana)
-
-## Maintainers
-
-* [Daniel Fahlke](https://github.com/Flyingmana)
-* [David Robinson](https://github.com/drobinson)
-* [Fabrizio Balliano](https://github.com/fballiano)
-* [Lee Saferite](https://github.com/LeeSaferite)
-* [Mohamed Elidrissi](https://github.com/elidrissidev)
-* [Ng Kiat Siong](https://github.com/kiatng)
-* [Sven Reichel](https://github.com/sreichel)
-* [Tymoteusz Motylewski](https://github.com/tmotyl)
+* [opencollective](https://opencollective.com/openmage) (maintained by [Colin Mollenhour](https://github.com/colinmollenhour))
 
 ## License
 
@@ -547,7 +233,52 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/discountscott"><img src="https://avatars.githubusercontent.com/u/5454596?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Scott Moore</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/rfeese"><img src="https://avatars.githubusercontent.com/u/7074181?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Roger Feese</b></sub></a></td>
       <td align="center" valign="top" width="14.28%"><a href="https://github.com/AGelzer"><img src="https://avatars.githubusercontent.com/u/34437931?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Alexander Gelzer</b></sub></a></td>
-      <td align="center" valign="top" width="14.28%"><a href="https://gitlab.com/davidhiendl"><img src="https://avatars.githubusercontent.com/u/11006964?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>David Hiendl</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/davidhiendl"><img src="https://avatars.githubusercontent.com/u/11006964?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>David Hiendl</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gorbunovav"><img src="https://avatars.githubusercontent.com/u/2665015?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Andrey Gorbunov</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Tomasz-Silpion"><img src="https://avatars.githubusercontent.com/u/5328659?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Tomasz Gregorczyk</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://juhoholsa.com/"><img src="https://avatars.githubusercontent.com/u/15036353?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Juho Hölsä</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/seifer7"><img src="https://avatars.githubusercontent.com/u/13601073?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Kane</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Sdfendor"><img src="https://avatars.githubusercontent.com/u/2728018?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Kevin Jakob</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/leissbua"><img src="https://avatars.githubusercontent.com/u/68073221?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Michael Leiss</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.riseart.com/"><img src="https://avatars.githubusercontent.com/u/26821235?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Marcos Steverlynck</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ahudock"><img src="https://avatars.githubusercontent.com/u/33500977?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Andy Hudock</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.vianetz.com/"><img src="https://avatars.githubusercontent.com/u/26252058?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Christoph Massmann</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/ragnese"><img src="https://avatars.githubusercontent.com/u/7927565?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Rob Agnese</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.cartware.de"><img src="https://avatars.githubusercontent.com/u/1931120?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Alexander Buch</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/mbattistini"><img src="https://avatars.githubusercontent.com/u/276468?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>mbattistini</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/justlife4x4"><img src="https://avatars.githubusercontent.com/u/59994040?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>justlife4x4</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/fabianaromagnoli"><img src="https://avatars.githubusercontent.com/u/23638004?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Fabiana Romagnoli</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="http://arnaudamant.fr"><img src="https://avatars.githubusercontent.com/u/393311?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Arnaud Amant</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/matteotestoni"><img src="https://avatars.githubusercontent.com/u/34275189?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>matteotestoni</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.webgriffe.com"><img src="https://avatars.githubusercontent.com/u/1199914?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Manuele Menozzi</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/darinda"><img src="https://avatars.githubusercontent.com/u/8490373?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Rene Hrdina</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Hanmac"><img src="https://avatars.githubusercontent.com/u/225553?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Hans Mackowiak</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tim-breitenstein-it"><img src="https://avatars.githubusercontent.com/u/65597245?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Tim Steinbrecher</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/tomekjordan"><img src="https://avatars.githubusercontent.com/u/8250276?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Tomek</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/dford-avb"><img src="https://avatars.githubusercontent.com/u/52465239?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>David Ford</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.jandolejs.cz"><img src="https://avatars.githubusercontent.com/u/16374521?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Jan Dolejš</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://twopointzero.eu"><img src="https://avatars.githubusercontent.com/u/25850269?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Nicky</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://alond.com.au/"><img src="https://avatars.githubusercontent.com/u/1549372?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>pauldpauld</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/PapaDragonov"><img src="https://avatars.githubusercontent.com/u/17141028?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>PapaDragonov</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/magentox"><img src="https://avatars.githubusercontent.com/u/44047835?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>magentox</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/stasadev"><img src="https://avatars.githubusercontent.com/u/24270994?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Stanislav Zhuk</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/Axepih"><img src="https://avatars.githubusercontent.com/u/95623175?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Axepih</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/gdemarsico"><img src="https://avatars.githubusercontent.com/u/2066819?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Gastón De Mársico</b></sub></a></td>
+    </tr>
+    <tr>
+      <td align="center" valign="top" width="14.28%"><a href="http://www.denisahac.xyz"><img src="https://avatars.githubusercontent.com/u/6700576?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Den Isahac</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/lc-excell"><img src="https://avatars.githubusercontent.com/u/158118232?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>lc-excell</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://www.linkedin.com/in/warley-elias-531a4116/"><img src="https://avatars.githubusercontent.com/u/5356619?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Warley Elias</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/vernad"><img src="https://avatars.githubusercontent.com/u/51973447?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>vernad</b></sub></a></td>
+      <td align="center" valign="top" width="14.28%"><a href="https://github.com/M-arcus"><img src="https://avatars.githubusercontent.com/u/25648755?v=4" loading="lazy" width="100" alt=""/><br /><sub><b>Marcus Müller</b></sub></a></td>
     </tr>
   </tbody>
 </table>

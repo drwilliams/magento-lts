@@ -1,31 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml customers wishlist grid item action renderer for few action controls in one cell
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Customer_Grid_Renderer_Multiaction extends Mage_Adminhtml_Block_Widget_Grid_Column_Renderer_Action
 {
     /**
      * Renders column
      *
-     * @param  Varien_Object $row
      * @return string
      */
     public function render(Varien_Object $row)
@@ -42,11 +33,12 @@ class Mage_Adminhtml_Block_Customer_Grid_Renderer_Multiaction extends Mage_Admin
                     }
                 }
             }
+
             $html = implode('<br />', $links);
         }
 
         if ($html == '') {
-            $html = '&nbsp;';
+            return '&nbsp;';
         }
 
         return $html;
@@ -55,8 +47,7 @@ class Mage_Adminhtml_Block_Customer_Grid_Renderer_Multiaction extends Mage_Admin
     /**
      * Render single action as link html
      *
-     * @param  array $action
-     * @param  Varien_Object $row
+     * @param  array  $action
      * @return string
      */
     protected function _toLinkHtml($action, Varien_Object $row)
@@ -73,8 +64,8 @@ class Mage_Adminhtml_Block_Customer_Grid_Renderer_Multiaction extends Mage_Admin
             }
 
             return sprintf('<a href="%s" %s %s>%s</a>', $action['url'], $style, $onClick, $action['caption']);
-        } else {
-            return parent::_toLinkHtml($action, $row);
         }
+
+        return parent::_toLinkHtml($action, $row);
     }
 }

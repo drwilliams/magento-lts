@@ -1,27 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Api2
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Block for rendering role info tab
  *
- * @category   Mage
  * @package    Mage_Api2
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Api2_Model_Acl_Global_Role getRole()
- * @method $this setRole(Mage_Api2_Model_Acl_Global_Role $role)
+ * @method $this                           setRole(Mage_Api2_Model_Acl_Global_Role $role)
  */
 class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widget_Form implements Mage_Adminhtml_Block_Widget_Tab_Interface
 {
@@ -33,7 +25,7 @@ class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widg
         $form = new Varien_Data_Form();
 
         $fieldset = $form->addFieldset('base_fieldset', [
-            'legend'    => Mage::helper('adminhtml')->__('Role Information')
+            'legend'    => Mage::helper('adminhtml')->__('Role Information'),
         ]);
 
         $data = [
@@ -51,6 +43,7 @@ class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widg
             $data['note'] = Mage::helper('api2')->__('%s role is protected.', $helper->escapeHtml($this->getRole()->getRoleName()));
             $data['readonly'] = 'readonly';
         }
+
         $fieldset->addField('role_name', 'text', $data);
 
         $fieldset->addField(
@@ -58,7 +51,7 @@ class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widg
             'hidden',
             [
                 'name'  => 'id',
-            ]
+            ],
         );
 
         $fieldset->addField(
@@ -67,7 +60,7 @@ class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widg
             [
                 'name'  => 'in_role_users',
                 'id'    => 'in_role_userz',
-            ]
+            ],
         );
 
         $fieldset->addField(
@@ -77,8 +70,8 @@ class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widg
                 'name'  => 'current_password',
                 'label' => Mage::helper('adminhtml')->__('Current Admin Password'),
                 'title' => Mage::helper('adminhtml')->__('Current Admin Password'),
-                'required' => true
-            ]
+                'required' => true,
+            ],
         );
 
         $fieldset->addField('in_role_users_old', 'hidden', ['name' => 'in_role_users_old']);
@@ -86,6 +79,7 @@ class Mage_Api2_Block_Adminhtml_Roles_Tab_Info extends Mage_Adminhtml_Block_Widg
         if ($this->getRole()) {
             $form->setValues($this->getRole()->getData());
         }
+
         $this->setForm($form);
         return $this;
     }

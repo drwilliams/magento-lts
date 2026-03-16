@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product in category grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method Mage_Catalog_Model_Resource_Product_Link_Product_Collection getCollection()
  */
@@ -66,7 +58,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
     }
 
     /**
-     * @param Mage_Adminhtml_Block_Widget_Grid_Column $column
+     * @param  Mage_Adminhtml_Block_Widget_Grid_Column $column
      * @return $this
      */
     protected function _addColumnFilterToCollection($column)
@@ -77,6 +69,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
             if (empty($productIds)) {
                 $productIds = 0;
             }
+
             if ($column->getFilter()->getValue()) {
                 $this->getCollection()->addFieldToFilter('entity_id', ['in' => $productIds]);
             } else {
@@ -111,6 +104,7 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
         if ($this->getIsReadonly() === true) {
             $collection->addFieldToFilter('entity_id', ['in' => $this->_getSelectedProducts()]);
         }
+
         $this->setCollection($collection);
         return parent::_prepareCollection();
     }
@@ -127,29 +121,25 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
             'name'      => 'in_products',
             'values'    => $this->_getSelectedProducts(),
             'align'     => 'center',
-            'index'     => 'entity_id'
+            'index'     => 'entity_id',
         ]);
 
         $this->addColumn('entity_id', [
             'header'    => Mage::helper('catalog')->__('ID'),
-            'sortable'  => true,
-            'width'     => '60px',
-            'index'     => 'entity_id'
+            'index'     => 'entity_id',
         ]);
         $this->addColumn('name', [
             'header'    => Mage::helper('catalog')->__('Name'),
-            'index'     => 'name'
+            'index'     => 'name',
         ]);
         $this->addColumn('sku', [
             'header'    => Mage::helper('catalog')->__('SKU'),
             'width'     => '80px',
-            'index'     => 'sku'
+            'index'     => 'sku',
         ]);
         $this->addColumn('price', [
-            'header'    => Mage::helper('catalog')->__('Price'),
             'type'      => 'currency',
-            'currency_code' => (string) Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE),
-            'index'     => 'price'
+            'currency_code' => Mage_Directory_Helper_Data::getConfigCurrencyBase(),
         ]);
 
         $this->addColumn('qty', [
@@ -158,9 +148,8 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
             'type'      => 'number',
             'validate_class' => 'validate-number',
             'index'     => 'qty',
-            'width'     => '1',
             'editable'  => true,
-            'filter_condition_callback' => [$this, '_addLinkModelFilterCallback']
+            'filter_condition_callback' => [$this, '_addLinkModelFilterCallback'],
         ]);
 
         $this->addColumn('position', [
@@ -172,7 +161,28 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
             'width'     => '1',
             'editable'  => true,
             'edit_only' => !$this->_getProduct()->getId(),
-            'filter_condition_callback' => [$this, '_addLinkModelFilterCallback']
+            'filter_condition_callback' => [$this, '_addLinkModelFilterCallback'],
+        ]);
+
+        $this->addColumn('action', [
+            'type'      => 'action',
+            'getter'    => 'getId',
+            'actions'   => [
+                [
+                    'caption' => Mage::helper('catalog')->__('Edit'),
+                    'id'      => 'editlink',
+                    'field'   => 'id',
+                    'onclick' => "popWin(this.href,'win','width=1000,height=700,resizable=1,scrollbars=1');return false;",
+                    'url'     => [
+                        'base'   => 'adminhtml/catalog_product/edit',
+                        'params' => [
+                            'store' => $this->getRequest()->getParam('store'),
+                            'popup' => 1,
+                        ],
+                    ],
+                ],
+            ],
+            'index' => 'stores',
         ]);
 
         return parent::_prepareColumns();
@@ -197,8 +207,9 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
     {
         $products = $this->getProductsGrouped();
         if (!is_array($products)) {
-            $products = array_keys($this->getSelectedGroupedProducts());
+            return array_keys($this->getSelectedGroupedProducts());
         }
+
         return $products;
     }
 
@@ -215,9 +226,10 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
         foreach ($associatedProducts as $product) {
             $products[$product->getId()] = [
                 'qty'       => $product->getQty(),
-                'position'  => $product->getPosition()
+                'position'  => $product->getPosition(),
             ];
         }
+
         return $products;
     }
 
@@ -225,14 +237,17 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Super_Group extends Mage_Adm
     {
         return Mage::helper('catalog')->__('Associated Products');
     }
+
     public function getTabTitle()
     {
         return Mage::helper('catalog')->__('Associated Products');
     }
+
     public function canShowTab()
     {
         return true;
     }
+
     public function isHidden()
     {
         return false;

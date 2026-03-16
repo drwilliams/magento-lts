@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Product controller
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
 {
@@ -49,8 +41,8 @@ class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
     /**
      * Initialize product view layout
      *
-     * @param   Mage_Catalog_Model_Product $product
-     * @return  Mage_Catalog_ProductController
+     * @param  Mage_Catalog_Model_Product     $product
+     * @return Mage_Catalog_ProductController
      */
     protected function _initProductLayout($product)
     {
@@ -60,12 +52,12 @@ class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
 
     /**
      * Recursively apply custom design settings to product if it's container
-     * category custom_use_for_products option is setted to 1.
-     * If not or product shows not in category - applyes product's internal settings
+     * category custom_use_for_products option is set to 1.
+     * If not or product shows not in category - applies product's internal settings
      *
-     * @deprecated after 1.4.2.0-beta1, functionality moved to Mage_Catalog_Model_Design
      * @param Mage_Catalog_Model_Category|Mage_Catalog_Model_Product $object
-     * @param Mage_Core_Model_Layout_Update $update
+     * @param Mage_Core_Model_Layout_Update                          $update
+     * @deprecated after 1.4.2.0-beta1, functionality moved to Mage_Catalog_Model_Design
      */
     protected function _applyCustomDesignSettings($object, $update)
     {
@@ -76,6 +68,7 @@ class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
                 if ($parentCategory && $parentCategory->getId() && $parentCategory->getLevel() > 1) {
                     $this->_applyCustomDesignSettings($parentCategory, $update);
                 }
+
                 return;
             }
 
@@ -96,12 +89,15 @@ class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
             if ($object->getPageLayout()) {
                 $this->_designProductSettingsApplied['layout'] = $object->getPageLayout();
             }
+
             $this->_designProductSettingsApplied['update'] = $object->getCustomLayoutUpdate();
         }
     }
 
     /**
      * Product view action
+     *
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     public function viewAction()
     {
@@ -120,15 +116,17 @@ class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
         // Render page
         try {
             $viewHelper->prepareAndRender($productId, $this, $params);
-        } catch (Exception $e) {
-            if ($e->getCode() == $viewHelper->ERR_NO_PRODUCT_LOADED) {
+        } catch (Exception $exception) {
+            if ($exception->getCode() == $viewHelper->ERR_NO_PRODUCT_LOADED) {
                 if (isset($_GET['store'])  && !$this->getResponse()->isRedirect()) {
                     $this->_redirect('');
                 } elseif (!$this->getResponse()->isRedirect()) {
                     $this->_forward('noRoute');
                 }
+            } elseif (Mage::getIsDeveloperMode()) {
+                Mage::printException($exception);
             } else {
-                Mage::logException($e);
+                Mage::logException($exception);
                 $this->_forward('noRoute');
             }
         }
@@ -136,6 +134,8 @@ class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
 
     /**
      * View product gallery action
+     *
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     public function galleryAction()
     {
@@ -145,8 +145,10 @@ class Mage_Catalog_ProductController extends Mage_Core_Controller_Front_Action
             } elseif (!$this->getResponse()->isRedirect()) {
                 $this->_forward('noRoute');
             }
+
             return;
         }
+
         $this->loadLayout();
         $this->renderLayout();
     }

@@ -1,31 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract API2 class for product categories
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Catalog_Model_Api2_Product_Category_Rest extends Mage_Catalog_Model_Api2_Product_Rest
 {
     /**
      * Product category assign is not available
-     *
-     * @param array $data
      */
     protected function _create(array $data)
     {
@@ -34,8 +24,6 @@ abstract class Mage_Catalog_Model_Api2_Product_Category_Rest extends Mage_Catalo
 
     /**
      * Product category update is not available
-     *
-     * @param array $data
      */
     protected function _update(array $data)
     {
@@ -54,6 +42,7 @@ abstract class Mage_Catalog_Model_Api2_Product_Category_Rest extends Mage_Catalo
         foreach ($this->_getCategoryIds() as $categoryId) {
             $return[] = ['category_id' => $categoryId];
         }
+
         return $return;
     }
 
@@ -68,7 +57,7 @@ abstract class Mage_Catalog_Model_Api2_Product_Category_Rest extends Mage_Catalo
     /**
      * Load category by id
      *
-     * @param int $categoryId
+     * @param  int                         $categoryId
      * @return Mage_Catalog_Model_Category
      */
     protected function _getCategoryById($categoryId)

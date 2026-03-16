@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Downloadable
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Downloadable helper
  *
- * @category   Mage
  * @package    Mage_Downloadable
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Downloadable_Helper_Data extends Mage_Core_Helper_Abstract
 {
@@ -27,7 +19,7 @@ class Mage_Downloadable_Helper_Data extends Mage_Core_Helper_Abstract
     /**
      * Check is link shareable or not
      *
-     * @param Mage_Downloadable_Model_Link | Mage_Downloadable_Model_Link_Purchased_Item $link
+     * @param  Mage_Downloadable_Model_Link|Mage_Downloadable_Model_Link_Purchased_Item $link
      * @return bool
      */
     public function getIsShareable($link)
@@ -40,9 +32,10 @@ class Mage_Downloadable_Helper_Data extends Mage_Core_Helper_Abstract
                 break;
             case Mage_Downloadable_Model_Link::LINK_SHAREABLE_CONFIG:
                 $shareable = (bool) Mage::getStoreConfigFlag(
-                    Mage_Downloadable_Model_Link::XML_PATH_CONFIG_IS_SHAREABLE
+                    Mage_Downloadable_Model_Link::XML_PATH_CONFIG_IS_SHAREABLE,
                 );
         }
+
         return $shareable;
     }
 
@@ -57,6 +50,7 @@ class Mage_Downloadable_Helper_Data extends Mage_Core_Helper_Abstract
         if ($scope == Mage_Core_Model_Store::PRICE_SCOPE_WEBSITE) {
             return true;
         }
+
         return false;
     }
 }

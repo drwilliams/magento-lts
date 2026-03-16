@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog product price attribute backend model
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_Entity_Attribute_Backend_Abstract
 {
@@ -26,7 +18,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
      * Set Attribute instance
      * Rewrite for redefine attribute scope
      *
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     * @param  Mage_Catalog_Model_Resource_Eav_Attribute $attribute
      * @return $this
      */
     public function setAttribute($attribute)
@@ -39,7 +31,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
     /**
      * Redefine Attribute scope
      *
-     * @param Mage_Catalog_Model_Resource_Eav_Attribute $attribute
+     * @param  Mage_Catalog_Model_Resource_Eav_Attribute $attribute
      * @return $this
      */
     public function setScope($attribute)
@@ -56,7 +48,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
     /**
      * After Save Attribute manipulation
      *
-     * @param Mage_Catalog_Model_Product $object
+     * @param  Mage_Catalog_Model_Product $object
      * @return $this
      */
     public function afterSave($object)
@@ -81,10 +73,12 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Price extends Mage_Eav_Model_
                     if ($storeCurrency == $baseCurrency) {
                         continue;
                     }
+
                     $rate = Mage::getModel('directory/currency')->load($baseCurrency)->getRate($storeCurrency);
                     if (!$rate) {
                         $rate = 1;
                     }
+
                     $newValue = $value * $rate;
                     $object->addAttributeUpdate($this->getAttribute()->getAttributeCode(), $newValue, $storeId);
                 }

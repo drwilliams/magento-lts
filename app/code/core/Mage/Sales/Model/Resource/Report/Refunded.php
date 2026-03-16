@@ -1,29 +1,21 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2017-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Refund report resource model
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resource_Report_Abstract
 {
     /**
-     * Model initialization
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -33,8 +25,8 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
     /**
      * Aggregate Refunded data
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     public function aggregate($from = null, $to = null)
@@ -54,8 +46,8 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
     /**
      * Aggregate refunded data by order created at as period
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     protected function _aggregateByOrderCreatedAt($from, $to)
@@ -75,7 +67,7 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
             $this->_clearTableByDateRange($table, $from, $to, $subSelect);
             // convert dates from UTC to current admin timezone
             $periodExpr = $adapter->getDatePartSql(
-                $this->getStoreTZOffsetQuery($sourceTable, 'created_at', $from, $to)
+                $this->getStoreTZOffsetQuery($sourceTable, 'created_at', $from, $to),
             );
             $columns = [
                 'period'            => $periodExpr,
@@ -84,7 +76,7 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
                 'orders_count'      => new Zend_Db_Expr('COUNT(total_refunded)'),
                 'refunded'          => new Zend_Db_Expr('SUM(base_total_refunded * base_to_global_rate)'),
                 'online_refunded'   => new Zend_Db_Expr('SUM(base_total_online_refunded * base_to_global_rate)'),
-                'offline_refunded'  => new Zend_Db_Expr('SUM(base_total_offline_refunded * base_to_global_rate)')
+                'offline_refunded'  => new Zend_Db_Expr('SUM(base_total_offline_refunded * base_to_global_rate)'),
             ];
 
             $select = $adapter->select();
@@ -99,7 +91,7 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
             $select->group([
                 $periodExpr,
                 'store_id',
-                'status'
+                'status',
             ]);
 
             $select->having('orders_count > 0');
@@ -118,7 +110,7 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
                 'orders_count'      => new Zend_Db_Expr('SUM(orders_count)'),
                 'refunded'          => new Zend_Db_Expr('SUM(refunded)'),
                 'online_refunded'   => new Zend_Db_Expr('SUM(online_refunded)'),
-                'offline_refunded'  => new Zend_Db_Expr('SUM(offline_refunded)')
+                'offline_refunded'  => new Zend_Db_Expr('SUM(offline_refunded)'),
             ];
 
             $select
@@ -131,15 +123,15 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
 
             $select->group([
                 'period',
-                'order_status'
+                'order_status',
             ]);
 
             $insertQuery = $helper->getInsertFromSelectUsingAnalytic($select, $table, array_keys($columns));
             $adapter->query($insertQuery);
             $adapter->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $adapter->rollBack();
-            throw $e;
+            throw $exception;
         }
 
         return $this;
@@ -148,8 +140,8 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
     /**
      * Aggregate refunded data by creditmemo created at as period
      *
-     * @param mixed $from
-     * @param mixed $to
+     * @param  mixed $from
+     * @param  mixed $to
      * @return $this
      */
     protected function _aggregateByRefundCreatedAt($from, $to)
@@ -169,7 +161,7 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
                     'created_at',
                     'updated_at',
                     $from,
-                    $to
+                    $to,
                 );
             } else {
                 $subSelect = null;
@@ -182,8 +174,8 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
                     ['source_table' => $sourceTable],
                     'source_table.created_at',
                     $from,
-                    $to
-                )
+                    $to,
+                ),
             );
 
             $columns = [
@@ -192,14 +184,14 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
                 'order_status'      => 'order_table.status',
                 'orders_count'      => new Zend_Db_Expr('COUNT(order_table.entity_id)'),
                 'refunded'          => new Zend_Db_Expr(
-                    'SUM(order_table.base_total_refunded * order_table.base_to_global_rate)'
+                    'SUM(order_table.base_total_refunded * order_table.base_to_global_rate)',
                 ),
                 'online_refunded'   => new Zend_Db_Expr(
-                    'SUM(order_table.base_total_online_refunded * order_table.base_to_global_rate)'
+                    'SUM(order_table.base_total_online_refunded * order_table.base_to_global_rate)',
                 ),
                 'offline_refunded'  => new Zend_Db_Expr(
-                    'SUM(order_table.base_total_offline_refunded * order_table.base_to_global_rate)'
-                )
+                    'SUM(order_table.base_total_offline_refunded * order_table.base_to_global_rate)',
+                ),
             ];
 
             $select = $adapter->select();
@@ -209,14 +201,14 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
                     'source_table.order_id = order_table.entity_id AND '
                         . $adapter->quoteInto('order_table.state != ?', Mage_Sales_Model_Order::STATE_CANCELED)
                         . ' AND order_table.base_total_refunded > 0',
-                    []
+                    [],
                 );
 
             $filterSubSelect = $adapter->select();
             $filterSubSelect
                 ->from(
                     ['filter_source_table' => $sourceTable],
-                    new Zend_Db_Expr('MAX(filter_source_table.entity_id)')
+                    new Zend_Db_Expr('MAX(filter_source_table.entity_id)'),
                 )
                 ->where('filter_source_table.order_id = source_table.order_id');
 
@@ -230,7 +222,7 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
             $select->group([
                 $periodExpr,
                 'order_table.store_id',
-                'order_table.status'
+                'order_table.status',
             ]);
 
             $select->having('orders_count > 0');
@@ -249,7 +241,7 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
                 'orders_count'      => new Zend_Db_Expr('SUM(orders_count)'),
                 'refunded'          => new Zend_Db_Expr('SUM(refunded)'),
                 'online_refunded'   => new Zend_Db_Expr('SUM(online_refunded)'),
-                'offline_refunded'  => new Zend_Db_Expr('SUM(offline_refunded)')
+                'offline_refunded'  => new Zend_Db_Expr('SUM(offline_refunded)'),
             ];
 
             $select
@@ -262,16 +254,17 @@ class Mage_Sales_Model_Resource_Report_Refunded extends Mage_Sales_Model_Resourc
 
             $select->group([
                 'period',
-                'order_status'
+                'order_status',
             ]);
 
             $insertQuery = $helper->getInsertFromSelectUsingAnalytic($select, $table, array_keys($columns));
             $adapter->query($insertQuery);
             $adapter->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $adapter->rollBack();
-            throw $e;
+            throw $exception;
         }
+
         return $this;
     }
 }

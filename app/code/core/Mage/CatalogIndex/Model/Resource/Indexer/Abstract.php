@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Indexer resource model abstraction
  *
- * @category   Mage
  * @package    Mage_CatalogIndex
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_CatalogIndex_Model_Resource_Indexer_Abstract extends Mage_Core_Model_Resource_Db_Abstract
 {
@@ -38,26 +30,22 @@ class Mage_CatalogIndex_Model_Resource_Indexer_Abstract extends Mage_Core_Model_
     protected $_storeIdFieldName;
 
     /**
-     * should be defined because abstract
-     *
+     * @inheritDoc
      */
-    protected function _construct()
-    {
-    }
+    protected function _construct() {}
 
     /**
-     * @param array $data
-     * @param int $storeId
-     * @param int $productId
+     * @param  array $data
+     * @param  int   $storeId
+     * @param  int   $productId
      * @return void
      */
     public function saveIndex($data, $storeId, $productId)
     {
-        return $this->saveIndices([$data], $storeId, $productId);
+        $this->saveIndices([$data], $storeId, $productId);
     }
 
     /**
-     * @param array $data
      * @param int $storeId
      * @param int $productId
      */
@@ -67,9 +55,9 @@ class Mage_CatalogIndex_Model_Resource_Indexer_Abstract extends Mage_Core_Model_
     }
 
     /**
-     * @param array $data
-     * @param int $storeId
-     * @param int $productId
+     * @param  array $data
+     * @param  int   $storeId
+     * @param  int   $productId
      * @return $this
      */
     protected function _executeReplace($data, $storeId, $productId)
@@ -80,10 +68,11 @@ class Mage_CatalogIndex_Model_Resource_Indexer_Abstract extends Mage_Core_Model_
                 $row[$this->_entityIdFieldName] = $productId;
                 $this->_getWriteAdapter()->insert($this->getMainTable(), $row);
             }
+
             $this->commit();
-        } catch (Exception $e) {
+        } catch (Exception $exception) {
             $this->rollBack();
-            throw $e;
+            throw $exception;
         }
 
         return $this;
@@ -111,7 +100,7 @@ class Mage_CatalogIndex_Model_Resource_Indexer_Abstract extends Mage_Core_Model_
     }
 
     /**
-     * @param array|string $conditions
+     * @param  array|string $conditions
      * @return array
      */
     public function loadAttributeCodesByCondition($conditions)
@@ -146,6 +135,7 @@ class Mage_CatalogIndex_Model_Resource_Indexer_Abstract extends Mage_Core_Model_
         } else {
             $select->where($conditions);
         }
+
         return $this->_getReadAdapter()->fetchCol($select);
     }
 }

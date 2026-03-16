@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Adminhtml catalog product action attribute update controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adminhtml_Controller_Action
 {
@@ -28,6 +20,9 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
      */
     public const ADMIN_RESOURCE = 'catalog/update_attributes';
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         // Define module dependent translate
@@ -80,32 +75,36 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
                         unset($attributesData[$attributeCode]);
                         continue;
                     }
+
                     $data->setData($attributeCode, $value);
                     $attributeName = $attribute->getFrontendLabel();
                     $attribute->getBackend()->validate($data);
                     if ($attribute->getBackendType() == 'datetime') {
                         if (!empty($value)) {
                             $filterInput    = new Zend_Filter_LocalizedToNormalized([
-                                'date_format' => $dateFormat
+                                'date_format' => $dateFormat,
                             ]);
                             $filterInternal = new Zend_Filter_NormalizedToLocalized([
-                                'date_format' => Varien_Date::DATE_INTERNAL_FORMAT
+                                'date_format' => Varien_Date::DATE_INTERNAL_FORMAT,
                             ]);
                             $value = $filterInternal->filter($filterInput->filter($value));
                         } else {
                             $value = null;
                         }
+
                         $attributesData[$attributeCode] = $value;
                     } elseif ($attribute->getFrontendInput() == 'multiselect') {
                         // Check if 'Change' checkbox has been checked by admin for this attribute
-                        $isChanged = (bool)$this->getRequest()->getPost($attributeCode . '_checkbox');
+                        $isChanged = (bool) $this->getRequest()->getPost($attributeCode . '_checkbox');
                         if (!$isChanged) {
                             unset($attributesData[$attributeCode]);
                             continue;
                         }
+
                         if (is_array($value)) {
                             $value = implode(',', $value);
                         }
+
                         $attributesData[$attributeCode] = $value;
                     }
                 }
@@ -113,6 +112,7 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
                 Mage::getSingleton('catalog/product_action')
                     ->updateAttributes($this->_getHelper()->getProductIds(), $attributesData, $storeId);
             }
+
             if ($inventoryData) {
                 /** @var Mage_CatalogInventory_Model_Stock_Item $stockItem */
                 $stockItem = Mage::getModel('cataloginventory/stock_item');
@@ -132,6 +132,7 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
                             $stockDataChanged = true;
                         }
                     }
+
                     if ($stockDataChanged) {
                         $stockItem->save();
                         $stockItemSaved = true;
@@ -142,7 +143,7 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
                 if ($stockItemSaved) {
                     Mage::getSingleton('index/indexer')->indexEvents(
                         Mage_CatalogInventory_Model_Stock_Item::ENTITY,
-                        Mage_Index_Model_Event::TYPE_SAVE
+                        Mage_Index_Model_Event::TYPE_SAVE,
                     );
 
                     Mage::dispatchEvent('catalog_product_stock_item_mass_change', [
@@ -159,22 +160,23 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
                 if ($websiteRemoveData) {
                     $actionModel->updateWebsites($productIds, $websiteRemoveData, 'remove');
                 }
+
                 if ($websiteAddData) {
                     $actionModel->updateWebsites($productIds, $websiteAddData, 'add');
                 }
 
                 Mage::dispatchEvent('catalog_product_to_website_change', [
-                    'products' => $productIds
+                    'products' => $productIds,
                 ]);
 
                 $notice = Mage::getConfig()->getNode('adminhtml/messages/website_chnaged_indexers/label');
                 if ($notice) {
-                    $this->_getSession()->addNotice($this->__((string)$notice, $this->getUrl('adminhtml/process/list')));
+                    $this->_getSession()->addNotice($this->__((string) $notice, $this->getUrl('adminhtml/process/list')));
                 }
             }
 
             $this->_getSession()->addSuccess(
-                $this->__('Total of %d record(s) were updated', count($this->_getHelper()->getProductIds()))
+                $this->__('Total of %d record(s) were updated', count($this->_getHelper()->getProductIds())),
             );
         } catch (Mage_Eav_Model_Entity_Attribute_Exception $e) {
             $this->_getSession()->addError($attributeName . ': ' . $e->getMessage());
@@ -223,12 +225,12 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
 
     /**
      * Attributes validation action
-     *
      */
     public function validateAction()
     {
         $response = new Varien_Object();
         $response->setError(false);
+
         $attributesData = $this->getRequest()->getParam('attributes', []);
         $data = new Varien_Object();
 
@@ -244,6 +246,7 @@ class Mage_Adminhtml_Catalog_Product_Action_AttributeController extends Mage_Adm
                         unset($attributesData[$attributeCode]);
                         continue;
                     }
+
                     $data->setData($attributeCode, $value);
                     $attribute->getBackend()->validate($data);
                 }

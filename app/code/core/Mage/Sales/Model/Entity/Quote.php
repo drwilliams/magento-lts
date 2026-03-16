@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Quote entity resource model
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Sales_Model_Entity_Quote extends Mage_Eav_Model_Entity_Abstract
 {
@@ -27,16 +19,16 @@ class Mage_Sales_Model_Entity_Quote extends Mage_Eav_Model_Entity_Abstract
         $resource = Mage::getSingleton('core/resource');
         $this->setType('quote')->setConnection(
             $resource->getConnection('sales_read'),
-            $resource->getConnection('sales_write')
+            $resource->getConnection('sales_write'),
         );
     }
 
     /**
      * Retrieve select object for loading base entity row
      *
-     * @param   Varien_Object|Mage_Sales_Model_Quote $object
-     * @param   int $rowId
-     * @return  Zend_Db_Select
+     * @param  Mage_Sales_Model_Quote|Varien_Object $object
+     * @param  int                                  $rowId
+     * @return Zend_Db_Select
      */
     protected function _getLoadRowSelect($object, $rowId)
     {
@@ -44,14 +36,15 @@ class Mage_Sales_Model_Entity_Quote extends Mage_Eav_Model_Entity_Abstract
         if ($object->getSharedStoreIds()) {
             $select->where('store_id IN (?)', $object->getSharedStoreIds());
         }
+
         return $select;
     }
 
     /**
      * Loading quote by customer identifier
      *
-     * @param Mage_Sales_Model_Quote $quote
-     * @param int $customerId
+     * @param  Mage_Sales_Model_Quote $quote
+     * @param  int                    $customerId
      * @return $this
      */
     public function loadByCustomerId($quote, $customerId)
@@ -75,14 +68,15 @@ class Mage_Sales_Model_Entity_Quote extends Mage_Eav_Model_Entity_Abstract
                 return $this;
             }
         }
+
         return $this;
     }
 
     /**
      * Loading quote by identifier
      *
-     * @param Mage_Sales_Model_Quote $quote
-     * @param int $quoteId
+     * @param  Mage_Sales_Model_Quote $quote
+     * @param  int                    $quoteId
      * @return $this
      */
     public function loadByIdWithoutStore($quote, $quoteId)
@@ -100,16 +94,17 @@ class Mage_Sales_Model_Entity_Quote extends Mage_Eav_Model_Entity_Abstract
                 return $this;
             }
         }
+
         return $this;
     }
 
     /**
-     * @param Mage_Sales_Model_Quote $quote
+     * @param  Mage_Sales_Model_Quote $quote
      * @return string
      * @throws Exception
      */
     public function getReservedOrderId($quote)
     {
-        return Mage::getSingleton('eav/config')->getEntityType('order')->fetchNewIncrementId($quote->getStoreId());
+        return Mage::getSingleton('eav/config')->getEntityType(Mage_Sales_Model_Order::ENTITY)->fetchNewIncrementId($quote->getStoreId());
     }
 }

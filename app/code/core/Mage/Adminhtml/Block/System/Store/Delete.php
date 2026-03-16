@@ -1,25 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 
 /**
  * Store / store view / website delete form container
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
+ *
+ * @method string getStoreTypeTitle()
  */
 class Mage_Adminhtml_Block_System_Store_Delete extends Mage_Adminhtml_Block_Widget_Form_Container
 {
@@ -56,14 +50,14 @@ class Mage_Adminhtml_Block_System_Store_Delete extends Mage_Adminhtml_Block_Widg
         return Mage::helper('adminhtml')->__(
             "Delete %s '%s'",
             $this->getStoreTypeTitle(),
-            $this->escapeHtml($this->getChild('form')->getDataObject()->getName())
+            $this->escapeHtml($this->getChild('form')->getDataObject()->getName()),
         );
     }
 
     /**
      * Set store type title
      *
-     * @param string $title
+     * @param  string $title
      * @return $this
      */
     public function setStoreTypeTitle($title)
@@ -75,7 +69,7 @@ class Mage_Adminhtml_Block_System_Store_Delete extends Mage_Adminhtml_Block_Widg
     /**
      * Set back URL for "Cancel" and "Back" buttons
      *
-     * @param string $url
+     * @param  string $url
      * @return $this
      */
     public function setBackUrl($url)

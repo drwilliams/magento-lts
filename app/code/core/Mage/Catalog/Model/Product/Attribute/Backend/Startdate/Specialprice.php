@@ -1,33 +1,24 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- *
  * Speical Start Date attribute backend
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Product_Attribute_Backend_Startdate_Specialprice extends Mage_Catalog_Model_Product_Attribute_Backend_Startdate
 {
     /**
      * Get attribute value for save.
      *
-     * @param Varien_Object $object
-     * @return string|bool
+     * @param  Varien_Object $object
+     * @return bool|string
      */
     protected function _getValueForSave($object)
     {
@@ -36,8 +27,9 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Startdate_Specialprice extend
         if ($startDate === false) {
             return false;
         }
+
         if ($startDate == '' && $object->getSpecialPrice()) {
-            $startDate = Mage::app()->getLocale()->date();
+            return Mage::app()->getLocale()->date();
         }
 
         return $startDate;
@@ -47,7 +39,7 @@ class Mage_Catalog_Model_Product_Attribute_Backend_Startdate_Specialprice extend
      * Before save hook.
      * Prepare attribute value for save
      *
-     * @param Varien_Object $object
+     * @param  Varien_Object                                          $object
      * @return Mage_Catalog_Model_Product_Attribute_Backend_Startdate
      */
     public function beforeSave($object)

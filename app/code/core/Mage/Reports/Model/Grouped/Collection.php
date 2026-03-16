@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Reports
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Reports
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Reports_Model_Grouped_Collection extends Varien_Data_Collection //Mage_Core_Model_Resource_Db_Collection_Abstract
 {
@@ -37,20 +29,20 @@ class Mage_Reports_Model_Grouped_Collection extends Varien_Data_Collection //Mag
     /**
      * Set column to group by
      *
-     * @param string $column
+     * @param  string $column
      * @return $this
      */
     public function setColumnGroupBy($column)
     {
-        $this->_columnGroupBy = (string)$column;
+        $this->_columnGroupBy = (string) $column;
         return $this;
     }
 
     /**
      * Load collection
      *
-     * @param bool $printQuery
-     * @param bool $logQuery
+     * @param  bool  $printQuery
+     * @param  bool  $logQuery
      * @return $this
      */
     public function load($printQuery = false, $logQuery = false)
@@ -73,7 +65,7 @@ class Mage_Reports_Model_Grouped_Collection extends Varien_Data_Collection //Mag
     /**
      * Setter for resource collection
      *
-     * @param Varien_Data_Collection_Db $collection
+     * @param  Mage_Core_Model_Resource_Db_Collection_Abstract $collection
      * @return $this
      */
     public function setResourceCollection($collection)

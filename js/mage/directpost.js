@@ -8,7 +8,7 @@
  * @category    Mage
  * @package     js
  * @copyright   Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright   Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
+ * @copyright   Copyright (c) 2022-2023 The OpenMage Contributors (https://www.openmage.org)
  * @license     https://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
  */
 var directPost = Class.create();
@@ -360,18 +360,10 @@ directPost.prototype = {
 
     createHiddenElement : function(name, value) {
         var field;
-        if (isIE) {
-            field = document.createElement('input');
-            field.setAttribute('type', 'hidden');
-            field.setAttribute('name', name);
-            field.setAttribute('value', value);
-        } else {
-            field = document.createElement('input');
-            field.type = 'hidden';
-            field.name = name;
-            field.value = value;
-        }
-
+        field = document.createElement('input');
+        field.type = 'hidden';
+        field.name = name;
+        field.value = value;
         return field;
     },
 

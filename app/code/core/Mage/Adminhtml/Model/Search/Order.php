@@ -1,32 +1,24 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Search Order Model
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method bool hasLimit()
- * @method int getLimit()
- * @method bool hasQuery()
+ * @method int    getLimit()
  * @method string getQuery()
- * @method bool setResults(array $value)
- * @method bool hasStart()
- * @method int getStart()
+ * @method int    getStart()
+ * @method bool   hasLimit()
+ * @method bool   hasQuery()
+ * @method bool   hasStart()
+ * @method bool   setResults(array $value)
  */
 class Mage_Adminhtml_Model_Search_Order extends Varien_Object
 {
@@ -53,12 +45,10 @@ class Mage_Adminhtml_Model_Search_Order extends Varien_Object
                 ['attribute' => 'billing_firstname',  'like' => $query . '%'],
                 ['attribute' => 'billing_lastname',   'like' => $query . '%'],
                 ['attribute' => 'billing_telephone',  'like' => $query . '%'],
-                ['attribute' => 'billing_postcode',   'like' => $query . '%'],
 
                 ['attribute' => 'shipping_firstname', 'like' => $query . '%'],
                 ['attribute' => 'shipping_lastname',  'like' => $query . '%'],
                 ['attribute' => 'shipping_telephone', 'like' => $query . '%'],
-                ['attribute' => 'shipping_postcode',  'like' => $query . '%'],
             ])
             ->setCurPage($this->getStart())
             ->setPageSize($this->getLimit())

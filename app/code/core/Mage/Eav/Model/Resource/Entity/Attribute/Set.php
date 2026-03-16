@@ -1,27 +1,22 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Eav
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Eav attribute set resource model
  *
- * @category   Mage
  * @package    Mage_Eav
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Eav_Model_Resource_Entity_Attribute_Set extends Mage_Core_Model_Resource_Db_Abstract
 {
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('eav/attribute_set', 'attribute_set_id');
@@ -30,7 +25,6 @@ class Mage_Eav_Model_Resource_Entity_Attribute_Set extends Mage_Core_Model_Resou
     /**
      * Perform actions after object save
      *
-     * @param Mage_Core_Model_Abstract|Mage_Eav_Model_Entity_Attribute_Set $object
      * @inheritDoc
      */
     protected function _afterSave(Mage_Core_Model_Abstract $object)
@@ -41,15 +35,19 @@ class Mage_Eav_Model_Resource_Entity_Attribute_Set extends Mage_Core_Model_Resou
                 if ($group->itemExists() && !$group->getId()) {
                     continue;
                 }
+
                 $group->save();
             }
         }
+
         if ($object->getRemoveGroups()) {
             foreach ($object->getRemoveGroups() as $group) {
                 $group->delete();
             }
+
             Mage::getResourceModel('eav/entity_attribute_group')->updateDefaultGroup($object->getId());
         }
+
         if ($object->getRemoveAttributes()) {
             foreach ($object->getRemoveAttributes() as $attribute) {
                 $attribute->deleteEntity();
@@ -62,8 +60,8 @@ class Mage_Eav_Model_Resource_Entity_Attribute_Set extends Mage_Core_Model_Resou
     /**
      * Validate attribute set name
      *
-     * @param Mage_Eav_Model_Entity_Attribute_Set $object
-     * @param string $attributeSetName
+     * @param  Mage_Eav_Model_Entity_Attribute_Set $object
+     * @param  string                              $attributeSetName
      * @return bool
      */
     public function validate($object, $attributeSetName)
@@ -71,7 +69,7 @@ class Mage_Eav_Model_Resource_Entity_Attribute_Set extends Mage_Core_Model_Resou
         $adapter = $this->_getReadAdapter();
         $bind = [
             'attribute_set_name' => trim($attributeSetName),
-            'entity_type_id'     => $object->getEntityTypeId()
+            'entity_type_id'     => $object->getEntityTypeId(),
         ];
         $select = $adapter->select()
             ->from($this->getMainTable())
@@ -83,53 +81,58 @@ class Mage_Eav_Model_Resource_Entity_Attribute_Set extends Mage_Core_Model_Resou
             $select->where('attribute_set_id != :attribute_set_id');
         }
 
-        return !$adapter->fetchOne($select, $bind) ? true : false;
+        return !$adapter->fetchOne($select, $bind);
     }
 
     /**
      * Retrieve Set info by attributes
      *
-     * @param array $attributeIds
-     * @param int $setId
+     * @param  null|int $setId
      * @return array
      */
-    public function getSetInfo(array $attributeIds, $setId = null)
+    public function getSetInfo(array $attributeIds = [], $setId = null)
     {
         $adapter = $this->_getReadAdapter();
         $setInfo = [];
         $attributeToSetInfo = [];
 
-        if (count($attributeIds) > 0) {
-            $select = $adapter->select()
-                ->from(
-                    ['entity' => $this->getTable('eav/entity_attribute')],
-                    ['attribute_id', 'attribute_set_id', 'attribute_group_id', 'sort_order']
-                )
-                ->joinLeft(
-                    ['attribute_group' => $this->getTable('eav/attribute_group')],
-                    'entity.attribute_group_id = attribute_group.attribute_group_id',
-                    ['group_sort_order' => 'sort_order']
-                )
-                ->where('entity.attribute_id IN (?)', $attributeIds);
-            $bind = [];
-            if (is_numeric($setId)) {
-                $bind[':attribute_set_id'] = $setId;
-                $select->where('entity.attribute_set_id = :attribute_set_id');
-            }
-            $result = $adapter->fetchAll($select, $bind);
-
-            foreach ($result as $row) {
-                $data = [
-                    'group_id'      => $row['attribute_group_id'],
-                    'group_sort'    => $row['group_sort_order'],
-                    'sort'          => $row['sort_order']
-                ];
-                $attributeToSetInfo[$row['attribute_id']][$row['attribute_set_id']] = $data;
-            }
+        $select = $adapter->select()
+            ->from(
+                ['entity' => $this->getTable('eav/entity_attribute')],
+                ['attribute_id', 'attribute_set_id', 'attribute_group_id', 'sort_order'],
+            )
+            ->joinLeft(
+                ['attribute_group' => $this->getTable('eav/attribute_group')],
+                'entity.attribute_group_id = attribute_group.attribute_group_id',
+                ['group_sort_order' => 'sort_order'],
+            );
+        if ($attributeIds !== []) {
+            $select->where('entity.attribute_id IN (?)', $attributeIds);
         }
 
-        foreach ($attributeIds as $atttibuteId) {
-            $setInfo[$atttibuteId] = $attributeToSetInfo[$atttibuteId] ?? [];
+        $bind = [];
+        if (is_numeric($setId)) {
+            $bind[':attribute_set_id'] = $setId;
+            $select->where('entity.attribute_set_id = :attribute_set_id');
+        }
+
+        $result = $adapter->fetchAll($select, $bind);
+
+        foreach ($result as $row) {
+            $data = [
+                'group_id' => $row['attribute_group_id'],
+                'group_sort' => $row['group_sort_order'],
+                'sort' => $row['sort_order'],
+            ];
+            $attributeToSetInfo[$row['attribute_id']][$row['attribute_set_id']] = $data;
+        }
+
+        if ($attributeIds !== []) {
+            foreach ($attributeIds as $atttibuteId) {
+                $setInfo[$atttibuteId] = $attributeToSetInfo[$atttibuteId] ?? [];
+            }
+        } else {
+            return $attributeToSetInfo;
         }
 
         return $setInfo;
@@ -138,14 +141,14 @@ class Mage_Eav_Model_Resource_Entity_Attribute_Set extends Mage_Core_Model_Resou
     /**
      * Retrurn default attribute group id for attribute set id
      *
-     * @param int $setId
-     * @return int|null
+     * @param  int    $setId
+     * @return string
      */
     public function getDefaultGroupId($setId)
     {
         $adapter = $this->_getReadAdapter();
         $bind    = [
-            'attribute_set_id' => (int)$setId
+            'attribute_set_id' => (int) $setId,
         ];
         $select = $adapter->select()
             ->from($this->getTable('eav/attribute_group'), 'attribute_group_id')

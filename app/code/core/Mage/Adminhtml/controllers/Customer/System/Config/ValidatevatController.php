@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * VAT validation controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Customer_System_Config_ValidatevatController extends Mage_Adminhtml_Controller_Action
 {
@@ -37,7 +29,7 @@ class Mage_Adminhtml_Customer_System_Config_ValidatevatController extends Mage_A
     {
         return Mage::helper('customer')->checkVatNumber(
             $this->getRequest()->getParam('country'),
-            $this->getRequest()->getParam('vat')
+            $this->getRequest()->getParam('vat'),
         );
     }
 
@@ -47,7 +39,7 @@ class Mage_Adminhtml_Customer_System_Config_ValidatevatController extends Mage_A
     public function validateAction()
     {
         $result = $this->_validate();
-        $this->getResponse()->setBody((int)$result->getIsValid());
+        $this->getResponse()->setBody((int) $result->getIsValid());
     }
 
     /**
@@ -65,19 +57,19 @@ class Mage_Adminhtml_Customer_System_Config_ValidatevatController extends Mage_A
         $storeId = $this->getRequest()->getParam('store_id');
         // Sanitize value if needed
         if (!is_null($storeId)) {
-            $storeId = (int)$storeId;
+            $storeId = (int) $storeId;
         }
 
         $groupId = Mage::helper('customer')->getCustomerGroupIdBasedOnVatNumber(
             $this->getRequest()->getParam('country'),
             $result,
-            $storeId
+            $storeId,
         );
 
         $body = $coreHelper->jsonEncode([
             'valid' => $valid,
             'group' => $groupId,
-            'success' => $success
+            'success' => $success,
         ]);
         $this->getResponse()->setBody($body);
     }

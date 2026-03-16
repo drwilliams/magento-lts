@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block_Widget_Form
 {
@@ -38,7 +30,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                 'title' => Mage::helper('adminhtml')->__('User Name'),
                 'class' => 'required-entry',
                 'required' => true,
-            ]
+            ],
         );
 
         $fieldset->addField(
@@ -51,7 +43,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                 'title' => Mage::helper('adminhtml')->__('First Name'),
                 'class' => 'required-entry',
                 'required' => true,
-            ]
+            ],
         );
 
         $fieldset->addField(
@@ -64,7 +56,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                 'title' => Mage::helper('adminhtml')->__('Last Name'),
                 'class' => 'required-entry',
                 'required' => true,
-            ]
+            ],
         );
 
         $fieldset->addField(
@@ -73,7 +65,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
             [
                 'name'  => 'user_id',
                 'id'    => 'user_id',
-            ]
+            ],
         );
 
         $fieldset->addField(
@@ -86,7 +78,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                 'title' => Mage::helper('adminhtml')->__('User Email'),
                 'class' => 'required-entry validate-email',
                 'required' => true,
-            ]
+            ],
         );
 
         $minPasswordLength = Mage::getModel('customer/customer')->getMinPasswordLength();
@@ -102,7 +94,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                     'class' => 'input-text validate-password min-pass-length-' . $minPasswordLength,
                     'note' => Mage::helper('adminhtml')
                         ->__('Password must be at least of %d characters.', $minPasswordLength),
-                ]
+                ],
             );
 
             $fieldset->addField(
@@ -113,7 +105,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                     'label' => Mage::helper('adminhtml')->__('Password Confirmation'),
                     'id'    => 'confirmation',
                     'class' => 'input-text validate-cpassword',
-                ]
+                ],
             );
         } else {
             $fieldset->addField(
@@ -128,7 +120,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                     'required' => true,
                     'note' => Mage::helper('adminhtml')
                         ->__('Password must be at least of %d characters.', $minPasswordLength),
-                ]
+                ],
             );
             $fieldset->addField(
                 'confirmation',
@@ -140,7 +132,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                     'title' => Mage::helper('adminhtml')->__('Password Confirmation'),
                     'class' => 'input-text required-entry validate-cpassword',
                     'required' => true,
-                ]
+                ],
             );
         }
 
@@ -166,7 +158,7 @@ class Mage_Adminhtml_Block_Permissions_Tab_Useredit extends Mage_Adminhtml_Block
                         'value' => '0',
                     ],
                 ],
-            ]
+            ],
         );
 
         $data = $user->getData();

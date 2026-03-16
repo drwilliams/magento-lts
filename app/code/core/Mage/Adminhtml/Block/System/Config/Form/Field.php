@@ -1,29 +1,20 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract config form element renderer
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block_Abstract implements Varien_Data_Form_Element_Renderer_Interface
 {
     /**
-     * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
     protected function _getElementHtml(Varien_Data_Form_Element_Abstract $element)
@@ -32,7 +23,6 @@ class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block
     }
 
     /**
-     * @param Varien_Data_Form_Element_Abstract $element
      * @return string
      */
     public function render(Varien_Data_Form_Element_Abstract $element)
@@ -45,7 +35,7 @@ class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block
         $isMultiple = $element->getExtType() === 'multiple';
 
         // replace [value] with [inherit]
-        $namePrefix = preg_replace('#\[value\](\[\])?$#', '', $element->getName());
+        $namePrefix = preg_replace('#\[value\](\[\])?$#', '', (string) $element->getName());
 
         $options = $element->getValues();
 
@@ -73,13 +63,15 @@ class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block
             $html .= '<td class="value">';
             $html .= $this->_getElementHtml($element);
         }
+
         if ($element->getComment()) {
             $html .= '<p class="note"><span>' . $element->getComment() . '</span></p>';
         }
+
         $html .= '</td>';
 
         if ($addInheritCheckbox) {
-            $defText = $element->getDefaultValue();
+            $defText = (string) $element->getDefaultValue();
             if ($options) {
                 $defTextArr = [];
                 foreach ($options as $k => $v) {
@@ -99,6 +91,7 @@ class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block
                         }
                     }
                 }
+
                 $defText = implode(', ', $defTextArr);
             }
 
@@ -116,6 +109,7 @@ class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block
         if ($element->getScope()) {
             $html .= $element->getScopeLabel();
         }
+
         $html .= '</td>';
 
         $html .= '<td class="">';
@@ -124,6 +118,7 @@ class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block
             $html .= '<div style="display: none;">' . $element->getHint() . '</div>';
             $html .= '</div>';
         }
+
         $html .= '</td>';
 
         return $this->_decorateRowHtml($element, $html);
@@ -132,8 +127,8 @@ class Mage_Adminhtml_Block_System_Config_Form_Field extends Mage_Adminhtml_Block
     /**
      * Decorate field row html
      *
-     * @param Varien_Data_Form_Element_Abstract $element
-     * @param string $html
+     * @param  Varien_Data_Form_Element_Abstract $element
+     * @param  string                            $html
      * @return string
      */
     protected function _decorateRowHtml($element, $html)

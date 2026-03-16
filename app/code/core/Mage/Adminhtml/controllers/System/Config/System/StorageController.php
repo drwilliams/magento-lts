@@ -1,24 +1,18 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
+
+use Carbon\Carbon;
 
 /**
  * Adminhtml account controller
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_System_Config_System_StorageController extends Mage_Adminhtml_Controller_Action
 {
@@ -50,6 +44,8 @@ class Mage_Adminhtml_System_Config_System_StorageController extends Mage_Adminht
 
     /**
      * Synchronize action between storages
+     *
+     * @SuppressWarnings("PHPMD.Superglobals")
      */
     public function synchronizeAction()
     {
@@ -62,7 +58,7 @@ class Mage_Adminhtml_System_Config_System_StorageController extends Mage_Adminht
         $flag = $this->_getSyncFlag();
         if ($flag && $flag->getState() == Mage_Core_Model_File_Storage_Flag::STATE_RUNNING
             && $flag->getLastUpdate()
-            && time() <= (strtotime($flag->getLastUpdate()) + Mage_Core_Model_File_Storage_Flag::FLAG_TTL)
+            && Carbon::now()->getTimestamp() <= (Carbon::parse($flag->getLastUpdate())->getTimestamp() + Mage_Core_Model_File_Storage_Flag::FLAG_TTL)
         ) {
             return;
         }
@@ -77,9 +73,9 @@ class Mage_Adminhtml_System_Config_System_StorageController extends Mage_Adminht
 
         try {
             $this->_getSyncSingleton()->synchronize($storage);
-        } catch (Exception $e) {
-            Mage::logException($e);
-            $flag->passError($e);
+        } catch (Exception $exception) {
+            Mage::logException($exception);
+            $flag->passError($exception);
         }
 
         $flag->setState(Mage_Core_Model_File_Storage_Flag::STATE_FINISHED)->save();
@@ -109,7 +105,7 @@ class Mage_Adminhtml_System_Config_System_StorageController extends Mage_Adminht
                     break;
                 case Mage_Core_Model_File_Storage_Flag::STATE_RUNNING:
                     if (!$flag->getLastUpdate()
-                        || time() <= (strtotime($flag->getLastUpdate()) + Mage_Core_Model_File_Storage_Flag::FLAG_TTL)
+                        || Carbon::now()->getTimestamp() <= (Carbon::parse($flag->getLastUpdate())->getTimestamp() + Mage_Core_Model_File_Storage_Flag::FLAG_TTL)
                     ) {
                         $flagData = $flag->getFlagData();
                         if (is_array($flagData)
@@ -127,8 +123,8 @@ class Mage_Adminhtml_System_Config_System_StorageController extends Mage_Adminht
                         if (is_array($flagData)
                             && !(isset($flagData['timeout_reached']) && $flagData['timeout_reached'])
                         ) {
-                            Mage::logException(new Mage_Exception(
-                                Mage::helper('adminhtml')->__('Timeout limit for response from synchronize process was reached.')
+                            Mage::logException(new Mage_Core_Exception(
+                                Mage::helper('adminhtml')->__('Timeout limit for response from synchronize process was reached.'),
                             ));
 
                             $state = Mage_Core_Model_File_Storage_Flag::STATE_FINISHED;
@@ -168,6 +164,7 @@ class Mage_Adminhtml_System_Config_System_StorageController extends Mage_Adminht
         } else {
             $state = Mage_Core_Model_File_Storage_Flag::STATE_INACTIVE;
         }
+
         $result['state'] = $state;
 
         $result = Mage::helper('core')->jsonEncode($result);

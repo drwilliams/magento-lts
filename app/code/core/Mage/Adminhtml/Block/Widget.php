@@ -1,38 +1,37 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Base widget class
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method $this setHeaderCss(string $value)
  * @method $this setTitle(string $value)
  */
 class Mage_Adminhtml_Block_Widget extends Mage_Adminhtml_Block_Template
 {
+    /**
+     * @return string
+     */
     public function getId()
     {
         if ($this->getData('id') === null) {
             $this->setData('id', Mage::helper('core')->uniqHash('id_'));
         }
+
         return $this->getData('id');
     }
 
+    /**
+     * @return string
+     */
     public function getHtmlId()
     {
         return $this->getId();
@@ -41,7 +40,7 @@ class Mage_Adminhtml_Block_Widget extends Mage_Adminhtml_Block_Template
     /**
      * Get current url
      *
-     * @param array $params url parameters
+     * @param  array  $params url parameters
      * @return string current url
      */
     public function getCurrentUrl($params = [])
@@ -49,6 +48,7 @@ class Mage_Adminhtml_Block_Widget extends Mage_Adminhtml_Block_Template
         if (!isset($params['_current'])) {
             $params['_current'] = true;
         }
+
         return $this->getUrl('*/*/*', $params);
     }
 
@@ -62,10 +62,10 @@ class Mage_Adminhtml_Block_Widget extends Mage_Adminhtml_Block_Template
     /**
      * Create button and return its html
      *
-     * @param string $label
-     * @param string $onclick
-     * @param string $class
-     * @param string $id
+     * @param  string $label
+     * @param  string $onclick
+     * @param  string $class
+     * @param  string $id
      * @return string
      */
     public function getButtonHtml($label, $onclick, $class = '', $id = null)

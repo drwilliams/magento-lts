@@ -1,27 +1,19 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Widget to display catalog link
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  *
+ * @method int  getStoreId()
  * @method bool hasStoreId()
- * @method int getStoreId()
  */
 class Mage_Catalog_Block_Widget_Link extends Mage_Core_Block_Html_Link implements Mage_Widget_Block_Interface
 {
@@ -49,7 +41,9 @@ class Mage_Catalog_Block_Widget_Link extends Mage_Core_Block_Html_Link implement
      * Prepare url using passed id and return it
      * or return false if path was not found.
      *
-     * @return string|false
+     * @return false|string
+     * @throws Mage_Core_Exception
+     * @throws Mage_Core_Model_Store_Exception
      */
     public function getHref()
     {
@@ -81,9 +75,9 @@ class Mage_Catalog_Block_Widget_Link extends Mage_Core_Block_Html_Link implement
         }
 
         if ($this->_href) {
-            if (strpos($this->_href, "___store") === false) {
-                $symbol = (strpos($this->_href, "?") === false) ? "?" : "&";
-                $this->_href = $this->_href . $symbol . "___store=" . $store->getCode();
+            if (!str_contains($this->_href, '___store')) {
+                $symbol = (str_contains($this->_href, '?')) ? '&' : '?';
+                $this->_href = $this->_href . $symbol . '___store=' . $store->getCode();
             }
         } else {
             return false;
@@ -97,6 +91,7 @@ class Mage_Catalog_Block_Widget_Link extends Mage_Core_Block_Html_Link implement
      * If anchor text was not specified get entity name from DB.
      *
      * @return string
+     * @throws Mage_Core_Model_Store_Exception
      */
     public function getAnchorText()
     {
@@ -110,10 +105,10 @@ class Mage_Catalog_Block_Widget_Link extends Mage_Core_Block_Html_Link implement
             if (!$this->_getData('anchor_text')) {
                 $idPath = explode('/', $this->_getData('id_path'));
                 if (isset($idPath[1])) {
-                    $id = $idPath[1];
-                    if ($id) {
+                    $entityId = $idPath[1];
+                    if ($entityId) {
                         $this->_anchorText = $this->_entityResource
-                            ->getAttributeRawValue($id, 'name', $store);
+                            ->getAttributeRawValue((int) $entityId, 'name', $store);
                     }
                 }
             } else {
@@ -135,6 +130,7 @@ class Mage_Catalog_Block_Widget_Link extends Mage_Core_Block_Html_Link implement
         if ($this->getHref()) {
             return parent::_toHtml();
         }
+
         return '';
     }
 }

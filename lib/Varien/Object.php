@@ -1,46 +1,31 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Varien
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Varien_Object
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Varien Object
  *
- * @category   Varien
  * @package    Varien_Object
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Varien_Object implements ArrayAccess
 {
     /**
      * Object attributes
      *
-     * @var array|null
+     * @var null|array
      */
     protected $_data = [];
 
     /**
      * Data changes flag (true after setData|unsetData call)
-     * @var bool $_hasDataChange
+     * @var bool
      */
     protected $_hasDataChanges = false;
-
-    /**
-    * Original data that was loaded
-    *
-    * @var array|null
-    */
-    protected $_origData;
 
     /**
      * Name of object id field
@@ -59,7 +44,7 @@ class Varien_Object implements ArrayAccess
     /**
      * Object delete flag
      *
-     * @var boolean
+     * @var bool
      */
     protected $_isDeleted = false;
 
@@ -83,7 +68,7 @@ class Varien_Object implements ArrayAccess
     /**
      * Constructor
      *
-     * By default is looking for first argument as array and assignes it as object attributes
+     * By default, is looking for first argument as array and assigns it as object attributes
      * This behaviour may change in child classes
      */
     public function __construct()
@@ -97,6 +82,7 @@ class Varien_Object implements ArrayAccess
         if (empty($args[0])) {
             $args[0] = [];
         }
+
         $this->_data = $args[0];
         $this->_addFullNames();
 
@@ -119,9 +105,7 @@ class Varien_Object implements ArrayAccess
      * Inits mapping array of object's previously used fields to new fields.
      * Must be overloaded by descendants to set concrete fields map.
      */
-    protected function _initOldFieldsMap()
-    {
-    }
+    protected function _initOldFieldsMap() {}
 
     /**
      * Called after old fields are inited. Forms synchronization map to sync old fields and new fields
@@ -139,16 +123,16 @@ class Varien_Object implements ArrayAccess
 
     /**
      * Internal constructor not depended on params. Can be used for object initialization
+     *
+     * @return void
      */
-    protected function _construct()
-    {
-    }
+    protected function _construct() {}
 
     /**
      * Set _isDeleted flag value (if $isDeleted param is defined) and return current flag value
      *
-     * @param boolean $isDeleted
-     * @return boolean
+     * @param  bool $isDeleted
+     * @return bool
      */
     public function isDeleted($isDeleted = null)
     {
@@ -156,6 +140,7 @@ class Varien_Object implements ArrayAccess
         if (!is_null($isDeleted)) {
             $this->_isDeleted = $isDeleted;
         }
+
         return $result;
     }
 
@@ -172,8 +157,8 @@ class Varien_Object implements ArrayAccess
     /**
      * set name of object id field
      *
-     * @param   string $name
-     * @return  $this
+     * @param  string $name
+     * @return $this
      */
     public function setIdFieldName($name)
     {
@@ -201,14 +186,15 @@ class Varien_Object implements ArrayAccess
         if ($this->getIdFieldName()) {
             return $this->_getData($this->getIdFieldName());
         }
+
         return $this->_getData('id');
     }
 
     /**
      * Set object id field value
      *
-     * @param   mixed $value
-     * @return  $this
+     * @param  mixed $value
+     * @return $this
      */
     public function setId($value)
     {
@@ -217,6 +203,7 @@ class Varien_Object implements ArrayAccess
         } else {
             $this->setData('id', $value);
         }
+
         return $this;
     }
 
@@ -225,7 +212,6 @@ class Varien_Object implements ArrayAccess
      *
      * Retains previous data in the object.
      *
-     * @param array $arr
      * @return $this
      */
     public function addData(array $arr)
@@ -233,6 +219,7 @@ class Varien_Object implements ArrayAccess
         foreach ($arr as $index => $value) {
             $this->setData($index, $value);
         }
+
         return $this;
     }
 
@@ -244,8 +231,8 @@ class Varien_Object implements ArrayAccess
      *
      * If $key is an array, it will overwrite all the data in the object.
      *
-     * @param string|array $key
-     * @param mixed $value
+     * @param  array|string $key
+     * @param  mixed        $value
      * @return $this
      */
     public function setData($key, $value = null)
@@ -261,6 +248,7 @@ class Varien_Object implements ArrayAccess
                 $this->_data[$fullFieldName] = $value;
             }
         }
+
         return $this;
     }
 
@@ -269,7 +257,7 @@ class Varien_Object implements ArrayAccess
      *
      * $key can be a string only. Array will be ignored.
      *
-     * @param string $key
+     * @param  string $key
      * @return $this
      */
     public function unsetData($key = null)
@@ -284,6 +272,7 @@ class Varien_Object implements ArrayAccess
                 unset($this->_data[$fullFieldName]);
             }
         }
+
         return $this;
     }
 
@@ -292,32 +281,35 @@ class Varien_Object implements ArrayAccess
      *
      * $key can be a string only. Array will be ignored.
      *
-     * @param string $key
+     * @param  string $key
      * @return $this
      */
     public function unsetOldData($key = null)
     {
         if (is_null($key)) {
-            foreach ($this->_oldFieldsMap as $key => $newFieldName) {
+            foreach (array_keys($this->_oldFieldsMap) as $key) {
                 unset($this->_data[$key]);
             }
         } else {
             unset($this->_data[$key]);
         }
+
         return $this;
     }
 
     /**
-     * Retrieves data from the object
+     * Object data getter
      *
-     * If $key is empty will return all the data as an array
-     * Otherwise it will return value of the attribute specified by $key
+     * If $key is not defined will return all the data as an array.
+     * Otherwise, it will return value of the element specified by $key.
+     * It is possible to use keys like a/b/c for access nested array data
      *
      * If $index is specified it will assume that attribute data is an array
-     * and retrieve corresponding member.
+     * and retrieve corresponding member. If data is the string - it will be explode
+     * by new line character and converted to array.
      *
-     * @param string $key
-     * @param string|int $index
+     * @param  string     $key
+     * @param  int|string $index
      * @return mixed
      */
     public function getData($key = '', $index = null)
@@ -326,74 +318,81 @@ class Varien_Object implements ArrayAccess
             return $this->_data;
         }
 
-        $default = null;
-
-        // accept a/b/c as ['a']['b']['c']
-        if (strpos($key, '/')) {
-            $keyArr = explode('/', $key);
-            $data = $this->_data;
-            foreach ($keyArr as $i => $k) {
-                if ($k === '') {
-                    return $default;
-                }
-                if (is_array($data)) {
-                    if (!isset($data[$k])) {
-                        return $default;
-                    }
-                    $data = $data[$k];
-                } elseif ($data instanceof Varien_Object) {
-                    $data = $data->getData($k);
-                } else {
-                    return $default;
-                }
-            }
-            return $data;
+        $data = $this->_data[$key] ?? null;
+        if ($data === null && $key !== null && str_contains($key, '/')) {
+            /* process a/b/c key as ['a']['b']['c'] */
+            $data = $this->getDataByPath($key);
         }
 
-        // legacy functionality for $index
-        if (isset($this->_data[$key])) {
-            if (is_null($index)) {
-                return $this->_data[$key];
+        if ($index !== null) {
+            if ($data === (array) $data) {
+                $data = $data[$index] ?? null;
+            } elseif (is_string($data)) {
+                $data = explode(PHP_EOL, $data);
+                $data = $data[$index] ?? null;
+            } elseif ($data instanceof Varien_Object) {
+                $data = $data->getData($index);
+            } else {
+                $data = null;
             }
+        }
 
-            $value = $this->_data[$key];
-            if (is_array($value)) {
-                //if (isset($value[$index]) && (!empty($value[$index]) || strlen($value[$index]) > 0)) {
-                /**
-                 * If we have any data, even if it empty - we should use it, anyway
-                 */
-                if (isset($value[$index])) {
-                    return $value[$index];
-                }
+        return $data;
+    }
+
+    /**
+     * Get object data by path
+     *
+     * Method consider the path as chain of keys: a/b/c => ['a']['b']['c']
+     *
+     * @param  string $path
+     * @return mixed
+     */
+    public function getDataByPath($path)
+    {
+        $keys = explode('/', (string) $path);
+
+        $data = $this->_data;
+        foreach ($keys as $key) {
+            if ((array) $data === $data && isset($data[$key])) {
+                $data = $data[$key];
+            } elseif ($data instanceof Varien_Object) {
+                $data = $data->getDataByKey($key);
+            } else {
                 return null;
-            } elseif (is_string($value)) {
-                $arr = explode("\n", $value);
-                return (isset($arr[$index]) && (!empty($arr[$index]) || strlen($arr[$index]) > 0))
-                    ? $arr[$index] : null;
-            } elseif ($value instanceof Varien_Object) {
-                return $value->getData($index);
             }
-            return $default;
         }
-        return $default;
+
+        return $data;
+    }
+
+    /**
+     * Get object data by particular key
+     *
+     * @param  string $key
+     * @return mixed
+     */
+    public function getDataByKey($key)
+    {
+        return $this->_getData($key);
     }
 
     /**
      * Get value from _data array without parse key
      *
-     * @param   string $key
-     * @return  mixed
+     * @param  string $key
+     * @return mixed
      */
     protected function _getData($key)
     {
-        return isset($this->_data[$key]) ? $this->_data[$key] : null;
+        return $this->_data[$key] ?? null;
     }
 
     /**
      * Set object data with calling setter method
      *
-     * @param string $key
-     * @param mixed $args
+     * @param  string $key
+     * @param  mixed  $args
      * @return $this
      */
     public function setDataUsingMethod($key, $args = [])
@@ -406,8 +405,8 @@ class Varien_Object implements ArrayAccess
     /**
      * Get object data by key with calling getter method
      *
-     * @param string $key
-     * @param mixed $args
+     * @param  string $key
+     * @param  mixed  $args
      * @return mixed
      */
     public function getDataUsingMethod($key, $args = null)
@@ -419,8 +418,8 @@ class Varien_Object implements ArrayAccess
     /**
      * Fast get data or set default if value is not available
      *
-     * @param string $key
-     * @param mixed $default
+     * @param  string $key
+     * @param  mixed  $default
      * @return mixed
      */
     public function getDataSetDefault($key, $default)
@@ -428,6 +427,7 @@ class Varien_Object implements ArrayAccess
         if (!isset($this->_data[$key])) {
             $this->_data[$key] = $default;
         }
+
         return $this->_data[$key];
     }
 
@@ -435,14 +435,15 @@ class Varien_Object implements ArrayAccess
      * If $key is empty, checks whether there's any data in the object
      * Otherwise checks if the specified attribute is set.
      *
-     * @param string $key
-     * @return boolean
+     * @param  string $key
+     * @return bool
      */
     public function hasData($key = '')
     {
         if (empty($key) || !is_string($key)) {
             return !empty($this->_data);
         }
+
         return array_key_exists($key, $this->_data);
     }
 
@@ -466,13 +467,13 @@ class Varien_Object implements ArrayAccess
                 $arrRes[$attribute] = null;
             }
         }
+
         return $arrRes;
     }
 
     /**
      * Public wrapper for __toArray
      *
-     * @param array $arrAttributes
      * @return array
      */
     public function toArray(array $arrAttributes = [])
@@ -483,9 +484,8 @@ class Varien_Object implements ArrayAccess
     /**
      * Set required array elements
      *
-     * @param   array $arr
-     * @param   array $elements
-     * @return  array
+     * @param  array $arr
+     * @return array
      */
     protected function _prepareArray(&$arr, array $elements = [])
     {
@@ -494,16 +494,17 @@ class Varien_Object implements ArrayAccess
                 $arr[$element] = null;
             }
         }
+
         return $arr;
     }
 
     /**
      * Convert object attributes to XML
      *
-     * @param array $arrAttributes array of required attributes
-     * @param string $rootName name of the root element
-     * @param bool $addOpenTag
-     * @param bool $addCdata
+     * @param  array  $arrAttributes array of required attributes
+     * @param  string $rootName      name of the root element
+     * @param  bool   $addOpenTag
+     * @param  bool   $addCdata
      * @return string
      */
     protected function __toXml(array $arrAttributes = [], $rootName = 'item', $addOpenTag = false, $addCdata = true)
@@ -512,9 +513,11 @@ class Varien_Object implements ArrayAccess
         if ($addOpenTag) {
             $xml .= '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
         }
+
         if (!empty($rootName)) {
             $xml .= '<' . $rootName . '>' . "\n";
         }
+
         $xmlModel = new Varien_Simplexml_Element('<node></node>');
         $arrData = $this->toArray($arrAttributes);
         foreach ($arrData as $fieldName => $fieldValue) {
@@ -523,21 +526,23 @@ class Varien_Object implements ArrayAccess
             } else {
                 $fieldValue = $xmlModel->xmlentities($fieldValue);
             }
+
             $xml .= "<$fieldName>$fieldValue</$fieldName>" . "\n";
         }
+
         if (!empty($rootName)) {
             $xml .= '</' . $rootName . '>' . "\n";
         }
+
         return $xml;
     }
 
     /**
      * Public wrapper for __toXml
      *
-     * @param array $arrAttributes
-     * @param string $rootName
-     * @param bool $addOpenTag
-     * @param bool $addCdata
+     * @param  string $rootName
+     * @param  bool   $addOpenTag
+     * @param  bool   $addCdata
      * @return string
      */
     public function toXml(array $arrAttributes = [], $rootName = 'item', $addOpenTag = false, $addCdata = true)
@@ -548,20 +553,18 @@ class Varien_Object implements ArrayAccess
     /**
      * Convert object attributes to JSON
      *
-     * @param  array $arrAttributes array of required attributes
+     * @param  array  $arrAttributes array of required attributes
      * @return string
      */
     protected function __toJson(array $arrAttributes = [])
     {
         $arrData = $this->toArray($arrAttributes);
-        $json = Zend_Json::encode($arrData);
-        return $json;
+        return Zend_Json::encode($arrData);
     }
 
     /**
      * Public wrapper for __toJson
      *
-     * @param array $arrAttributes
      * @return string
      */
     public function toJson(array $arrAttributes = [])
@@ -572,22 +575,22 @@ class Varien_Object implements ArrayAccess
     /**
      * Convert object attributes to string
      *
-     * @param  array  $arrAttributes array of required attributes
+     * @param  array  $arrAttributes  array of required attributes
      * @param  string $valueSeparator
      * @return string
      */
-//    public function __toString(array $arrAttributes = array(), $valueSeparator=',')
-//    {
-//        $arrData = $this->toArray($arrAttributes);
-//        return implode($valueSeparator, $arrData);
-//    }
+    //    public function __toString(array $arrAttributes = array(), $valueSeparator=',')
+    //    {
+    //        $arrData = $this->toArray($arrAttributes);
+    //        return implode($valueSeparator, $arrData);
+    //    }
 
     /**
      * Public wrapper for __toString
      *
      * Will use $format as an template and substitute {{key}} for attributes
      *
-     * @param string $format
+     * @param  string $format
      * @return string
      */
     public function toString($format = '')
@@ -597,57 +600,53 @@ class Varien_Object implements ArrayAccess
         } else {
             preg_match_all('/\{\{([a-z0-9_]+)\}\}/is', $format, $matches);
             foreach ($matches[1] as $var) {
-                $format = str_replace('{{' . $var . '}}', $this->getData($var), $format);
+                $replace = is_null($this->getData($var)) ? '' : $this->getData($var);
+                $format = str_replace('{{' . $var . '}}', $replace, $format);
             }
+
             $str = $format;
         }
+
         return $str;
     }
 
     /**
      * Set/Get attribute wrapper
      *
-     * @param   string $method
-     * @param   array $args
-     * @return  mixed
+     * @param  string           $method
+     * @param  array            $args
+     * @return mixed
+     * @throws Varien_Exception
      */
     public function __call($method, $args)
     {
         switch (substr($method, 0, 3)) {
             case 'get':
-                //Varien_Profiler::start('GETTER: '.get_class($this).'::'.$method);
                 $key = $this->_underscore(substr($method, 3));
-                $data = $this->getData($key, isset($args[0]) ? $args[0] : null);
-                //Varien_Profiler::stop('GETTER: '.get_class($this).'::'.$method);
-                return $data;
+                return $this->getData($key, $args[0] ?? null);
 
             case 'set':
-                //Varien_Profiler::start('SETTER: '.get_class($this).'::'.$method);
                 $key = $this->_underscore(substr($method, 3));
-                $result = $this->setData($key, isset($args[0]) ? $args[0] : null);
-                //Varien_Profiler::stop('SETTER: '.get_class($this).'::'.$method);
-                return $result;
+                return $this->setData($key, $args[0] ?? null);
 
             case 'uns':
-                //Varien_Profiler::start('UNS: '.get_class($this).'::'.$method);
                 $key = $this->_underscore(substr($method, 3));
-                $result = $this->unsetData($key);
-                //Varien_Profiler::stop('UNS: '.get_class($this).'::'.$method);
-                return $result;
+                return $this->unsetData($key);
 
             case 'has':
-                //Varien_Profiler::start('HAS: '.get_class($this).'::'.$method);
                 $key = $this->_underscore(substr($method, 3));
-                //Varien_Profiler::stop('HAS: '.get_class($this).'::'.$method);
                 return isset($this->_data[$key]);
         }
-        throw new Varien_Exception("Invalid method " . get_class($this) . "::" . $method . "(" . print_r($args, 1) . ")");
+
+        throw new Varien_Exception(
+            'Invalid method ' . static::class . '::' . $method . '(' . print_r($args, true) . ')',
+        );
     }
 
     /**
      * Attribute getter (deprecated)
      *
-     * @param string $var
+     * @param  string $var
      * @return mixed
      */
     public function __get($var)
@@ -660,7 +659,7 @@ class Varien_Object implements ArrayAccess
      * Attribute setter (deprecated)
      *
      * @param string $var
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function __set($var, $value)
     {
@@ -671,23 +670,24 @@ class Varien_Object implements ArrayAccess
     /**
      * checks whether the object is empty
      *
-     * @return boolean
+     * @return bool
      */
     public function isEmpty()
     {
         if (empty($this->_data)) {
             return true;
         }
+
         return false;
     }
 
     /**
-     * Converts field names for setters and geters
+     * Converts field names for setters and getters
      *
      * $this->setMyField($value) === $this->setData('my_field', $value)
-     * Uses cache to eliminate unneccessary preg_replace
+     * Uses cache to eliminate unnecessary preg_replace
      *
-     * @param string $name
+     * @param  string $name
      * @return string
      */
     protected function _underscore($name)
@@ -695,15 +695,16 @@ class Varien_Object implements ArrayAccess
         if (isset(self::$_underscoreCache[$name])) {
             return self::$_underscoreCache[$name];
         }
+
         #Varien_Profiler::start('underscore');
-        $result = strtolower(preg_replace('/(.)([A-Z])/', "$1_$2", $name));
+        $result = strtolower(preg_replace('/([A-Z])/', '_$1', lcfirst($name)));
         #Varien_Profiler::stop('underscore');
         self::$_underscoreCache[$name] = $result;
         return $result;
     }
 
     /**
-     * @param string $name
+     * @param  string $name
      * @return string
      */
     protected function _camelize($name)
@@ -714,15 +715,14 @@ class Varien_Object implements ArrayAccess
     /**
      * serialize object attributes
      *
-     * @param   array $attributes
-     * @param   string $valueSeparator
-     * @param   string $fieldSeparator
-     * @param   string $quote
-     * @return  string
+     * @param  array  $attributes
+     * @param  string $valueSeparator
+     * @param  string $fieldSeparator
+     * @param  string $quote
+     * @return string
      */
     public function serialize($attributes = [], $valueSeparator = '=', $fieldSeparator = ' ', $quote = '"')
     {
-        $res  = '';
         $data = [];
         if (empty($attributes)) {
             $attributes = array_keys($this->_data);
@@ -733,72 +733,28 @@ class Varien_Object implements ArrayAccess
                 $data[] = $key . $valueSeparator . $quote . $value . $quote;
             }
         }
-        $res = implode($fieldSeparator, $data);
-        return $res;
-    }
 
-    /**
-     * Get object loaded data (original data)
-     *
-     * @param string $key
-     * @return mixed
-     */
-    public function getOrigData($key = null)
-    {
-        if (is_null($key)) {
-            return $this->_origData;
-        }
-        return isset($this->_origData[$key]) ? $this->_origData[$key] : null;
-    }
-
-    /**
-     * Initialize object original data
-     *
-     * @param string $key
-     * @param mixed $data
-     * @return $this
-     */
-    public function setOrigData($key = null, $data = null)
-    {
-        if (is_null($key)) {
-            $this->_origData = $this->_data;
-        } else {
-            $this->_origData[$key] = $data;
-        }
-        return $this;
-    }
-
-    /**
-     * Compare object data with original data
-     *
-     * @param string $field
-     * @return boolean
-     */
-    public function dataHasChangedFor($field)
-    {
-        $newData = $this->getData($field);
-        $origData = $this->getOrigData($field);
-        return $newData != $origData;
+        return implode($fieldSeparator, $data);
     }
 
     /**
      * Clears data changes status
      *
-     * @param boolean $value
+     * @param  bool  $value
      * @return $this
      */
     public function setDataChanges($value)
     {
-        $this->_hasDataChanges = (bool)$value;
+        $this->_hasDataChanges = (bool) $value;
         return $this;
     }
 
     /**
      * Present object data as string in debug mode
      *
-     * @param mixed $data
-     * @param array $objects
-     * @return string|array
+     * @param  mixed        $data
+     * @param  array        $objects
+     * @return array|string
      */
     public function debug($data = null, &$objects = [])
     {
@@ -807,9 +763,11 @@ class Varien_Object implements ArrayAccess
             if (!empty($objects[$hash])) {
                 return '*** RECURSION ***';
             }
+
             $objects[$hash] = true;
             $data = $this->getData();
         }
+
         $debug = [];
         foreach ($data as $key => $value) {
             if (is_scalar($value)) {
@@ -817,9 +775,10 @@ class Varien_Object implements ArrayAccess
             } elseif (is_array($value)) {
                 $debug[$key] = $this->debug($value, $objects);
             } elseif ($value instanceof Varien_Object) {
-                $debug[$key . ' (' . get_class($value) . ')'] = $value->debug(null, $objects);
+                $debug[$key . ' (' . $value::class . ')'] = $value->debug(null, $objects);
             }
         }
+
         return $debug;
     }
 
@@ -828,7 +787,7 @@ class Varien_Object implements ArrayAccess
      *
      * @link http://www.php.net/manual/en/arrayaccess.offsetset.php
      * @param string $offset
-     * @param mixed $value
+     * @param mixed  $value
      */
     public function offsetSet($offset, $value): void
     {
@@ -840,7 +799,6 @@ class Varien_Object implements ArrayAccess
      *
      * @link http://www.php.net/manual/en/arrayaccess.offsetexists.php
      * @param string $offset
-     * @return bool
      */
     public function offsetExists($offset): bool
     {
@@ -862,33 +820,35 @@ class Varien_Object implements ArrayAccess
      * Implementation of ArrayAccess::offsetGet()
      *
      * @link http://www.php.net/manual/en/arrayaccess.offsetget.php
-     * @param string $offset
+     * @param  string $offset
      * @return mixed
      */
     #[\ReturnTypeWillChange]
     public function offsetGet($offset)
     {
-        return isset($this->_data[$offset]) ? $this->_data[$offset] : null;
+        return $this->_data[$offset] ?? null;
     }
 
     /**
-     * @param string $field
-     * @return boolean
+     * @param  string $field
+     * @return bool
      */
     public function isDirty($field = null)
     {
         if (empty($this->_dirty)) {
             return false;
         }
+
         if (is_null($field)) {
             return true;
         }
+
         return isset($this->_dirty[$field]);
     }
 
     /**
-     * @param string $field
-     * @param boolean $flag
+     * @param  string $field
+     * @param  bool   $flag
      * @return $this
      */
     public function flagDirty($field, $flag = true)
@@ -897,13 +857,12 @@ class Varien_Object implements ArrayAccess
             foreach ($this->getData() as $field => $value) {
                 $this->flagDirty($field, $flag);
             }
+        } elseif ($flag) {
+            $this->_dirty[$field] = true;
         } else {
-            if ($flag) {
-                $this->_dirty[$field] = true;
-            } else {
-                unset($this->_dirty[$field]);
-            }
+            unset($this->_dirty[$field]);
         }
+
         return $this;
     }
 }

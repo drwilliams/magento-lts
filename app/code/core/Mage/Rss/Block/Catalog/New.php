@@ -1,30 +1,23 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Rss
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2021-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Review form block
  *
- * @category   Mage
  * @package    Mage_Rss
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Rss_Block_Catalog_New extends Mage_Rss_Block_Catalog_Abstract
 {
-    protected function _construct()
-    {
-    }
+    /**
+     * @inheritDoc
+     */
+    protected function _construct() {}
 
     /**
      * @return string
@@ -46,7 +39,7 @@ class Mage_Rss_Block_Catalog_New extends Mage_Rss_Block_Catalog_Abstract
             'description' => $title,
             'link'        => $newurl,
             'charset'     => 'UTF-8',
-            'language'    => $lang
+            'language'    => $lang,
         ];
         $rssObj->_addHeader($data);
 
@@ -65,26 +58,26 @@ class Mage_Rss_Block_Catalog_New extends Mage_Rss_Block_Catalog_Abstract
             ->addStoreFilter()
             ->addAttributeToFilter('news_from_date', ['or' => [
                 0 => ['date' => true, 'to' => $todayEndOfDayDate],
-                1 => ['is' => new Zend_Db_Expr('null')]]
+                1 => ['is' => new Zend_Db_Expr('null')]],
             ], 'left')
             ->addAttributeToFilter('news_to_date', ['or' => [
                 0 => ['date' => true, 'from' => $todayStartOfDayDate],
-                1 => ['is' => new Zend_Db_Expr('null')]]
+                1 => ['is' => new Zend_Db_Expr('null')]],
             ], 'left')
             ->addAttributeToFilter(
                 [
                     ['attribute' => 'news_from_date', 'is' => new Zend_Db_Expr('not null')],
-                    ['attribute' => 'news_to_date', 'is' => new Zend_Db_Expr('not null')]
-                ]
+                    ['attribute' => 'news_to_date', 'is' => new Zend_Db_Expr('not null')],
+                ],
             )
             ->addAttributeToSort('news_from_date', 'desc')
             ->addAttributeToSelect(['name', 'short_description', 'description', 'thumbnail'], 'inner')
             ->addAttributeToSelect(
                 [
                     'price', 'special_price', 'special_from_date', 'special_to_date',
-                    'msrp_enabled', 'msrp_display_actual_price_type', 'msrp'
+                    'msrp_enabled', 'msrp_display_actual_price_type', 'msrp',
                 ],
-                'left'
+                'left',
             )
             ->applyFrontendPriceLimitations()
         ;
@@ -98,7 +91,7 @@ class Mage_Rss_Block_Catalog_New extends Mage_Rss_Block_Catalog_Abstract
         Mage::getSingleton('core/resource_iterator')->walk(
             $products->getSelect(),
             [[$this, 'addNewItemXmlCallback']],
-            ['rssObj' => $rssObj, 'product' => $product]
+            ['rssObj' => $rssObj, 'product' => $product],
         );
 
         return $rssObj->createRssXml();
@@ -131,21 +124,21 @@ class Mage_Rss_Block_Catalog_New extends Mage_Rss_Block_Catalog_Abstract
         $description = '<table><tr>'
             . '<td><a href="' . $product->getProductUrl() . '"><img src="'
             . $helper->init($product, 'thumbnail')->resize(75, 75)
-            . '" border="0" align="left" height="75" width="75"></a></td>' .
-            '<td  style="text-decoration:none;">' . $product->getDescription();
+            . '" border="0" align="left" height="75" width="75"></a></td>'
+            . '<td  style="text-decoration:none;">' . $product->getDescription();
 
         if ($allowedPriceInRss) {
             $description .= $this->getPriceHtml($product, true);
         }
 
-        $description .= '</td>' .
-            '</tr></table>';
+        $description .= '</td>'
+            . '</tr></table>';
 
         $rssObj = $args['rssObj'];
         $data = [
-                'title'         => $product->getName(),
-                'link'          => $product->getProductUrl(),
-                'description'   => $description,
+            'title'         => $product->getName(),
+            'link'          => $product->getProductUrl(),
+            'description'   => $description,
         ];
         $rssObj->_addEntry($data);
     }

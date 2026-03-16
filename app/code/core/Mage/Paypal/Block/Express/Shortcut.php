@@ -1,35 +1,27 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Paypal
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Paypal expess checkout shortcut link
  *
- * @category   Mage
  * @package    Mage_Paypal
- * @author     Magento Core Team <core@magentocommerce.com>
  *
- * @method string getShortcutHtmlId()
- * @method string getImageUrl()
- * @method string getCheckoutUrl()
- * @method string getBmlShortcutHtmlId()
  * @method string getBmlCheckoutUrl()
  * @method string getBmlImageUrl()
- * @method string getIsBmlEnabled()
- * @method string getConfirmationUrl()
- * @method string getIsInCatalogProduct()
+ * @method string getBmlShortcutHtmlId()
+ * @method string getCheckoutUrl()
  * @method string getConfirmationMessage()
+ * @method string getConfirmationUrl()
+ * @method string getImageUrl()
+ * @method string getIsBmlEnabled()
+ * @method string getIsInCatalogProduct()
+ * @method string getShortcutHtmlId()
  */
 class Mage_Paypal_Block_Express_Shortcut extends Mage_Core_Block_Template
 {
@@ -37,6 +29,7 @@ class Mage_Paypal_Block_Express_Shortcut extends Mage_Core_Block_Template
      * Position of "OR" label against shortcut
      */
     public const POSITION_BEFORE = 'before';
+
     public const POSITION_AFTER = 'after';
 
     /**
@@ -68,7 +61,7 @@ class Mage_Paypal_Block_Express_Shortcut extends Mage_Core_Block_Template
     protected $_checkoutType = 'paypal/express_checkout';
 
     /**
-     * @return Mage_Core_Block_Abstract
+     * @return $this
      */
     protected function _beforeToHtml()
     {
@@ -89,7 +82,7 @@ class Mage_Paypal_Block_Express_Shortcut extends Mage_Core_Block_Template
             /** @var Mage_Catalog_Model_Product $currentProduct */
             $currentProduct = Mage::registry('current_product');
             if (!is_null($currentProduct)) {
-                $price = (float)$currentProduct->getFinalPrice();
+                $price = (float) $currentProduct->getFinalPrice();
                 $typeInstance = $currentProduct->getTypeInstance();
                 if (empty($price) && !$currentProduct->isSuper() && !$typeInstance->canConfigure($currentProduct)) {
                     $this->_shouldRender = false;
@@ -137,8 +130,8 @@ class Mage_Paypal_Block_Express_Shortcut extends Mage_Core_Block_Template
             $this->setConfirmationUrl(
                 $this->getUrl(
                     $this->_startAction,
-                    [Mage_Paypal_Model_Express_Checkout::PAYMENT_INFO_TRANSPORT_BILLING_AGREEMENT => 1]
-                )
+                    [Mage_Paypal_Model_Express_Checkout::PAYMENT_INFO_TRANSPORT_BILLING_AGREEMENT => 1],
+                ),
             );
             $this->setConfirmationMessage(Mage::helper('paypal')->__('Would you like to sign a billing agreement to streamline further purchases with PayPal?'));
         }
@@ -177,6 +170,7 @@ class Mage_Paypal_Block_Express_Shortcut extends Mage_Core_Block_Template
         if (!$this->_shouldRender) {
             return '';
         }
+
         return parent::_toHtml();
     }
 

@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Catalog category flat collection
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Model_Resource_Db_Collection_Abstract
 {
@@ -35,7 +27,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     /**
      * Store id of application
      *
-     * @var int|null
+     * @var null|int
      */
     protected $_storeId        = null;
 
@@ -50,17 +42,15 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
      * Initialize factory
      *
      * @param Mage_Core_Model_Resource_Abstract $resource
-     * @param array $args
      */
     public function __construct($resource = null, array $args = [])
     {
         parent::__construct($resource);
-        $this->_factory = !empty($args['factory']) ? $args['factory'] : Mage::getSingleton('catalog/factory');
+        $this->_factory = empty($args['factory']) ? Mage::getSingleton('catalog/factory') : $args['factory'];
     }
 
     /**
-     *  Collection initialization
-     *
+     * @inheritDoc
      */
     protected function _construct()
     {
@@ -75,7 +65,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     {
         $this->getSelect()->from(
             ['main_table' => $this->getResource()->getMainStoreTable($this->getStoreId())],
-            ['entity_id', 'level', 'path', 'position', 'is_active', 'is_anchor']
+            ['entity_id', 'level', 'path', 'position', 'is_active', 'is_anchor'],
         );
         return $this;
     }
@@ -83,7 +73,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     /**
      * Add filter by entity id(s).
      *
-     * @param mixed $categoryIds
+     * @param  mixed $categoryIds
      * @return $this
      */
     public function addIdFilter($categoryIds)
@@ -104,14 +94,18 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
                 $condition = ['in' => $ids];
             }
         }
-        $this->addFieldToFilter('entity_id', $condition);
+
+        if (isset($condition)) {
+            $this->addFieldToFilter('entity_id', $condition);
+        }
+
         return $this;
     }
 
     /**
      * Set store id
      *
-     * @param int $storeId
+     * @param  int   $storeId
      * @return $this
      */
     public function setStoreId($storeId)
@@ -131,13 +125,14 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
         if (is_null($this->_storeId)) {
             return Mage::app()->getStore()->getId();
         }
+
         return $this->_storeId;
     }
 
     /**
      * Add filter by path to collection
      *
-     * @param string $parent
+     * @param  string $parent
      * @return $this
      */
     public function addParentPathFilter($parent)
@@ -160,7 +155,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     /**
      * Set field to sort by
      *
-     * @param string $sorted
+     * @param  string $sorted
      * @return $this
      */
     public function addSortedField($sorted)
@@ -170,6 +165,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
         } else {
             $this->addOrder('name', self::SORT_ORDER_ASC);
         }
+
         return $this;
     }
 
@@ -183,7 +179,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
         $this->addFieldToFilter('is_active', 1);
         Mage::dispatchEvent(
             $this->_eventPrefix . '_add_is_active_filter',
-            [$this->_eventObject => $this]
+            [$this->_eventObject => $this],
         );
         return $this;
     }
@@ -202,7 +198,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     /**
      * Add attribute to select
      *
-     * @param array|string $attribute
+     * @param  array|string $attribute
      * @return $this
      */
     public function addAttributeToSelect($attribute = '*')
@@ -224,6 +220,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
                 } else {
                     $expression = $column[2];
                 }
+
                 $this->getSelect()->columns($expression, $column[0]);
             }
 
@@ -240,20 +237,10 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     }
 
     /**
-     * Retrieve resource instance
-     *
-     * @inheritDoc
-     */
-    public function getResource()
-    {
-        return parent::getResource();
-    }
-
-    /**
      * Add attribute to sort order
      *
-     * @param string $attribute
-     * @param string $dir
+     * @param  string $attribute
+     * @param  string $dir
      * @return $this
      */
     public function addAttributeToSort($attribute, $dir = self::SORT_ORDER_ASC)
@@ -261,6 +248,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
         if (!is_string($attribute)) {
             return $this;
         }
+
         $this->setOrder($attribute, $dir);
         return $this;
     }
@@ -268,8 +256,8 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     /**
      * Emulate simple add attribute filter to collection
      *
-     * @param string $attribute
-     * @param mixed $condition
+     * @param  string $attribute
+     * @param  mixed  $condition
      * @return $this
      */
     public function addAttributeToFilter($attribute, $condition = null)
@@ -310,13 +298,13 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
      */
     protected function _getCurrentStoreId()
     {
-        return (int)Mage::app()->getStore()->getId();
+        return (int) Mage::app()->getStore()->getId();
     }
 
     /**
      * Add category path filter
      *
-     * @param array|string $paths
+     * @param  array|string $paths
      * @return $this
      */
     public function addPathsFilter($paths)
@@ -324,21 +312,24 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
         if (!is_array($paths)) {
             $paths = [$paths];
         }
+
         $select = $this->getSelect();
         $cond   = [];
         foreach ($paths as $path) {
             $cond[] = $this->getResource()->getReadConnection()->quoteInto('main_table.path LIKE ?', "$path%");
         }
+
         if ($cond) {
             $select->where(implode(' OR ', $cond));
         }
+
         return $this;
     }
 
     /**
      * Add category level filter
      *
-     * @param int $level
+     * @param  int   $level
      * @return $this
      */
     public function addLevelFilter($level)
@@ -350,7 +341,7 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     /**
      * Add order field
      *
-     * @param string $field
+     * @param  string $field
      * @return $this
      */
     public function addOrderField($field)
@@ -362,8 +353,8 @@ class Mage_Catalog_Model_Resource_Category_Flat_Collection extends Mage_Core_Mod
     /**
      * Set collection page start and records to show
      *
-     * @param int $pageNum
-     * @param int $pageSize
+     * @param  int   $pageNum
+     * @param  int   $pageSize
      * @return $this
      */
     public function setPage($pageNum, $pageSize)

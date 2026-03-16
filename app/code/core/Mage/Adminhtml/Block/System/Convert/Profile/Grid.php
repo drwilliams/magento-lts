@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Convert profiles grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_System_Convert_Profile_Grid extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -29,6 +21,9 @@ class Mage_Adminhtml_Block_System_Convert_Profile_Grid extends Mage_Adminhtml_Bl
         $this->setDefaultSort('profile_id');
     }
 
+    /**
+     * @inheritDoc
+     */
     protected function _prepareCollection()
     {
         $collection = Mage::getResourceModel('dataflow/profile_collection')
@@ -39,6 +34,10 @@ class Mage_Adminhtml_Block_System_Convert_Profile_Grid extends Mage_Adminhtml_Bl
         return parent::_prepareCollection();
     }
 
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('profile_id', [
@@ -64,18 +63,14 @@ class Mage_Adminhtml_Block_System_Convert_Profile_Grid extends Mage_Adminhtml_Bl
         ]);
 
         $this->addColumn('action', [
-            'header'    => Mage::helper('adminhtml')->__('Action'),
-            'width'     => '60px',
             'align'     => 'center',
-            'sortable'  => false,
-            'filter'    => false,
             'type'      => 'action',
             'actions'   => [
                 [
                     'url'       => $this->getUrl('*/*/edit') . 'id/$profile_id',
-                    'caption'   => Mage::helper('adminhtml')->__('Edit')
-                ]
-            ]
+                    'caption'   => Mage::helper('adminhtml')->__('Edit'),
+                ],
+            ],
         ]);
 
         return parent::_prepareColumns();

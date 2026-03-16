@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_Abstract
 {
@@ -41,13 +33,13 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
         ],
         Mage_Core_Model_Store::ENTITY => [
             Mage_Index_Model_Event::TYPE_SAVE,
-            Mage_Index_Model_Event::TYPE_DELETE
+            Mage_Index_Model_Event::TYPE_DELETE,
         ],
         Mage_Core_Model_Store_Group::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Catalog_Model_Convert_Adapter_Product::ENTITY => [
-            Mage_Index_Model_Event::TYPE_SAVE
+            Mage_Index_Model_Event::TYPE_SAVE,
         ],
         Mage_Catalog_Model_Product_Flat_Indexer::ENTITY => [
             Mage_Catalog_Model_Product_Flat_Indexer::EVENT_TYPE_REBUILD,
@@ -101,7 +93,6 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
      * Overwrote for check is flat catalog product is enabled and specific save
      * attribute, store, store_group
      *
-     * @param Mage_Index_Model_Event $event
      * @return bool
      */
     public function matchEvent(Mage_Index_Model_Event $event)
@@ -152,7 +143,7 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
             } else {
                 /** @var Mage_Core_Model_Store $store */
                 $store = $event->getDataObject();
-                if ($store && $store->isObjectNew()) {
+                if ($store && ($store->isObjectNew() || $store->getOrigData('is_active') != $store->getIsActive() && $store->getIsActive())) {
                     $result = true;
                 } else {
                     $result = false;
@@ -177,8 +168,6 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
 
     /**
      * Register data required by process in event object
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _registerEvent(Mage_Index_Model_Event $event)
     {
@@ -203,10 +192,10 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
                 $process->changeStatus(Mage_Index_Model_Process::STATUS_REQUIRE_REINDEX);
                 break;
             case Mage_Catalog_Model_Product_Flat_Indexer::ENTITY:
-                switch ($event->getType()) {
-                    case Mage_Catalog_Model_Product_Flat_Indexer::EVENT_TYPE_REBUILD:
-                        $event->addNewData('id', $event->getDataObject()->getId());
+                if ($event->getType() === Mage_Catalog_Model_Product_Flat_Indexer::EVENT_TYPE_REBUILD) {
+                    $event->addNewData('id', $event->getDataObject()->getId());
                 }
+
                 break;
         }
     }
@@ -214,7 +203,6 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
     /**
      * Register data required by catalog product process in event object
      *
-     * @param Mage_Index_Model_Event $event
      * @return $this
      */
     protected function _registerCatalogProductEvent(Mage_Index_Model_Event $event)
@@ -252,7 +240,7 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
                     $flatAttributes = array_intersect($this->_getFlatAttributes(), array_keys($attrData));
                 }
 
-                if (count($flatAttributes) > 0) {
+                if ($flatAttributes !== []) {
                     $reindexFlat = true;
                     $reindexData['catalog_product_flat_force_update'] = true;
                 }
@@ -264,6 +252,7 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
                         $event->addNewData($k, $v);
                     }
                 }
+
                 break;
         }
 
@@ -273,7 +262,6 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
     /**
      * Register core store delete process
      *
-     * @param Mage_Index_Model_Event $event
      * @return $this
      */
     protected function _registerCoreStoreEvent(Mage_Index_Model_Event $event)
@@ -283,13 +271,12 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
             $store = $event->getDataObject();
             $event->addNewData('catalog_product_flat_delete_store_id', $store->getId());
         }
+
         return $this;
     }
 
     /**
      * Process event
-     *
-     * @param Mage_Index_Model_Event $event
      */
     protected function _processEvent(Mage_Index_Model_Event $event)
     {
@@ -338,7 +325,6 @@ class Mage_Catalog_Model_Product_Indexer_Flat extends Mage_Index_Model_Indexer_A
 
     /**
      * Rebuild all index data
-     *
      */
     public function reindexAll()
     {

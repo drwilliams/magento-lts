@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Adminhtml
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Sign up for an alert when the product price changes grid
  *
- * @category   Mage
  * @package    Mage_Adminhtml
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Alerts_Price extends Mage_Adminhtml_Block_Widget_Grid
 {
@@ -28,7 +20,6 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Alerts_Price extends Mage_Ad
 
         $this->setId('alertPrice');
         $this->setDefaultSort('add_date');
-        $this->setDefaultDir('desc');
         $this->setUseAjax(true);
         $this->setFilterVisibility(false);
         $this->setEmptyText(Mage::helper('catalog')->__('There are no customers for this alert'));
@@ -41,15 +32,21 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Alerts_Price extends Mage_Ad
         if ($store = $this->getRequest()->getParam('store')) {
             $websiteId = Mage::app()->getStore($store)->getWebsiteId();
         }
-        if (Mage::helper('catalog')->isModuleEnabled('Mage_ProductAlert')) {
+
+        if ($this->isModuleEnabled('Mage_ProductAlert', 'catalog')) {
             $collection = Mage::getModel('productalert/price')
                 ->getCustomerCollection()
                 ->join($productId, $websiteId);
             $this->setCollection($collection);
         }
+
         return parent::_prepareCollection();
     }
 
+    /**
+     * @inheritDoc
+     * @throws Exception
+     */
     protected function _prepareColumns()
     {
         $this->addColumn('firstname', [
@@ -73,23 +70,21 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Alerts_Price extends Mage_Ad
         ]);
 
         $this->addColumn('price', [
-            'header'    => Mage::helper('catalog')->__('Price'),
-            'index'     => 'price',
             'type'      => 'currency',
             'currency_code'
-                        => Mage::getStoreConfig(Mage_Directory_Model_Currency::XML_PATH_CURRENCY_BASE)
+                        => Mage_Directory_Helper_Data::getConfigCurrencyBase(),
         ]);
 
         $this->addColumn('add_date', [
             'header'    => Mage::helper('catalog')->__('Date Subscribed'),
             'index'     => 'add_date',
-            'type'      => 'date'
+            'type'      => 'date',
         ]);
 
         $this->addColumn('last_send_date', [
             'header'    => Mage::helper('catalog')->__('Last Notification'),
             'index'     => 'last_send_date',
-            'type'      => 'date'
+            'type'      => 'date',
         ]);
 
         $this->addColumn('send_count', [
@@ -107,9 +102,10 @@ class Mage_Adminhtml_Block_Catalog_Product_Edit_Tab_Alerts_Price extends Mage_Ad
         if ($storeId) {
             $storeId = Mage::app()->getStore($storeId)->getId();
         }
+
         return $this->getUrl('*/catalog_product/alertsPriceGrid', [
             'id'    => $productId,
-            'store' => $storeId
+            'store' => $storeId,
         ]);
     }
 }

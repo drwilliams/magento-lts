@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CatalogIndex
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Grouped product data retriever
  *
- * @category   Mage
  * @package    Mage_CatalogIndex
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_CatalogIndex_Model_Data_Grouped extends Mage_CatalogIndex_Model_Data_Abstract
 {
@@ -29,6 +21,9 @@ class Mage_CatalogIndex_Model_Data_Grouped extends Mage_CatalogIndex_Model_Data_
      */
     protected $_haveParents = false;
 
+    /**
+     * @inheritDoc
+     */
     protected function _construct()
     {
         $this->_init('catalogindex/data_grouped');
@@ -37,9 +32,9 @@ class Mage_CatalogIndex_Model_Data_Grouped extends Mage_CatalogIndex_Model_Data_
     /**
      * Fetch final price for product
      *
-     * @param array $product
-     * @param Mage_Core_Model_Store $store
-     * @param Mage_Customer_Model_Group $group
+     * @param  array                     $product
+     * @param  Mage_Core_Model_Store     $store
+     * @param  Mage_Customer_Model_Group $group
      * @return false
      */
     public function getFinalPrice($product, $store, $group)
@@ -68,7 +63,7 @@ class Mage_CatalogIndex_Model_Data_Grouped extends Mage_CatalogIndex_Model_Data_
             'table' => 'catalog/product_link',
             'parent_field' => 'product_id',
             'child_field' => 'linked_product_id',
-            'additional' => ['link_type_id' => Mage_Catalog_Model_Product_Link::LINK_TYPE_GROUPED]
+            'additional' => ['link_type_id' => Mage_Catalog_Model_Product_Link::LINK_TYPE_GROUPED],
         ];
     }
 }

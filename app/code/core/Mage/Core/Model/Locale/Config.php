@@ -1,22 +1,14 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Core
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2017-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
- * @category   Mage
  * @package    Mage_Core
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 class Mage_Core_Model_Locale_Config
 {
@@ -105,7 +97,7 @@ class Mage_Core_Model_Locale_Config
         'VEF' /*Venezuelan bolívar fuerte*/,'VND' /*Vietnamese Dong*/,  'CHE' /*WIR Euro*/,                'CHW' /*WIR Franc*/,
         'XOF' /*West African CFA franc*/,'WST' /*Western Samoa Tala*/,'YER' /*Yemeni Rial*/,        'ZMK' /*Zambian Kwacha*/,
         'ZWD' /*Zimbabwe Dollar*/,'TRY' /*Turkish Lira*/,'AZM' /*Azerbaijani Manat (1993-2006)*/,   'ROL' /*Old Romanian Leu*/,
-        'TRL' /*Old Turkish Lira*/,'XPF' /*CFP Franc*/
+        'TRL' /*Old Turkish Lira*/,'XPF', /*CFP Franc*/
     ];
 
     /**
@@ -119,11 +111,13 @@ class Mage_Core_Model_Locale_Config
         if ($configData) {
             $configData = $configData->asArray();
         }
+
         if ($configData) {
             $configData = array_keys($configData);
         } else {
             $configData = [];
         }
+
         return array_merge($this->_allowedLocales, $configData);
     }
 
@@ -138,11 +132,13 @@ class Mage_Core_Model_Locale_Config
         if ($configData) {
             $configData = $configData->asArray();
         }
+
         if ($configData) {
             $configData = array_keys($configData);
         } else {
             $configData = [];
         }
+
         return array_merge($this->_allowedCurrencies, $configData);
     }
 }

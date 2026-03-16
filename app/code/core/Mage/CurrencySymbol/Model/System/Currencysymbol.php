@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_CurrencySymbol
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2019-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Custom currency symbol model
  *
- * @category   Mage
  * @package    Mage_CurrencySymbol
- * @author     Magento Core Team <core@magentocommerce.com>
  *
  * @method $this resetValues()
  */
@@ -34,16 +26,17 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
     /**
      * Store id
      *
-     * @var string | null
+     * @var null|int
      */
     protected $_storeId;
 
     /**
      * Website id
      *
-     * @var string | null
+     * @var null|int
      */
     protected $_websiteId;
+
     /**
      * Cache types which should be invalidated
      *
@@ -52,13 +45,14 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
     protected $_cacheTypes = [
         'config',
         'block_html',
-        'layout'
+        'layout',
     ];
 
     /**
      * Config path to custom currency symbol value
      */
     public const XML_PATH_CUSTOM_CURRENCY_SYMBOL = 'currency/options/customsymbol';
+
     public const XML_PATH_ALLOWED_CURRENCIES     = 'currency/options/allow';
 
     /**
@@ -74,7 +68,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
     /**
      * Sets store Id
      *
-     * @param  int $storeId
+     * @param  int   $storeId
      * @return $this
      */
     public function setStoreId($storeId = null)
@@ -88,7 +82,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
     /**
      * Sets website Id
      *
-     * @param  int $websiteId
+     * @param  int   $websiteId
      * @return $this
      */
     public function setWebsiteId($websiteId = null)
@@ -114,7 +108,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
 
         $allowedCurrencies = explode(
             self::ALLOWED_CURRENCIES_CONFIG_SEPARATOR,
-            Mage::getStoreConfig(self::XML_PATH_ALLOWED_CURRENCIES, null)
+            Mage::getStoreConfig(self::XML_PATH_ALLOWED_CURRENCIES, null),
         );
 
         $storeModel = Mage::getSingleton('adminhtml/system_store');
@@ -124,26 +118,30 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
                 if ($group->getWebsiteId() != $website->getId()) {
                     continue;
                 }
+
                 foreach ($storeModel->getStoreCollection() as $store) {
                     if ($store->getGroupId() != $group->getId()) {
                         continue;
                     }
+
                     if (!$websiteShow) {
                         $websiteShow = true;
                         $websiteSymbols  = $website->getConfig(self::XML_PATH_ALLOWED_CURRENCIES);
                         $allowedCurrencies = array_merge($allowedCurrencies, explode(
                             self::ALLOWED_CURRENCIES_CONFIG_SEPARATOR,
-                            $websiteSymbols
+                            $websiteSymbols,
                         ));
                     }
+
                     $storeSymbols = Mage::getStoreConfig(self::XML_PATH_ALLOWED_CURRENCIES, $store);
                     $allowedCurrencies = array_merge($allowedCurrencies, explode(
                         self::ALLOWED_CURRENCIES_CONFIG_SEPARATOR,
-                        $storeSymbols
+                        $storeSymbols,
                     ));
                 }
             }
         }
+
         ksort($allowedCurrencies);
 
         $currentSymbols = $this->_unserializeStoreConfig(self::XML_PATH_CUSTOM_CURRENCY_SYMBOL);
@@ -153,13 +151,15 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
             if (!$symbol = $locale->getTranslation($code, 'currencysymbol')) {
                 $symbol = $code;
             }
+
             $name = $locale->getTranslation($code, 'nametocurrency');
             if (!$name) {
                 $name = $code;
             }
+
             $this->_symbolsData[$code] = [
                 'parentSymbol'  => $symbol,
-                'displayName' => $name
+                'displayName' => $name,
             ];
 
             if (isset($currentSymbols[$code]) && !empty($currentSymbols[$code])) {
@@ -167,6 +167,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
             } else {
                 $this->_symbolsData[$code]['displaySymbol'] = $this->_symbolsData[$code]['parentSymbol'];
             }
+
             if ($this->_symbolsData[$code]['parentSymbol'] == $this->_symbolsData[$code]['displaySymbol']) {
                 $this->_symbolsData[$code]['inherited'] = true;
             } else {
@@ -180,7 +181,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
     /**
      * Saves currency symbol to config
      *
-     * @param array $symbols
+     * @param  array $symbols
      * @return $this
      */
     public function setCurrencySymbolsData($symbols = [])
@@ -192,6 +193,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
                 }
             }
         }
+
         if ($symbols) {
             $value['options']['fields']['customsymbol']['value'] = serialize($symbols);
         } else {
@@ -207,7 +209,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
 
         Mage::dispatchEvent(
             'admin_system_config_changed_section_currency_before_reinit',
-            ['website' => $this->_websiteId, 'store' => $this->_storeId]
+            ['website' => $this->_websiteId, 'store' => $this->_storeId],
         );
 
         // reinit configuration
@@ -218,7 +220,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
 
         Mage::dispatchEvent(
             'admin_system_config_changed_section_currency',
-            ['website' => $this->_websiteId, 'store' => $this->_storeId]
+            ['website' => $this->_websiteId, 'store' => $this->_storeId],
         );
 
         return $this;
@@ -227,7 +229,7 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
     /**
      * Returns custom currency symbol by currency code
      *
-     * @param  string $code
+     * @param  string       $code
      * @return false|string
      */
     public function getCurrencySymbol($code)
@@ -251,20 +253,21 @@ class Mage_CurrencySymbol_Model_System_Currencysymbol
         foreach ($this->_cacheTypes as $cacheType) {
             Mage::app()->getCacheInstance()->invalidateType($cacheType);
         }
+
         return $this;
     }
 
     /**
      * Unserialize data from Store Config.
      *
-     * @param string $configPath
-     * @param int $storeId
+     * @param  string $configPath
+     * @param  int    $storeId
      * @return array
      */
     protected function _unserializeStoreConfig($configPath, $storeId = null)
     {
         $result = [];
-        $configData = (string)Mage::getStoreConfig($configPath, $storeId);
+        $configData = (string) Mage::getStoreConfig($configPath, $storeId);
         if ($configData) {
             try {
                 $result = Mage::helper('core/unserializeArray')->unserialize($configData);

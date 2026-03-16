@@ -1,38 +1,30 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Sales
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Configuration class for ordered items
  *
- * @category   Mage
  * @package    Mage_Sales
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Base
 {
     /**
      * Cache key for collectors
      *
-     * @var string|null
+     * @var null|string
      */
     protected $_collectorsCacheKey = null;
 
     /**
      * Configuration path where to collect registered totals
      *
-     * @var string|null
+     * @var null|string
      */
     protected $_totalsConfigNode = null;
 
@@ -64,6 +56,7 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
      */
     protected function _initModels()
     {
+        /** @var Mage_Core_Model_Config_Element $totalsConfig */
         $totalsConfig = $this->getNode($this->_totalsConfigNode);
 
         foreach ($totalsConfig->children() as $totalCode => $totalConfig) {
@@ -72,6 +65,7 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
                 $this->_models[$totalCode] = $this->_initModelInstance($class, $totalCode, $totalConfig);
             }
         }
+
         return $this;
     }
 
@@ -79,9 +73,9 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
      * Init model class by configuration
      *
      * @abstract
-     * @param string $class
-     * @param string $totalCode
-     * @param array $totalConfig
+     * @param  string                         $class
+     * @param  string                         $totalCode
+     * @param  Mage_Core_Model_Config_Element $totalConfig
      * @return mixed
      */
     abstract protected function _initModelInstance($class, $totalCode, $totalConfig);
@@ -89,23 +83,25 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
     /**
      * Prepare configuration array for total model
      *
-     * @param   string $code
-     * @param   Mage_Core_Model_Config_Element $totalConfig
-     * @return  array
+     * @param  string                         $code
+     * @param  Mage_Core_Model_Config_Element $totalConfig
+     * @return array
      */
     protected function _prepareConfigArray($code, $totalConfig)
     {
-        $totalConfig = (array)$totalConfig;
+        $totalConfig = (array) $totalConfig;
         if (isset($totalConfig['before'])) {
             $totalConfig['before'] = explode(',', $totalConfig['before']);
         } else {
             $totalConfig['before'] = [];
         }
+
         if (isset($totalConfig['after'])) {
             $totalConfig['after'] = explode(',', $totalConfig['after']);
         } else {
             $totalConfig['after'] = [];
         }
+
         $totalConfig['_code'] = $code;
         return $totalConfig;
     }
@@ -123,6 +119,7 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
                 return unserialize($cachedData, ['allowed_classes' => false]);
             }
         }
+
         $configArray = $this->_modelsConfig;
         // invoke simple sorting if the first element contains the "sort_order" key
         reset($configArray);
@@ -135,41 +132,47 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
                     if (!isset($configArray[$beforeCode])) {
                         continue;
                     }
+
                     $configArray[$code]['before'] = array_unique(array_merge(
                         $configArray[$code]['before'],
-                        $configArray[$beforeCode]['before']
+                        $configArray[$beforeCode]['before'],
                     ));
                     $configArray[$beforeCode]['after'] = array_merge(
                         $configArray[$beforeCode]['after'],
                         [$code],
-                        $data['after']
+                        $data['after'],
                     );
                     $configArray[$beforeCode]['after'] = array_unique($configArray[$beforeCode]['after']);
                 }
+
                 foreach ($data['after'] as $afterCode) {
                     if (!isset($configArray[$afterCode])) {
                         continue;
                     }
+
                     $configArray[$code]['after'] = array_unique(array_merge(
                         $configArray[$code]['after'],
-                        $configArray[$afterCode]['after']
+                        $configArray[$afterCode]['after'],
                     ));
                     $configArray[$afterCode]['before'] = array_merge(
                         $configArray[$afterCode]['before'],
                         [$code],
-                        $data['before']
+                        $data['before'],
                     );
                     $configArray[$afterCode]['before'] = array_unique($configArray[$afterCode]['before']);
                 }
             }
+
             uasort($configArray, [$this, '_compareTotals']);
         }
+
         $sortedCollectors = array_keys($configArray);
         if (Mage::app()->useCache('config')) {
             Mage::app()->saveCache(serialize($sortedCollectors), $this->_collectorsCacheKey, [
-                    Mage_Core_Model_Config::CACHE_TAG
+                Mage_Core_Model_Config::CACHE_TAG,
             ]);
         }
+
         return $sortedCollectors;
     }
 
@@ -177,7 +180,7 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
      * Initialize collectors array.
      * Collectors array is array of total models ordered based on configuration settings
      *
-     * @return  $this
+     * @return $this
      */
     protected function _initCollectors()
     {
@@ -192,9 +195,9 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
     /**
      * Callback that uses after/before for comparison
      *
-     * @param   array $a
-     * @param   array $b
-     * @return  int
+     * @param  array $a
+     * @param  array $b
+     * @return int
      */
     protected function _compareTotals($a, $b)
     {
@@ -207,14 +210,15 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
         } else {
             $res = 0;
         }
+
         return $res;
     }
 
     /**
      * Callback that uses sort_order for comparison
      *
-     * @param array $a
-     * @param array $b
+     * @param  array $a
+     * @param  array $b
      * @return int
      */
     protected function _compareSortOrder($a, $b)
@@ -222,6 +226,7 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
         if (!isset($a['sort_order']) || !isset($b['sort_order'])) {
             return 0;
         }
+
         if ($a['sort_order'] > $b['sort_order']) {
             $res = 1;
         } elseif ($a['sort_order'] < $b['sort_order']) {
@@ -229,6 +234,7 @@ abstract class Mage_Sales_Model_Config_Ordered extends Mage_Core_Model_Config_Ba
         } else {
             $res = 0;
         }
+
         return $res;
     }
 }

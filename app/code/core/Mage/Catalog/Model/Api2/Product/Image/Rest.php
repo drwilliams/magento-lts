@@ -1,24 +1,16 @@
 <?php
+
 /**
- * OpenMage
- *
- * This source file is subject to the Open Software License (OSL 3.0)
- * that is bundled with this package in the file LICENSE.txt.
- * It is also available at https://opensource.org/license/osl-3-0-php
- *
- * @category   Mage
+ * @copyright  For copyright and license information, read the COPYING.txt file.
+ * @link       /COPYING.txt
+ * @license    Open Software License (OSL 3.0)
  * @package    Mage_Catalog
- * @copyright  Copyright (c) 2006-2020 Magento, Inc. (https://www.magento.com)
- * @copyright  Copyright (c) 2020-2022 The OpenMage Contributors (https://www.openmage.org)
- * @license    https://opensource.org/licenses/osl-3.0.php  Open Software License (OSL 3.0)
  */
 
 /**
  * Abstract API2 class for product images resource
  *
- * @category   Mage
  * @package    Mage_Catalog
- * @author     Magento Core Team <core@magentocommerce.com>
  */
 abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_Model_Api2_Product_Rest
 {
@@ -33,36 +25,40 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
      * @var array
      */
     protected $_mimeTypes = [
+        'image/webp' => 'webp',
         'image/jpg'  => 'jpg',
         'image/jpeg' => 'jpg',
         'image/gif'  => 'gif',
-        'image/png'  => 'png'
+        'image/png'  => 'png',
     ];
 
     /**
      * Retrieve product image data for customer and guest roles
      *
-     * @throws Mage_Api2_Exception
      * @return array
+     * @throws Mage_Api2_Exception
      */
     protected function _retrieve()
     {
         $imageData = [];
-        $imageId = (int)$this->getRequest()->getParam('image');
+        $imageId = (int) $this->getRequest()->getParam('image');
         $galleryData = $this->_getProduct()->getData(self::GALLERY_ATTRIBUTE_CODE);
 
         if (!isset($galleryData['images']) || !is_array($galleryData['images'])) {
             $this->_critical(self::RESOURCE_NOT_FOUND);
         }
+
         foreach ($galleryData['images'] as $image) {
             if ($image['value_id'] == $imageId && !$image['disabled']) {
                 $imageData = $this->_formatImageData($image);
                 break;
             }
         }
+
         if (empty($imageData)) {
             $this->_critical(self::RESOURCE_NOT_FOUND);
         }
+
         return $imageData;
     }
 
@@ -82,14 +78,15 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
                 }
             }
         }
+
         return $images;
     }
 
     /**
      * Retrieve media gallery
      *
-     * @throws Mage_Api2_Exception
      * @return Mage_Catalog_Model_Product_Attribute_Backend_Media
+     * @throws Mage_Api2_Exception
      */
     protected function _getMediaGallery()
     {
@@ -100,6 +97,7 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
         ) {
             $this->_critical('Requested product does not support images', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
+
         $galleryAttribute = $attributes[self::GALLERY_ATTRIBUTE_CODE];
         /** @var Mage_Catalog_Model_Product_Attribute_Backend_Media $mediaGallery */
         $mediaGallery = $galleryAttribute->getBackend();
@@ -109,7 +107,7 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
     /**
      * Create image data representation for API
      *
-     * @param array $image
+     * @param  array $image
      * @return array
      */
     protected function _formatImageData($image)
@@ -120,14 +118,14 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
             'position'  => $image['position'],
             'exclude'   => $image['disabled'],
             'url'       => $this->_getMediaConfig()->getMediaUrl($image['file']),
-            'types'     => $this->_getImageTypesAssignedToProduct($image['file'])
+            'types'     => $this->_getImageTypesAssignedToProduct($image['file']),
         ];
     }
 
     /**
      * Retrieve image types assigned to product (base, small, thumbnail)
      *
-     * @param string $imageFile
+     * @param  string $imageFile
      * @return array
      */
     protected function _getImageTypesAssignedToProduct($imageFile)
@@ -138,6 +136,7 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
                 $types[] = $attribute->getAttributeCode();
             }
         }
+
         return $types;
     }
 
@@ -154,7 +153,7 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
     /**
      * Create file name from received data
      *
-     * @param array $data
+     * @param  array  $data
      * @return string
      */
     protected function _getFileName($data)
@@ -163,31 +162,32 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
         if (isset($data['file_name']) && $data['file_name']) {
             $fileName = $data['file_name'];
         }
-        $fileName .= '.' . $this->_getExtensionByMimeType($data['file_mime_type']);
-        return $fileName;
+
+        return $fileName . ('.' . $this->_getExtensionByMimeType($data['file_mime_type']));
     }
 
     /**
      * Retrieve file extension using MIME type
      *
-     * @throws Mage_Api2_Exception
-     * @param string $mimeType
+     * @param  string              $mimeType
      * @return string
+     * @throws Mage_Api2_Exception
      */
     protected function _getExtensionByMimeType($mimeType)
     {
         if (!array_key_exists($mimeType, $this->_mimeTypes)) {
             $this->_critical('Unsuppoted image MIME type', Mage_Api2_Model_Server::HTTP_BAD_REQUEST);
         }
+
         return $this->_mimeTypes[$mimeType];
     }
 
     /**
      * Get file URI by its id. File URI is used by media backend to identify image
      *
-     * @throws Mage_Api2_Exception
-     * @param int $imageId
+     * @param  int                 $imageId
      * @return string
+     * @throws Mage_Api2_Exception
      */
     protected function _getImageFileById($imageId)
     {
@@ -196,15 +196,18 @@ abstract class Mage_Catalog_Model_Api2_Product_Image_Rest extends Mage_Catalog_M
         if (!isset($mediaGalleryData['images'])) {
             $this->_critical(self::RESOURCE_NOT_FOUND);
         }
+
         foreach ($mediaGalleryData['images'] as $image) {
             if ($image['value_id'] == $imageId) {
                 $file = $image['file'];
                 break;
             }
         }
+
         if (!($file && $this->_getMediaGallery()->getImage($this->_getProduct(), $file))) {
             $this->_critical(self::RESOURCE_NOT_FOUND);
         }
+
         return $file;
     }
 }
